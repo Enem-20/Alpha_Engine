@@ -6,15 +6,24 @@ project(${PROJECT_NAME})
 
 add_executable(${PROJECT_NAME}
 	src/main.cpp
+	src/Algorithms/FindPaths.h
 	src/Renderer/ShaderProgram.h
 	src/Renderer/ShaderProgram.cpp
 	src/Renderer/Texture2D.cpp
 	src/Renderer/Texture2D.h
 	src/Renderer/Sprite.h
 	src/Renderer/Sprite.cpp
+	src/renderer/AnimatedSprite.h
+	src/renderer/AnimatedSprite.cpp
 	src/Resources/ResourceManager.h
 	src/Resources/ResourceManager.cpp
 	src/Resources/stb_image.h
+	src/Game/GObject.h
+	src/Game/GObject.cpp
+	src/Game/Game.h
+	src/Game/Game.cpp
+	src/Algorithms/hash_table.h
+	src/Algorithms/hash_table.cpp
 	)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
