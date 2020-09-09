@@ -1,4 +1,4 @@
-#include <glad/glad.h>
+﻿#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include<glm/vec2.hpp>
 #include<glm/mat4x4.hpp>
@@ -11,6 +11,7 @@
 #include "Algorithms/hash_table.h"
 
 #include <iostream>
+#include <algorithm>
 
 GLfloat points[] =
 {
@@ -37,29 +38,31 @@ static void glfwError(int id, const char* description)
 {
     std::cout << description << std::endl;
 }
-glm::ivec2 MainWindow_size(1080, 1080);
-//int MainWindow_sizeX = 640;
-//int MainWindow_sizeY = 480;
+glm::ivec2 g_MainWindow_size(1080, 1080);
+glm::ivec2 g_BoardSize(g_MainWindow_size);
+unsigned int g_board_left_offset = 0;
+unsigned int g_board_bottom_offset = 0;
 
 void glfwWindowSizeCallBack(GLFWwindow* window, int width, int height)
 {
-    
-    glm::ivec2 factor = {0, 0};
+    g_MainWindow_size.x = width;
+    g_MainWindow_size.y = height;
+
     if (width > height)
     {
-        factor.x = (width - height)/2;
+        g_board_left_offset = (width - height)/2;
         width = height;
     }
     else if (height > width)
     {
-        factor.y = (height - width)/2;
+        g_board_bottom_offset = (height - width)/2;
         height = width;
     }
 
-    MainWindow_size.x = width;
-    MainWindow_size.y = height;
+    g_BoardSize.x = width;
+    g_BoardSize.y = height;
 
-    glViewport(factor.x, factor.y, MainWindow_size.x, MainWindow_size.y);
+    glViewport(g_board_left_offset, g_board_bottom_offset, g_BoardSize.x, g_BoardSize.y);
 }
 
 void glfwKeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mode)
@@ -78,12 +81,21 @@ void glfwMouseCallBack(GLFWwindow* window, int button, int action, int mods)
         glm::dvec2 cursorPos_OnClick;
         glfwGetCursorPos(window, &cursorPos_OnClick.x, &cursorPos_OnClick.y);
 
+        int board_pos_x = cursorPos_OnClick.x - g_board_left_offset;
+        int board_pos_y = g_BoardSize.y - cursorPos_OnClick.y + g_board_bottom_offset;
 
+        if (board_pos_x >= 0 && board_pos_x < g_BoardSize.x && board_pos_y >= 0 && board_pos_y < g_BoardSize.x)
+        {
+            unsigned int cellSize = (g_BoardSize.x >> 3);
+            size_t cell_x = std::min(board_pos_x / cellSize, 7u);
+            size_t cell_y = std::min(board_pos_y / cellSize, 7u);
+            std::cout << "cell (" << cell_x << ", " << cell_y  << ")" <<  std::endl;
+         }
     }
 }
 
 int main(int argc, char** argv)
-{
+{/*
     hash_table<int, long long> some;
 
     std::cout << "Before resize: ";
@@ -95,17 +107,15 @@ int main(int argc, char** argv)
     std::cout << some.get(200000) << std::endl;
 
 
-
- 
-
     some.set_size(256);
 
     std::cout << "After resize: ";
     std::cout << some.get(4) << std::endl;
     std::cout << some.get(10) << std::endl;
     std::cout << some.get(200000) << std::endl;
+    
+    std::cout << "Hash value on 4: " << some[4];*/
 
-    std::cout << "Hash value on 4: " << some[4];
     /* Initialize the library */
     glfwSetErrorCallback(&glfwError);
     if (!glfwInit())
@@ -120,7 +130,7 @@ int main(int argc, char** argv)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    GLFWwindow* Mainwindow = glfwCreateWindow(MainWindow_size.x, MainWindow_size.y, "MoveChess", nullptr, nullptr);
+    GLFWwindow* Mainwindow = glfwCreateWindow(g_MainWindow_size.x, g_MainWindow_size.y, "MoveChess", nullptr, nullptr);
     if (!Mainwindow)
     {
         glfwTerminate();
@@ -175,7 +185,7 @@ int main(int argc, char** argv)
         auto sprite = resourceManager.loadSprite("NewSprite", "DefaultTextureAtlas", "SpriteShader", 69, 69, "White_knight");
         sprite->setPosition(glm::vec2(300, 100));*/
 
-        auto sprite_Desk = resourceManager.loadSprite("sprite_Desk", "Desk", "SpriteShader", MainWindow_size.x, MainWindow_size.y, "");
+        auto sprite_Desk = resourceManager.loadSprite("sprite_Desk", "Desk", "SpriteShader", g_BoardSize.x, g_BoardSize.y, "");
 
         //glm::mat4 modelMatrix_1 = glm::mat4(1.f);
         //modelMatrix_1 = glm::translate(modelMatrix_1, glm::vec3(50.f, 200.f, 0.f));
@@ -183,7 +193,7 @@ int main(int argc, char** argv)
         //glm::mat4 modelMatrix_2 = glm::mat4(1.f);
         //modelMatrix_2 = glm::translate(modelMatrix_2, glm::vec3(590.f, 200.f, 0.f));
 
-        glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(MainWindow_size.x), 0.f, static_cast<float>(MainWindow_size.y), -100.f, 100.f);
+        glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(g_BoardSize.x), 0.f, static_cast<float>(g_BoardSize.y), -100.f, 100.f);
 
         SpriteShaderProgram->setMatrix4("projectionMat", projectionMatrix);
 
