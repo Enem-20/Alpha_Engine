@@ -47,7 +47,7 @@ hash_table<key, value>::hash_table()
 template<class key, class value>
 void hash_table<key, value>::initialize(int size)
 {
-	container = new std::pair<key, value>* [size];
+	container = new std::pair<key, value> * [size];
 
 	memset(container, 0, size * sizeof(*container));
 
@@ -67,7 +67,7 @@ value& hash_table<key, value>::operator[](const key& _key)
 	int i = this->operator()(_key);
 	if (container[i] == nullptr)
 	{
-		container[i] = new std::pair<key, value>;
+		container[i] = new std::pair<key, value>(_key, value{});
 	}
 
 	return container[i]->second;
@@ -108,14 +108,14 @@ const int hash_table<key, value>::operator()(key _key)
 	std::bitset<64> remainder;
 	if (calc_start(divide) > calc_start(_key))
 	{
-		return decide_collision(bin_key.to_ulong());
-	}	
+		return decide_collision(bin_key.to_ullong());
+	}
 
 	int to_start_bit;
 
 	to_start_bit = calc_start(bin_key);
 
-	size_t j = divide_count_bits -1;
+	size_t j = divide_count_bits - 1;
 	for (size_t i = to_start_bit; i > (to_start_bit - divide_count_bits); --i)
 	{
 		remainder[j] = bin_key[i];
@@ -125,11 +125,16 @@ const int hash_table<key, value>::operator()(key _key)
 	int difference;
 	int it_bin_key = to_start_bit - divide_count_bits;
 	remainder ^= divide;
-	while(it_bin_key > -1)
+	while (it_bin_key > -1)
 	{
 		difference = calc_start(remainder) - calc_start(divide);
 
-		if(difference < 0)
+		if (it_bin_key + difference < 0)
+		{
+			return decide_collision(remainder.to_ullong());
+		}
+
+		if (difference < 0)
 		{
 			std::bitset<64> buf_remainder;
 			buf_remainder.reset();
@@ -152,7 +157,7 @@ const int hash_table<key, value>::operator()(key _key)
 
 	}
 
-	return decide_collision(remainder.to_ulong());
+	return decide_collision(remainder.to_ullong());
 }
 
 template<class key, class value>
@@ -226,7 +231,7 @@ int hash_table<key, value>::find_key(key _key) const
 	std::bitset<64> remainder;
 	if (calc_start(divide) > calc_start(_key))
 	{
-		return bin_key.to_ulong();
+		return bin_key.to_ullong();
 	}
 
 	int to_start_bit;
@@ -246,6 +251,12 @@ int hash_table<key, value>::find_key(key _key) const
 	while (it_bin_key > -1)
 	{
 		difference = calc_start(remainder) - calc_start(divide);
+
+
+		if (it_bin_key + difference < 0)
+		{
+			break;
+		}
 
 		if (difference < 0)
 		{

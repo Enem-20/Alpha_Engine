@@ -77,8 +77,6 @@ void glfwMouseCallBack(GLFWwindow* window, int button, int action, int mods)
     {
         glm::dvec2 cursorPos_OnClick;
         glfwGetCursorPos(window, &cursorPos_OnClick.x, &cursorPos_OnClick.y);
-
-
     }
 }
 
@@ -92,11 +90,7 @@ int main(int argc, char** argv)
     some[10] = 20;
     std::cout << some.get(10) << std::endl;
     some[200000] = 5000000004445;
-    std::cout << some.get(200000) << std::endl;
-
-
-
- 
+    std::cout << some.get(200000) << std::endl; 
 
     some.set_size(256);
 
@@ -105,7 +99,6 @@ int main(int argc, char** argv)
     std::cout << some.get(10) << std::endl;
     std::cout << some.get(200000) << std::endl;
 
-    std::cout << "Hash value on 4: " << some[4];
     /* Initialize the library */
     glfwSetErrorCallback(&glfwError);
     if (!glfwInit())
@@ -146,7 +139,7 @@ int main(int argc, char** argv)
     std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 	
-	glClearColor(0.5, 0 , 0.2, 1);
+	glClearColor(0.f, 0.f, 0.f, 0.f);
 
     {
         ResourceManager resourceManager(argv[0]);
