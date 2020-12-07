@@ -20,10 +20,20 @@ add_executable(${PROJECT_NAME}
 	src/Resources/stb_image.h
 	src/Game/GObject.h
 	src/Game/GObject.cpp
+	src/Game/Desk.h
+	src/Game/Desk.cpp
 	src/Game/Game.h
 	src/Game/Game.cpp
+	src/Game/AllowedCell.h
+	src/Game/AllowedCell.cpp
+	src/Game/Figure.h
+	src/Game/Figure.cpp
 	src/Algorithms/hash_table.h
 	src/Algorithms/hash_table.cpp
+	src/Input/Input.h
+	src/Input/Input.cpp
+	src/GLPref/GLPref.h
+	src/GLPref/GLPref.cpp
 	)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)

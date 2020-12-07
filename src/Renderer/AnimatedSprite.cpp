@@ -22,7 +22,7 @@ namespace Renderer
 	}
 	
 
-	void AnimatedSprite::render() const
+	void AnimatedSprite::render(glm::mat4 model) const
 	{
 		if (m_dirty)
 		{
@@ -46,7 +46,7 @@ namespace Renderer
 			m_dirty = false;
 		}
 
-		Sprite::render();
+		Sprite::render(model);
 	}
 	
 	

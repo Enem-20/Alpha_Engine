@@ -8,6 +8,8 @@ class hash_table
 public:
 	hash_table();
 
+	~hash_table();
+
 	const int operator()(key _key);
 
 	value& operator[](const key& _key);
@@ -16,11 +18,13 @@ public:
 
 	const value& get(const key& _key);
 
-	value& operator=(const value& other);
-
 	void set_size(int new_size);
 
-	void emplace(key Key);
+	void erase(const key& _key);
+
+	void clear();
+
+	void Print();
 private:
 	std::pair<key, value>** container;
 	int size;
@@ -34,6 +38,7 @@ private:
 	int calc_start(const std::bitset<64> any) const;
 	int calc_word_size(const std::bitset<64> any) const;
 	int find_key(key _key) const;
+	
 };
 
 template<class key, class value>
@@ -42,6 +47,12 @@ hash_table<key, value>::hash_table()
 	size = 128;
 
 	initialize(size);
+}
+
+template<class key, class value>
+hash_table<key, value>::~hash_table()
+{
+	clear();
 }
 
 template<class key, class value>
@@ -56,12 +67,6 @@ void hash_table<key, value>::initialize(int size)
 }
 
 template<class key, class value>
-value& hash_table<key, value>::operator=(const value& other)
-{
-	*this = other;
-}
-
-template<class key, class value>
 value& hash_table<key, value>::operator[](const key& _key)
 {
 	int i = this->operator()(_key);
@@ -72,6 +77,23 @@ value& hash_table<key, value>::operator[](const key& _key)
 
 	return container[i]->second;
 }
+
+template<class key, class value>
+void hash_table<key, value>::erase(const key& _key)
+{
+	int i = find_key(_key);
+
+	if (container[i] == nullptr)
+	{
+		std::cout << "Element isn't found" << endl;
+		return;
+	}
+
+	delete containter[i];
+
+	container[i] = nullptr;
+}
+
 template<class key, class value>
 const value& hash_table<key, value>::get(const key& _key)
 {
@@ -81,25 +103,25 @@ const value& hash_table<key, value>::get(const key& _key)
 
 }
 
-//template<class key, class value>
-//const value& hash_table<key, value>::operator[](const key& _key)
-//{
-//	int i = container[this->operator()(_key)];
-//	if (container[i] == nullptr)
-//	{
-//		container[i] = new std::make_pair(_key, value{});
-//	}
-//	else
-//	{
-//		return container[i]->second;
-//	}
-//}
+template<class key, class value>
+void hash_table<key, value>::Print()
+{
+	for (int i = 0; i < size; ++i)
+	{
+		std::cout << "Key: " << container[i]->first << "Value: " << container[i]->second << std::endl;
+	}
+}
 
-//template<class key, class value>
-//void hash_table<key, value>::emplace(key _key, value& val)
-//{
-//	//this->operator[](_key);
-//}
+template<class key, class value>
+void hash_table<key, value>::clear()
+{
+	for (size_t i = 0; i < size; ++i)
+	{
+		delete container[i];
+	}
+
+	delete[] container;
+}
 
 template<class key, class value>
 const int hash_table<key, value>::operator()(key _key)
@@ -115,7 +137,7 @@ const int hash_table<key, value>::operator()(key _key)
 
 	to_start_bit = calc_start(bin_key);
 
-	size_t j = divide_count_bits - 1;
+	int j = divide_count_bits - 1;
 	for (size_t i = to_start_bit; i > (to_start_bit - divide_count_bits); --i)
 	{
 		remainder[j] = bin_key[i];

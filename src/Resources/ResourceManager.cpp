@@ -13,13 +13,27 @@
 
 #include "stb_image.h"
 
-ResourceManager::ResourceManager(const std::string& executablePath)
+ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
+ResourceManager::TexturesMap ResourceManager::m_textures;
+ResourceManager::SpritesMap ResourceManager::m_sprites;
+ResourceManager::AnimatedSpritesMap ResourceManager::m_AnimatedSprites;
+std::string ResourceManager::m_path;
+
+void ResourceManager::SetExecutablePath(const std::string& executablePath)
 {
 	size_t found = executablePath.find_last_of("/\\");
 	m_path = executablePath.substr(0, found);
 }
 
-std::string ResourceManager::getFileString(const std::string& relativeFilePath) const
+void ResourceManager::UnloadAllResources()
+{
+	m_shaderPrograms.clear();
+	m_textures.clear();
+	m_sprites.clear();
+	m_AnimatedSprites.clear();
+}
+
+std::string ResourceManager::getFileString(const std::string& relativeFilePath)
 {
 	std::ifstream f;
 	f.open(m_path + "/" + relativeFilePath.c_str(), std::ios::in | std::ios::binary);
@@ -139,7 +153,7 @@ std::shared_ptr<Renderer::Sprite> ResourceManager::loadSprite(const std::string&
 	}
 
 	std::shared_ptr<Renderer::Sprite> newSprite = m_sprites.emplace
-	(textureName, std::make_shared<Renderer::Sprite>
+	(spriteName, std::make_shared<Renderer::Sprite>
 		(Texture, subTextureName, Shader, 
 		 glm::vec2(0.f, 0.f), glm::vec2(spriteWidth,spriteHeight))).first->second;
 
@@ -153,7 +167,7 @@ std::shared_ptr<Renderer::Sprite> ResourceManager::getSprite(const std::string& 
 		return it->second;
 	}
 	std::cerr << "Can't find the texture " << spriteName << std::endl;
-	system("pause");
+	return nullptr;
 }
 
 std::shared_ptr<Renderer::AnimatedSprite> ResourceManager::loadAnimatedSprite(const std::string& spriteName,
