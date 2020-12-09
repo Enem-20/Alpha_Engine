@@ -9,7 +9,7 @@
 
 GObject::GObject()
 {
-	Game::fl_GObjects.push_back(this);
+	//Game::fl_GObjects.push_back(this);
 	glm::mat4 model(1.f);
 	this->model = model;
 	glm::vec3 position(0.f);
@@ -34,6 +34,11 @@ void GObject::InstanceRender()
 
 void GObject::Translate(glm::vec3 position)
 {
+	glm::mat4 Buf_model = glm::mat4(1.f);
+	model = Buf_model;
+	model = glm::scale(model, glm::vec3(135, 135, 0));
+
+	cellposition = position;
 	model = glm::translate(model, glm::vec3(position));
 	//sprite->setPosition(position);
 }

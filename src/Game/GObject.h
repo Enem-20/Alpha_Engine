@@ -24,6 +24,8 @@ public:
 	virtual std::shared_ptr<Renderer::Sprite> GetSprite();
 
 	glm::vec3 position;
+
+	glm::ivec2 cellposition;
 protected:
 	glm::mat4 model;
 	std::shared_ptr<Renderer::Sprite> sprite;

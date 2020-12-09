@@ -2,19 +2,17 @@
 #include "../Resources/ResourceManager.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 
-AllowedCell::AllowedCell()
+AllowedCell::AllowedCell(glm::vec2 Boardposition)
 {
 	model = glm::scale(model, glm::vec3(135, 135, 0));
+	Translate(glm::vec3(Boardposition, 0));
+	cellposition = Boardposition;
 }
 
-void AllowedCell::SetSprite(const std::string& spriteName,
-	const std::string& textureName,
-	const std::string& shaderName,
-	const unsigned int spriteWidth,
-	const unsigned int spriteHeight,
-	const std::string& subTextureName)
+void AllowedCell::render()
 {
-
+	sprite->render(model);
 }

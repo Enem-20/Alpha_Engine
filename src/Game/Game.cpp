@@ -8,26 +8,22 @@
 #include<glm/vec2.hpp>
 #include<glm/mat4x4.hpp>
 
-#include "Desk.h"
-#include "AllowedCell.h"
-#include "Figure.h"
-
 #include <iostream>
 
 Game::Game()
 	: ECurrentGameState(EGameState::Active)
 {
-	//0 - free slot, 1 - white figure, 2 - black figure
+	//0 - free slot, 2 - black figure, 1 - white figure, 3 - black_target, 4 - white_target
 	int BoardGraph[8][8] =
 	{
-	2,2,2,0,0,0,0,0,
-	2,2,2,0,0,0,0,0,
-	2,2,2,0,0,0,0,0,
+	0,0,0,0,0,2,2,2,
+	0,0,0,0,0,2,2,2,
+	0,0,0,0,0,2,2,2,
 	0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,
-	0,0,0,0,0,1,1,1,
-	0,0,0,0,0,1,1,1,
-	0,0,0,0,0,1,1,1
+	1,1,1,0,0,0,0,0,
+	1,1,1,0,0,0,0,0,
+	1,1,1,0,0,0,0,0
 	};
 
 	this->BoardGraph = new int* [8];
@@ -36,11 +32,17 @@ Game::Game()
 		this->BoardGraph[i] = new int[8];
 	}
 
+	this->TargetGraph = new int* [8];
+	for (int i = 0; i < 8; ++i)
+	{
+		this->TargetGraph[i] = new int[8];
+	}
 
 	for (int i = 0; i < 8; ++i)
 	{
 		for (int j = 0; j < 8; ++j)
 		{
+			TargetGraph[i][j] = BoardGraph[i][j];
 			this->BoardGraph[i][j] = BoardGraph[i][j];
 		}
 	}
@@ -55,10 +57,10 @@ Game::~Game()
 
 void Game::render()
 {
-	for (auto it : fl_GObjects)
+	/*for (auto it : fl_GObjects)
 	{
 		it->render();
-	}
+	}*/
 }
 void Game::Update(const uint64_t delta)
 {
@@ -70,6 +72,7 @@ void Game::setKey(const int key, const int action)
 }
 bool Game::init(const glm::ivec2& boardSize, const std::string& ExecutablePath)
 {
+	m_BoardSize = boardSize;
 	ResourceManager::SetExecutablePath(ExecutablePath);
 	auto DefaultShaderProgram = ResourceManager::loadShaders("DefaultShader", "res/shaders/vertex.txt", "res/shaders/fragment.txt");
 	if (!DefaultShaderProgram)
@@ -104,38 +107,6 @@ bool Game::init(const glm::ivec2& boardSize, const std::string& ExecutablePath)
 	SpriteShaderProgram->use();
 	SpriteShaderProgram->setInt("tex", 0);
 	SpriteShaderProgram->setMatrix4("projectionMat", projectionMatrix);
-
-	GObject* desk = new Desk;
-	desk->SetSprite("sprite_Desk", "Desk", "SpriteShader", m_BoardSize.x, m_BoardSize.y, "");
-	GObject* figures_black[9];
-	GObject* figures_white[9];
-	for (int it = 0; it < 9; ++it)
-	{
-		figures_black[it] = new Figure;
-		figures_white[it] = new Figure;
-
-		figures_black[it]->SetSprite("Figure_black", "Figures", "SpriteShader", 135, 135, "black_pawn");
-		figures_white[it]->SetSprite("Figure_white", "Figures", "SpriteShader", 135, 135, "white_pawn");
-	}
-
-	int it_Figures_black = 0;
-	int it_Figures_white = 0;
-	for (int i = 0; i < 8; ++i)
-	{
-		for (int j = 0; j < 8; ++j)
-		{
-			if (BoardGraph[i][j] == 2)
-			{
-				figures_black[it_Figures_black]->Translate(glm::vec3(7 - i, j, 0));
-				++it_Figures_black;
-			}
-			else if (BoardGraph[i][j] == 1)
-			{
-				figures_white[it_Figures_white]->Translate(glm::vec3(7 - i, j, 0));
-				++it_Figures_white;
-			}
-		}
-	}
 	return true;
 }
 

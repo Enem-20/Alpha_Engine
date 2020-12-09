@@ -11,10 +11,12 @@ class Figure : public GObject
 {
 public:
 	Figure();
+	
+	void render() override;
 
-	void Search_path(bool BoardGraph[8][8]);
+	void Search_path(glm::ivec2 start, int fraction);
 
-	std::list<AllowedCell> allowedCell;
+	std::list<AllowedCell*> allowedCell;
 
-	glm::vec2 cellposition;
+	int fraction;
 };

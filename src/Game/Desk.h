@@ -6,4 +6,6 @@ class Desk : public GObject
 {
 public:
 	Desk();
+
+	void render() override;
 };

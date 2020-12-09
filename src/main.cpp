@@ -40,18 +40,59 @@
 
 int main(int argc, char** argv)
 {
-	GLPref::init();
+	glm::ivec2 g_MainWindow_size(1080, 1080);
+	glm::ivec2 g_BoardSize(g_MainWindow_size);
+	GLPref::init(g_MainWindow_size);
 	{
-		glm::ivec2 g_MainWindow_size(1080, 1080);
-		glm::ivec2 g_BoardSize(g_MainWindow_size);
+		
 		Game game;
 		Game::init(g_BoardSize, argv[0]);
+
+		Game::desk = new Desk;
+		Game::desk->SetSprite("sprite_Desk", "Desk", "SpriteShader", Game::m_BoardSize.x, Game::m_BoardSize.y, "");
+
+		for (int it = 0; it < 9; ++it)
+		{
+			Game::figures_black[it] = new Figure;
+			Game::figures_white[it] = new Figure;
+
+			Game::figures_black[it]->SetSprite("Figure_black", "Figures", "SpriteShader", 135, 135, "black_pawn");
+			Game::figures_black[it]->fraction = 2;
+			Game::figures_white[it]->SetSprite("Figure_white", "Figures", "SpriteShader", 135, 135, "white_pawn");
+			Game::figures_white[it]->fraction = 1;
+		}
+
+		int it_Figures_black = 0;
+		int it_Figures_white = 0;
+		for (int i = 0; i < 8; ++i)
+		{
+			for (int j = 0; j < 8; ++j)
+			{
+				if (Game::BoardGraph[i][j] == 1)
+				{
+					Game::figures_white[it_Figures_white]->Translate(glm::vec3(i, j, 0));
+					Game::figures_white[it_Figures_white]->cellposition = glm::vec2(i, j);
+					++it_Figures_white;
+				}
+				else if (Game::BoardGraph[i][j] == 2)
+				{
+					Game::figures_black[it_Figures_black]->Translate(glm::vec3(i, j, 0));
+					Game::figures_black[it_Figures_black]->cellposition = glm::vec2(i, j);
+					++it_Figures_black;
+				}
+			}
+		}
 
 		while (!glfwWindowShouldClose(Game::MainWindow))
 		{
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			Game::render();			
+			Game::desk->render();
+			for (int it = 0; it < 9; ++it)
+			{
+				Game::figures_black[it]->render();
+				Game::figures_white[it]->render();
+			}
 
 			glfwSwapBuffers(Game::MainWindow);
 

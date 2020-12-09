@@ -1,6 +1,9 @@
 #pragma once
 
 #include "GObject.h"
+#include "Desk.h"
+#include "AllowedCell.h"
+#include "Figure.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -9,6 +12,7 @@
 
 #include <list>
 #include<array>
+#include <memory>
 
 class Game
 {
@@ -24,9 +28,14 @@ public:
 
 	static glm::ivec2 Get_BoardSize();
 
-	inline static std::list<GObject*> fl_GObjects;
 	inline static GLFWwindow* MainWindow;
 	inline static int** BoardGraph;
+	inline static int** TargetGraph;
+	inline static glm::ivec2 m_BoardSize;
+
+	inline static Desk* desk;
+	inline static Figure* figures_black[9];
+	inline static Figure* figures_white[9];
 private:
 	inline static std::array<bool, 349> keys;
 
@@ -37,5 +46,5 @@ private:
 	};
 
 	EGameState ECurrentGameState;
-	inline static glm::ivec2 m_BoardSize;
+	
 };
