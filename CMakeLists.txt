@@ -6,7 +6,6 @@ project(${PROJECT_NAME})
 
 add_executable(${PROJECT_NAME}
 	src/main.cpp
-	src/Algorithms/FindPaths.h
 	src/Renderer/ShaderProgram.h
 	src/Renderer/ShaderProgram.cpp
 	src/Renderer/Texture2D.cpp
@@ -28,8 +27,18 @@ add_executable(${PROJECT_NAME}
 	src/Game/AllowedCell.cpp
 	src/Game/Figure.h
 	src/Game/Figure.cpp
+	src/Game/AI.h
+	src/Game/AI.cpp
+	src/Algorithms/Node.h
+	src/Algorithms/Node.cpp
+	src/Algorithms/Move.h
+	src/Algorithms/Move.cpp
 	src/Algorithms/hash_table.h
 	src/Algorithms/hash_table.cpp
+	src/Algorithms/FindPaths.h
+	src/Algorithms/FindPaths.cpp
+	src/Algorithms/StandartDebut.h
+	src/Algorithms/StandartDebut.cpp
 	src/Input/Input.h
 	src/Input/Input.cpp
 	src/GLPref/GLPref.h

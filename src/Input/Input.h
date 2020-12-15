@@ -6,11 +6,11 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
-#include "../Game/Figure.h"
 
+#include "../Game/Figure.h"
 #include "../Game/GObject.h"
 
-class Input
+class Input final
 {
 public:
 	static void SetCallBacks(GLFWwindow* window);

@@ -1,19 +1,24 @@
-#include "../GLPref/GLPref.h"
+#define Debut_value Game::ai.Debut->childs.front()->value
+
 #include "Game.h"
+#include "../GLPref/GLPref.h"
+
 #include "../Resources/ResourceManager.h"
 #include "../Renderer/ShaderProgram.h"
 #include "../Renderer/Texture2D.h"
 #include "../Renderer/Sprite.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 #include<glm/vec2.hpp>
+#include<glm/vec3.hpp>
 #include<glm/mat4x4.hpp>
 
 #include <iostream>
 
 Game::Game()
-	: ECurrentGameState(EGameState::Active)
 {
-	//0 - free slot, 2 - black figure, 1 - white figure, 3 - black_target, 4 - white_target
+	Game::ECurrentGameFase = Game::EGameFase::Debut;
+	//0 - free slot,  1 - white figure, 2 - black figure
 	int BoardGraph[8][8] =
 	{
 	0,0,0,0,0,2,2,2,
@@ -26,16 +31,40 @@ Game::Game()
 	1,1,1,0,0,0,0,0
 	};
 
+	int Zones[8][8] =
+	{
+	0,0,0,0,-100,-200,-300,-400,
+	0,0,5,5,-100,-200,-300,-300,
+	0,0,10,5,5,-100,-200,-200,
+	0,0,11,10,5,5,-100,-100,
+	0,0,11,10,10,5,5,0,
+	0,0,0,11,11,10,5,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0
+	};
+
+	int visited[8][8] =
+	{
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0
+	};
+
+	this->Zones = new int* [8];
 	this->BoardGraph = new int* [8];
+	this->TargetGraph = new int* [8];
+	this->visited = new bool* [8];
 	for (int i = 0; i < 8; ++i)
 	{
 		this->BoardGraph[i] = new int[8];
-	}
-
-	this->TargetGraph = new int* [8];
-	for (int i = 0; i < 8; ++i)
-	{
 		this->TargetGraph[i] = new int[8];
+		this->Zones[i] = new int[8];
+		this->visited[i] = new bool[8];
 	}
 
 	for (int i = 0; i < 8; ++i)
@@ -44,9 +73,10 @@ Game::Game()
 		{
 			TargetGraph[i][j] = BoardGraph[i][j];
 			this->BoardGraph[i][j] = BoardGraph[i][j];
+			this->Zones[i][j] = Zones[i][j];
+			this->visited[i][j] = visited[i][j];
 		}
 	}
-	keys.fill(false);
 
 	MainWindow = GLPref::Mainwindow;
 }
@@ -55,21 +85,6 @@ Game::~Game()
 
 }
 
-void Game::render()
-{
-	/*for (auto it : fl_GObjects)
-	{
-		it->render();
-	}*/
-}
-void Game::Update(const uint64_t delta)
-{
-
-}
-void Game::setKey(const int key, const int action)
-{
-	keys[key] = action;
-}
 bool Game::init(const glm::ivec2& boardSize, const std::string& ExecutablePath)
 {
 	m_BoardSize = boardSize;
@@ -107,6 +122,7 @@ bool Game::init(const glm::ivec2& boardSize, const std::string& ExecutablePath)
 	SpriteShaderProgram->use();
 	SpriteShaderProgram->setInt("tex", 0);
 	SpriteShaderProgram->setMatrix4("projectionMat", projectionMatrix);
+
 	return true;
 }
 
@@ -118,4 +134,101 @@ void Game::setBoardSize(const glm::ivec2 new_BoardSize)
 glm::ivec2 Game::Get_BoardSize()
 {
 	return m_BoardSize;
+}
+
+void Game::AI::CollectMoves()
+{
+	for (auto it : figures_black)
+	{
+		um_moves.emplace(FindPaths::GetMove(it));
+	}
+}
+
+void Game::AI::CollectMoves(std::function<Node* ()> Debut)
+{
+	root = Debut();
+	this->Debut = root;
+}
+void Game::AI::Go()
+{
+	int max = 0;
+	switch (Game::ECurrentGameFase)
+	{
+	case Game::EGameFase::Debut:
+		if (Game::Moves_count_black == 0 && Game::BoardGraph[Game::ai.Debut->value.second->coordinate.x][Game::ai.Debut->value.second->coordinate.y] == 0)
+		{
+			Game::BoardGraph[Game::ai.Debut->value.first->cellposition.x][Game::ai.Debut->value.first->cellposition.y] = 0;
+			Game::ai.Debut->value.first->Translate(glm::ivec3(Game::ai.Debut->value.second->coordinate, 0));
+			Game::BoardGraph[Game::ai.Debut->value.second->coordinate.x][Game::ai.Debut->value.second->coordinate.y] = 2;
+
+			++Game::Moves_count_black;
+			Game::ECurrentFractinMove = Game::EGameFractionMove::White;
+			return;
+		}
+		if (!Game::ai.Debut->childs.empty() && Game::BoardGraph[Debut_value.second->coordinate.x][Debut_value.second->coordinate.y] == 0)
+		{
+			Game::BoardGraph[Debut_value.first->cellposition.x][Debut_value.first->cellposition.y] = 0;
+			Debut_value.first->Translate(glm::ivec3(Debut_value.second->coordinate, 0));
+			Game::BoardGraph[Debut_value.second->coordinate.x][Debut_value.second->coordinate.y] = 2;
+
+			++Game::Moves_count_black;
+			Game::ai.Debut = Game::ai.Debut->childs.front();
+			Game::ECurrentFractinMove = Game::EGameFractionMove::White;
+		}
+		else if (Game::ai.Debut->childs.empty())
+		{
+			Game::ECurrentGameFase = Game::EGameFase::Begin;
+			Game::ECurrentFractinMove = Game::EGameFractionMove::White;
+		}
+		else
+		{
+			std::list<Node*>::iterator iter = Game::ai.Debut->childs.begin();
+			while (iter != Game::ai.Debut->childs.cend())
+			{
+				if (Game::BoardGraph[(*iter)->value.second->coordinate.x][(*iter)->value.second->coordinate.y] == 0)
+				{
+					Game::BoardGraph[(*iter)->value.first->cellposition.x][(*iter)->value.first->cellposition.y] = 0;
+					(*iter)->value.first->Translate(glm::ivec3((*iter)->value.second->coordinate, 0));
+					Game::BoardGraph[(*iter)->value.second->coordinate.x][(*iter)->value.second->coordinate.y] = 2;
+
+					++Game::Moves_count_black;
+					Game::ai.Debut = *iter;
+					Game::ECurrentFractinMove = Game::EGameFractionMove::White;
+					break;
+				}
+				++iter;
+			}
+			if (iter == Game::ai.Debut->childs.cend())
+			{
+				Game::ECurrentGameFase = Game::EGameFase::Begin;
+				Game::ECurrentFractinMove = Game::EGameFractionMove::White;
+			}
+		}
+		break;
+	case Game::EGameFase::Begin:
+		ai.CollectMoves();
+		Figure* figure;
+		for (auto it : um_moves)
+		{
+			if (it.second->value > max)
+			{
+				max = it.second->value;
+				figure = it.first;
+			}
+		}
+		Game::BoardGraph[figure->cellposition.x][figure->cellposition.y] = 0;
+		Game::BoardGraph[um_moves[figure]->coordinate.x][um_moves[figure]->coordinate.y] = 2;
+		figure->Translate(glm::vec3(um_moves[figure]->coordinate, 0));
+
+		++Game::Moves_count_black;
+		Game::ECurrentFractinMove = Game::EGameFractionMove::White;
+		figure = nullptr;
+		Game::ai.General_cost = 0;
+		break;
+	case Game::EGameFase::Mid:
+		break;
+	case Game::EGameFase::End:
+		break;
+	}
+	
 }

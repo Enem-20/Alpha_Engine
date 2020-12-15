@@ -1,17 +1,18 @@
 #include "Input.h"
-#include "glm/vec2.hpp"
-#include <iostream>
 #include "../Game/Game.h"
 
+#include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
+#include "glm/vec2.hpp"
 size_t cell_x;
 size_t cell_y;
 unsigned int g_board_left_offset = 0;
 unsigned int g_board_bottom_offset = 0;
 glm::ivec2 g_MainWindow_size(1080, 1080);
 glm::ivec2 g_BoardSize(g_MainWindow_size);
+
+
 
 void Input::glfwMouseCallBack(GLFWwindow* window, int button, int action, int mods)
 {
@@ -65,7 +66,6 @@ void Input::glfwKeyCallBack(GLFWwindow* window, int key, int scancode, int actio
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
-	Game::setKey(key, action);
 }
 
 void Input::SetCallBacks(GLFWwindow* window)
@@ -77,46 +77,43 @@ void Input::SetCallBacks(GLFWwindow* window)
 
 void Input::OnClick()
 {
-	//if (Game::BoardGraph[cell_x][cell_y] == 1)
-	//{
-	//	for (auto it : Game::figures_black)
-	//	{
-	//		if (it->cellposition.x == cell_x && it->cellposition.y == cell_y)
-	//		{
-	//			selected_object = it;
-	//			it->Search_path(glm::ivec2(cell_x, cell_y), 1);
-	//		}
-	//	}
-	//}
-	if (Game::BoardGraph[cell_x][cell_y] == 1)
+	if (Game::ECurrentFractinMove == Game::EGameFractionMove::White)
 	{
-		if (selected_object != nullptr)
+		if (Game::BoardGraph[cell_x][cell_y] == 1)
+		{
+			if (selected_object != nullptr)
+			{
+				for (auto it : selected_object->allowedCell)
+				{
+					Game::BoardGraph[it->cellposition.x][it->cellposition.y] = 0;
+				}
+				selected_object->allowedCell.clear();
+			}
+			for (Figure* it : Game::figures_white)
+			{
+				if (it->cellposition.x == cell_x && it->cellposition.y == cell_y)
+				{
+					selected_object = it;
+					it->Search_path(glm::ivec2(cell_x, cell_y), 1);
+				}
+			}
+		}
+		else if (Game::BoardGraph[cell_x][cell_y] == 3)
 		{
 			for (auto it : selected_object->allowedCell)
 			{
 				Game::BoardGraph[it->cellposition.x][it->cellposition.y] = 0;
 			}
+			Game::BoardGraph[cell_x][cell_y] = selected_object->fraction;
+			Game::BoardGraph[selected_object->cellposition.x][selected_object->cellposition.y] = 0;
+			selected_object->Translate(glm::vec3(cell_x, cell_y, 0));
 			selected_object->allowedCell.clear();
+			selected_object = nullptr;
+			Game::ECurrentFractinMove = Game::EGameFractionMove::Black;
+			++Game::Moves_count_white;
+
+			Game::ai.Go();
+			//Game::ai.CollectMoves();
 		}
-		for (Figure* it : Game::figures_white)
-		{
-			if (it->cellposition.x == cell_x && it->cellposition.y == cell_y)
-			{
-				selected_object = it;
-				it->Search_path(glm::ivec2(cell_x, cell_y), 1);
-			}
-		}
-	}
-	else if (Game::BoardGraph[cell_x][cell_y] == 3)
-	{
-		for (auto it : selected_object->allowedCell)
-		{
-			Game::BoardGraph[it->cellposition.x][it->cellposition.y] = 0;
-		}
-		Game::BoardGraph[cell_x][cell_y] = selected_object->fraction;
-		Game::BoardGraph[selected_object->cellposition.x][selected_object->cellposition.y] = 0;
-		selected_object->Translate(glm::vec3(cell_x, cell_y, 0));
-		selected_object->allowedCell.clear();
-		selected_object = nullptr;
 	}
 }

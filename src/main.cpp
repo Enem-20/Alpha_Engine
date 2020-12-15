@@ -16,6 +16,7 @@
 #include "Game/Game.h"
 #include "Game/GObject.h"
 #include "Game/Desk.h"
+#include "Algorithms/StandartDebut.h"
 
 //GLfloat points[] =
 //{
@@ -64,6 +65,7 @@ int main(int argc, char** argv)
 
 		int it_Figures_black = 0;
 		int it_Figures_white = 0;
+
 		for (int i = 0; i < 8; ++i)
 		{
 			for (int j = 0; j < 8; ++j)
@@ -72,17 +74,19 @@ int main(int argc, char** argv)
 				{
 					Game::figures_white[it_Figures_white]->Translate(glm::vec3(i, j, 0));
 					Game::figures_white[it_Figures_white]->cellposition = glm::vec2(i, j);
+					Game::white_home[it_Figures_white] = glm::ivec2(i, j);
 					++it_Figures_white;
 				}
 				else if (Game::BoardGraph[i][j] == 2)
 				{
 					Game::figures_black[it_Figures_black]->Translate(glm::vec3(i, j, 0));
 					Game::figures_black[it_Figures_black]->cellposition = glm::vec2(i, j);
+					Game::black_home[it_Figures_black] = glm::ivec2(i, j);
 					++it_Figures_black;
 				}
 			}
 		}
-
+		Game::ai.CollectMoves(StandartDebut);
 		while (!glfwWindowShouldClose(Game::MainWindow))
 		{
 			glClear(GL_COLOR_BUFFER_BIT);
