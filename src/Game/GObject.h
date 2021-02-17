@@ -3,6 +3,8 @@
 #include "../Renderer/Sprite.h"
 #include "../Renderer/ShaderProgram.h"
 
+#include <functional>
+
 class GObject
 {
 public:
@@ -30,5 +32,7 @@ protected:
 	glm::mat4 model;
 	std::shared_ptr<Renderer::Sprite> sprite;
 	std::shared_ptr<Renderer::ShaderProgram> m_ShaderProgram;
+
+	//std::function<void()> updater;
 };
 
