@@ -33,7 +33,6 @@
 
 //#include "LuaBridge/LuaBridge.h"
 
-
 #include "../Lua/lua/src/lua.hpp"
 
 int main(int argc, char** argv)
@@ -42,7 +41,6 @@ int main(int argc, char** argv)
 	lua_State* L = luaL_newstate();
 	luaL_openlibs(L);
 	luaL_dofile(L, "script.lua");
-	
 
 	glm::ivec2 g_MainWindow_size(1080, 1080);
 	glm::ivec2 g_BoardSize(g_MainWindow_size);
@@ -55,16 +53,16 @@ int main(int argc, char** argv)
 		Game::desk = new Desk;
 		Game::desk->SetSprite("sprite_Desk", "Desk", "SpriteShader", Game::m_BoardSize.x, Game::m_BoardSize.y, "");
 
-		for (int it = 0; it < 9; ++it)
-		{
-			Game::figures_black[it] = new Figure;
-			Game::figures_white[it] = new Figure;
+		//for (int it = 0; it < 9; ++it)
+		//{
+		//	Game::figures_black[it] = new Figure;
+		//	Game::figures_white[it] = new Figure;
 
-			Game::figures_black[it]->SetSprite("Figure_black", "Figures", "SpriteShader", 135, 135, "black_pawn");
-			Game::figures_black[it]->fraction = 2;
-			Game::figures_white[it]->SetSprite("Figure_white", "Figures", "SpriteShader", 135, 135, "white_pawn");
-			Game::figures_white[it]->fraction = 1;
-		}
+		//	Game::figures_black[it]->SetSprite("Figure_black", "Figures", "SpriteShader", 135, 135, "black_pawn");
+		//	Game::figures_black[it]->fraction = 2;
+		//	Game::figures_white[it]->SetSprite("Figure_white", "Figures", "SpriteShader", 135, 135, "white_pawn");
+		//	Game::figures_white[it]->fraction = 1;
+		//}
 
 		int it_Figures_black = 0;
 		int it_Figures_white = 0;
@@ -75,16 +73,23 @@ int main(int argc, char** argv)
 			{
 				if (Game::BoardGraph[i][j] == 1)
 				{
-					Game::figures_white[it_Figures_white]->Translate(glm::vec3(i, j, 0));
-					Game::figures_white[it_Figures_white]->cellposition = glm::vec2(i, j);
+					Game::figures_white[glm::ivec2(i, j)] = new Figure;
+					Game::figures_white[glm::ivec2(i, j)]->SetSprite("Figure_white", "Figures", "SpriteShader", 135, 135, "white_pawn");
+					Game::figures_white[glm::ivec2(i, j)]->fraction = 1;
+
+					Game::figures_white[glm::ivec2(i, j)]->Translate(glm::vec3(i, j, 0));
+					Game::figures_white[glm::ivec2(i, j)]->cellposition = glm::vec2(i, j);
 					Game::white_home[it_Figures_white] = glm::ivec2(i, j);
 					++it_Figures_white;
 				}
 				else if (Game::BoardGraph[i][j] == 2)
 				{
-					Game::figures_black[it_Figures_black]->Translate(glm::vec3(i, j, 0));
-					Game::figures_black[it_Figures_black]->cellposition = glm::vec2(i, j);
-					Game::black_home[it_Figures_black] = glm::ivec2(i, j);
+					Game::figures_black[glm::ivec2(i, j)] = new Figure;
+					Game::figures_black[glm::ivec2(i, j)]->SetSprite("Figure_black", "Figures", "SpriteShader", 135, 135, "black_pawn");
+					Game::figures_black[glm::ivec2(i, j)]->fraction = 2;
+
+					Game::figures_black[glm::ivec2(i, j)]->Translate(glm::vec3(i, j, 0));
+					Game::figures_black[glm::ivec2(i, j)]->cellposition = glm::vec2(i, j);
 					++it_Figures_black;
 				}
 			}
@@ -97,10 +102,13 @@ int main(int argc, char** argv)
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			Game::desk->render();
-			for (int it = 0; it < 9; ++it)
+			for (auto it_black : Game::figures_black)
 			{
-				Game::figures_black[it]->render();
-				Game::figures_white[it]->render();
+				it_black.second->render();
+			}
+			for (auto it_white : Game::figures_white)
+			{
+				it_white.second->render();
 			}
 
 			glfwSwapBuffers(Game::MainWindow);

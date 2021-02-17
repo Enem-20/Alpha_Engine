@@ -6,91 +6,57 @@
 #include "../Game/Figure.h"
 #include "../Algorithms/Move.h"
 
-Node* StandartDebut()
+std::queue<std::pair<Figure*, Move*>> StandartDebut()
 {
-	Node* root;
-	Node* tree;
+	std::queue<std::pair<Figure*, Move*>> result;
 
-	Figure* figure;
 
-	for (auto it : Game::figures_black)
+	//auto comp = [](Figure* first, Figure* second)
+	//{
+	//	return(first->cellposition.x < second->cellposition.x && first->cellposition.y > second->cellposition.y);
+	//};
+	//std::priority_queue<Figure*, decltype(comp)> line;
+	for (int i = 0; i < 2; ++i)
 	{
-		if (it->cellposition.x == 2 && it->cellposition.y == 6)
+		Game::ai.outside_layer.push_back(Game::figures_black[glm::ivec2(i, 5)]);
+	}
+	for (int i = 6; i < 8; ++i)
+	{
+		Game::ai.outside_layer.push_back(Game::figures_black[glm::ivec2(2, i)]);
+	}
+
+	for (int i = 0; i < 2; ++i)
+	{
+		for (int j = 6; j < 8; ++j)
 		{
-			figure = it;
+			Game::ai.delivery.push_back(Game::figures_black[glm::ivec2(i, j)]);
 		}
 	}
 
-	root = tree = new Node(std::pair<Figure*, Move*>(figure, new Move(glm::ivec2(2, 4))));
 
-	for (auto it : Game::figures_black)
-	{
-		if (it->cellposition.x == 1 && it->cellposition.y == 6)
-		{
-			figure = it;
-		}
-	}
+	int lines = 0;
+	int columns = 7;
 
-	tree->childs.push_back(new Node(std::pair<Figure*, Move*>(figure, new Move(glm::ivec2(3, 4)))));
-	tree = tree->childs.front();
-	for (auto it : Game::figures_black)
+	auto it_beg = Game::ai.outside_layer.begin();
+	auto it_end = --Game::ai.outside_layer.end();
+	for (int i = 0; i < 2; ++i)
 	{
-		if (it->cellposition.x == 2 && it->cellposition.y == 5)
-		{
-			figure = it;
-		}
+		result.push(std::pair<Figure*, Move*>(*(it_beg), new Move(glm::ivec2(lines++, 4))));
+		result.push(std::pair<Figure*, Move*>(*(it_end), new Move(glm::ivec2(3, columns--))));
+		++it_beg;
+		--it_end;
 	}
-	
-	tree->childs.push_back(new Node(std::pair<Figure*, Move*>(figure, new Move(glm::ivec2(3,5)))));
-	tree = tree->childs.front();
-	for (auto it : Game::figures_black)
-	{
-		if (it->cellposition.x == 0 && it->cellposition.y == 5)
-		{
-			figure = it;
-		}
-	}
-	Figure* buf = figure;
-	tree->childs.push_back(new Node(std::pair<Figure*, Move*>(figure, new Move(glm::ivec2(2, 3)))));
-	tree = tree->childs.front();
-	for (auto it : Game::figures_black)
-	{
-		if (it->cellposition.x == 0 && it->cellposition.y == 7)
-		{
-			figure = it;
-		}
-	}
-	tree->childs.push_back(new Node(std::pair<Figure*, Move*>(figure, new Move(glm::ivec2(4, 5)))));
-	tree = tree->childs.front();
-	tree->childs.push_back(new Node(std::pair<Figure*, Move*>(buf, new Move(glm::ivec2(2, 2)))));
+	result.push(std::pair<Figure*, Move*>(Game::ai.outside_layer.front(), new Move(glm::ivec2(0, 3))));
+	result.push(std::pair<Figure*, Move*>(Game::ai.outside_layer.back(), new Move(glm::ivec2(4, 7))));
 
-	///////////////////////////////////////////////////////////////////////////////////////
-
-	tree->childs.push_back(new Node(std::pair<Figure*, Move*>(figure, new Move(glm::ivec2(5, 5)))));
-	Node* save = tree;
-	tree = tree->childs.back();
-	for (auto it : Game::figures_black)
+	lines = 2;
+	columns = 5;
+	for (int i = 0; i < 2; ++i)
 	{
-		if (it->cellposition.x == 2 && it->cellposition.y == 7)
-		{
-			figure = it;
-		}
+		result.push(std::pair<Figure*, Move*>(Game::ai.delivery.front(), new Move(glm::ivec2(0,columns))));
+		result.push(std::pair<Figure*, Move*>(Game::ai.delivery.back(), new Move(glm::ivec2(lines, 7))));
+		--columns;
+		++lines;
 	}
-	tree->childs.push_back(new Node(std::pair<Figure*, Move*>(figure, new Move(glm::ivec2(6, 5)))));
-	tree->childs.push_back(new Node(std::pair<Figure*, Move*>(figure, new Move(glm::ivec2(4, 5)))));
-	tree = save;
-	save = nullptr;
-	///////////////////////////////////////////////////////////////////////////////////////
-	tree = tree->childs.front();
-	buf = nullptr;
-	for (auto it : Game::figures_black)
-	{
-		if (it->cellposition.x == 2 && it->cellposition.y == 7)
-		{
-			figure = it;
-		}
-	}
-	tree->childs.push_back(new Node(std::pair<Figure*, Move*>(figure, new Move(glm::ivec2(2, 1)))));
-	tree->childs.push_back(new Node(std::pair<Figure*, Move*>(figure, new Move(glm::ivec2(2, 3)))));
-	return root;
+	return result;
 }

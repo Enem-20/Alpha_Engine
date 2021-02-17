@@ -13,6 +13,7 @@ public:
 	Figure();
 	
 	void render() override;
+	//void update() override;
 
 	void Search_path(glm::ivec2 start, int fraction);
 

@@ -16,8 +16,6 @@ void Figure::Search_path(glm::ivec2 start, int fraction)
 
 	q.push(start);
 
-	glm::ivec2 current;
-
 	if (start.y + 1 < 8 && Game::BoardGraph[start.x][start.y + 1] == 0)
 	{
 		Game::BoardGraph[start.x][start.y + 1] = 3;
@@ -45,56 +43,6 @@ void Figure::Search_path(glm::ivec2 start, int fraction)
 		allowedCell.push_back(new AllowedCell(glm::ivec2(start.x, start.y - 1)));
 		allowedCell.back()->SetSprite("sprite_allowed_cell", "allowed_cell", "SpriteShader", Game::m_BoardSize.x / 8u, Game::m_BoardSize.y / 8u, "");
 	}
-
-	while (!q.empty())
-	{
-		current = q.front();
-		if (current.y + 1 < 8 && (Game::BoardGraph[current.x][current.y + 1] == 2 || Game::BoardGraph[current.x][current.y + 1] == 1))
-		{
-			if (current.y + 2 < 8 && Game::BoardGraph[current.x][current.y + 2] == 0)
-			{
-				Game::BoardGraph[current.x][current.y + 2] = 3;
-				allowedCell.push_back(new AllowedCell(glm::ivec2(current.x, current.y + 2)));
-				allowedCell.back()->SetSprite("sprite_allowed_cell", "allowed_cell", "SpriteShader", Game::m_BoardSize.x / 8u, Game::m_BoardSize.y / 8u, "");
-				q.push(glm::ivec2(current.x, current.y + 2));
-			}
-		}
-
-		if (current.x + 1 < 8 && (Game::BoardGraph[current.x + 1][current.y] == 2 || Game::BoardGraph[current.x + 1][current.y] == 1))
-		{
-			if (current.x + 2 < 8 && Game::BoardGraph[current.x + 2][current.y] == 0)
-			{
-				Game::BoardGraph[current.x + 2][current.y] = 3;
-				allowedCell.push_back(new AllowedCell(glm::ivec2(current.x + 2, current.y)));
-				allowedCell.back()->SetSprite("sprite_allowed_cell", "allowed_cell", "SpriteShader", Game::m_BoardSize.x / 8u, Game::m_BoardSize.y / 8u, "");
-				q.push(glm::ivec2(current.x + 2, current.y));
-			}
-		}
-
-		if (current.x - 1 >= 0 && (Game::BoardGraph[current.x - 1][current.y] == 2 || Game::BoardGraph[current.x - 1][current.y] == 1))
-		{
-			if (current.x - 2 >= 0 && Game::BoardGraph[current.x - 2][current.y] == 0)
-			{
-				Game::BoardGraph[current.x - 2][current.y] = 3;
-				allowedCell.push_back(new AllowedCell(glm::ivec2(current.x - 2, current.y)));
-				allowedCell.back()->SetSprite("sprite_allowed_cell", "allowed_cell", "SpriteShader", Game::m_BoardSize.x / 8u, Game::m_BoardSize.y / 8u, "");
-				q.push(glm::ivec2(current.x - 2, current.y));
-			}
-		}
-
-		if (current.y - 1 >= 0 && (Game::BoardGraph[current.x][current.y - 1] == 2 || Game::BoardGraph[current.x][current.y - 1] == 1))
-		{
-			if (current.y - 2 >= 0 && Game::BoardGraph[current.x][current.y - 2] == 0)
-			{
-				Game::BoardGraph[current.x][current.y - 2] = 3;
-				allowedCell.push_back(new AllowedCell(glm::ivec2(current.x, current.y - 2)));
-				allowedCell.back()->SetSprite("sprite_allowed_cell", "allowed_cell", "SpriteShader", Game::m_BoardSize.x / 8u, Game::m_BoardSize.y / 8u, "");
-				q.push(glm::ivec2(current.x, current.y - 2));
-			}
-		}
-
-		q.pop();
-	}
 }
 
 void Figure::render()
@@ -105,3 +53,8 @@ void Figure::render()
 		it->render();
 	}
 }
+
+//void Figure::update()
+//{
+//	
+//}

@@ -1,6 +1,8 @@
 #include "GObject.h"
 #include "Game.h"
 
+#include <typeinfo>
+
 #include <../glm/glm/vec2.hpp>
 #include <../glm/glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
@@ -27,11 +29,6 @@ GObject::~GObject()
 void GObject::render()
 {
 	sprite->render(model);
-}
-
-void GObject::InstanceRender()
-{
-	sprite->InstanceRender(model);
 }
 
 void GObject::Translate(glm::vec3 position)

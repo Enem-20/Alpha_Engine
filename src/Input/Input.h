@@ -16,6 +16,9 @@ public:
 	static void SetCallBacks(GLFWwindow* window);
 
 	inline static Figure* selected_object;
+	static void AddListener();
+
+	//static glm::ivec2 Get_cell_pos_cursor();
 private:
 	static void glfwMouseCallBack(GLFWwindow* window, int button, int action, int mods);
 	static void glfwWindowSizeCallBack(GLFWwindow* window, int width, int height);
