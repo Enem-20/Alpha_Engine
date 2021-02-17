@@ -1,4 +1,16 @@
-﻿#include "Algorithms/hash_table.h"
+﻿//#define RENDERER_DX9	//DirectX 9 API
+//#define RENDERER_DX11	//DirectX 11 API
+//#define RENDERER_DX12	//DirectX 12 API
+
+#pragma comment(lib, "lua.lib")
+
+#define RENDERER_OGL	//OpenGL API
+
+//#define RENDERER_VLN	//Vulkan API
+
+//#define RENDERER_MTL	//Metal API
+
+#include "Algorithms/hash_table.h"
 
 #include <algorithm>
 
@@ -17,35 +29,26 @@
 #include "Game/GObject.h"
 #include "Game/Desk.h"
 #include "Algorithms/StandartDebut.h"
+#include "Messenger.h"
 
-//GLfloat points[] =
-//{
-//	0.0f, 50.0f, 0.0f,
-//	50.0f, -50.0f, 0.0f,
-//	-50.0f, -50.0f, 0.0f
-//};
-//
-//GLfloat colors[] =
-//{
-//	1.0f, 0.0f, 0.0f,
-//	0.0f, 1.0f, 0.0f,
-//	0.0f, 0.0f, 1.0f
-//};
-//
-//GLfloat texCoord[] =
-//{
-//	0.5f, 1.0f,
-//	1.0f, 0.0f,
-//	0.0f, 0.0f
-//};
+//#include "LuaBridge/LuaBridge.h"
+
+
+#include "../Lua/lua/src/lua.hpp"
 
 int main(int argc, char** argv)
 {
+#ifdef RENDERER_OGL
+	lua_State* L = luaL_newstate();
+	luaL_openlibs(L);
+	luaL_dofile(L, "script.lua");
+	
+
 	glm::ivec2 g_MainWindow_size(1080, 1080);
 	glm::ivec2 g_BoardSize(g_MainWindow_size);
 	GLPref::init(g_MainWindow_size);
 	{
-		
+
 		Game game;
 		Game::init(g_BoardSize, argv[0]);
 
@@ -87,6 +90,8 @@ int main(int argc, char** argv)
 			}
 		}
 		Game::ai.CollectMoves(StandartDebut);
+
+
 		while (!glfwWindowShouldClose(Game::MainWindow))
 		{
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -103,8 +108,13 @@ int main(int argc, char** argv)
 			glfwPollEvents();
 		}
 	}
+
 	ResourceManager::UnloadAllResources();
 	glfwTerminate();
+#elif RENDERER_DX9
 
+#elif RENDERER_MTL
+
+#endif
 	return 0;
 }
