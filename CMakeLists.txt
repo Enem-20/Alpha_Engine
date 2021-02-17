@@ -6,6 +6,10 @@ project(${PROJECT_NAME})
 
 add_executable(${PROJECT_NAME}
 	src/main.cpp
+	src/Messenger.h
+	src/Messenger.cpp
+	src/Helpers/casts.h
+	src/Helpers/casts.cpp
 	src/Renderer/ShaderProgram.h
 	src/Renderer/ShaderProgram.cpp
 	src/Renderer/Texture2D.cpp
@@ -53,12 +57,14 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(external/glfw)
-target_link_libraries(${PROJECT_NAME} glfw)
-
 add_subdirectory(external/glad)
-target_link_libraries(${PROJECT_NAME} glad)
+add_subdirectory(external/pugixml)
+add_subdirectory(external/Lua)
 
 include_directories(external/glm)
+include_directories(external/LuaBridge)
+
+target_link_libraries(${PROJECT_NAME} glad glfw pugixml lua_static)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 
