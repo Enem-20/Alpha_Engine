@@ -89,12 +89,12 @@ void Input::OnClick()
 				}
 				selected_object->allowedCell.clear();
 			}
-			for (Figure* it : Game::figures_white)
+			for (auto it : Game::figures_white)
 			{
-				if (it->cellposition.x == cell_x && it->cellposition.y == cell_y)
+				if (it.second->cellposition.x == cell_x && it.second->cellposition.y == cell_y)
 				{
-					selected_object = it;
-					it->Search_path(glm::ivec2(cell_x, cell_y), 1);
+					selected_object = it.second;
+					it.second->Search_path(glm::ivec2(cell_x, cell_y), 1);
 				}
 			}
 		}

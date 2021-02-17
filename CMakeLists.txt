@@ -17,6 +17,10 @@ add_executable(${PROJECT_NAME}
 	src/Resources/ResourceManager.h
 	src/Resources/ResourceManager.cpp
 	src/Resources/stb_image.h
+	src/Scene/Scene.h
+	src/Scene/Scene.cpp
+	src/Scene/Hierarchy.h
+	src/Scene/Hierarchy.cpp
 	src/Game/GObject.h
 	src/Game/GObject.cpp
 	src/Game/Desk.h
@@ -43,6 +47,11 @@ add_executable(${PROJECT_NAME}
 	src/Input/Input.cpp
 	src/GLPref/GLPref.h
 	src/GLPref/GLPref.cpp
+	src/Components/Component.h
+	src/Components/Component.cpp
+	src/Components/Physics/Collider.h
+	src/Components/Physics/Collider.cpp
+	scripts/example.lua
 	)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
@@ -58,7 +67,11 @@ target_link_libraries(${PROJECT_NAME} glfw)
 add_subdirectory(external/glad)
 target_link_libraries(${PROJECT_NAME} glad)
 
+add_subdirectory(external/Lua)
+target_link_libraries(${PROJECT_NAME} lua_static)
+
 include_directories(external/glm)
+include_directories(external/LuaBridge/Source)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 
