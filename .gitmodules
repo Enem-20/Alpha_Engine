@@ -1,0 +1,6 @@
+[submodule "Lua"]
+	path = external/Lua
+	url = https://github.com/walterschell/Lua.git
+[submodule "LuaBridge"]
+	path = external/LuaBridge
+	url = https://github.com/vinniefalco/LuaBridge.git
