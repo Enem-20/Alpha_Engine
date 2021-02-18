@@ -49,7 +49,7 @@ extern "C"
 int main(int argc, char** argv)
 {
 	lua_State* L = luaL_newstate();
-	luaL_dofile(L, "../scripts/example.lua");
+	luaL_dofile(L, "../res/scripts/example.lua");
 	luaL_openlibs(L);
 	lua_pcall(L, 0, 0, 0);
 	luabridge::LuaRef s = luabridge::getGlobal(L, "testString");

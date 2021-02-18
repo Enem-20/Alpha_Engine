@@ -51,7 +51,6 @@ add_executable(${PROJECT_NAME}
 	src/Components/Component.cpp
 	src/Components/Physics/Collider.h
 	src/Components/Physics/Collider.cpp
-	scripts/example.lua
 	)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
