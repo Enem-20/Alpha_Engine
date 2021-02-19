@@ -4,7 +4,7 @@ set(PROJECT_NAME Test2)
 
 project(${PROJECT_NAME})
 
-add_executable(${PROJECT_NAME}
+add_library(${PROJECT_NAME} STATIC
 	src/main.cpp
 	src/Renderer/ShaderProgram.h
 	src/Renderer/ShaderProgram.cpp
@@ -51,7 +51,6 @@ add_executable(${PROJECT_NAME}
 	src/Components/Component.cpp
 	src/Components/Physics/Collider.h
 	src/Components/Physics/Collider.cpp
-	scripts/example.lua
 	)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
