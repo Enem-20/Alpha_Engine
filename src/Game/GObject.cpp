@@ -16,6 +16,8 @@ GObject::GObject()
 	this->model = model;
 	glm::vec3 position(0.f);
 	this->position = position;
+
+	//updater = update;
 }
 
 GObject::~GObject()

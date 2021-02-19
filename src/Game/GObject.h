@@ -6,6 +6,8 @@
 
 #include <vector>
 
+#include <functional>
+
 class GObject
 {
 public:
@@ -41,6 +43,8 @@ protected:
 	glm::mat4 model;
 	std::shared_ptr<Renderer::Sprite> sprite;
 	std::shared_ptr<Renderer::ShaderProgram> m_ShaderProgram;
+
+	//std::function<void()> updater;
 };
 
 //template<class Ty_Component>
