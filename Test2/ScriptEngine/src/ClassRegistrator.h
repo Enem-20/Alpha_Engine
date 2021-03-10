@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ScriptEngine.h"
+#include "../Engine/src/Helpers/vector3.h"
+#include "../Engine/src/Helpers/mat3.h"
 
 namespace ScriptEngine
 {
@@ -18,7 +20,7 @@ namespace ScriptEngine
 	private:
 		static void Reg(std::shared_ptr<GObject> object/*, sol::table Lobject*/);
 		static void Reg(std::shared_ptr<RenderEngine::Sprite> sprite, sol::table Lsprite);
-		static void Reg(glm::vec3 _vec3, sol::table* Lvec3 = nullptr);
+		static void Reg_vec3();
 	};
 
 	template<class T>
