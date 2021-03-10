@@ -22,5 +22,19 @@ namespace Helpers
 		{
 			return std::make_shared<vector2>(this->x - _vector2->x, this->y - _vector2->y);
 		}
+
+		std::shared_ptr<vector2> operator*=(float scalar)
+		{
+			this->x *= scalar;
+			this->y *= scalar;
+
+		}
+		std::shared_ptr<vector2> operator*=(const std::shared_ptr<vector2> v)
+		{
+			this->x *= v->x;
+			this->y *= v->y;
+
+			return *this;
+		}
 	};
 }
