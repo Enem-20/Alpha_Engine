@@ -1,55 +1,70 @@
 #include "ClassRegistrator.h"
 
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/mat3x3.hpp>
+
 #include <typeinfo>
 
 namespace ScriptEngine
 {
-	void ClassRegistrator::Reg(std::shared_ptr<GObject> object/*, sol::table Lobject*/)
+	void ClassRegistrator::Reg_GLMvec3(sol::table* Lnamespace)
 	{
-		//Reg(object->position);
-		/*sol::usertype<std::shared_ptr<GObject>> usertype_table = ScriptProcessor::L.new_usertype<std::shared_ptr<GObject>>("GObject",
-			"Constructor", sol::constructors<GObject()>(),
-			"Translate", &GObject::Translate,
-			"Rotate", &GObject::Rotate,
-			"render", &GObject::render,
-			"sprite", sol::property(&GObject::GetSprite, &GObject::SetSprite),
-			"position", &GObject::Position,
-			"cellposition", &GObject::CellPosition
-			);*/
-		//ScriptProcessor::L["object_test"] = object;
-	}
-	//
-	//	void ClassRegistrator::Reg(std::shared_ptr<RenderEngine::Sprite> sprite, sol::table Lsprite)
-	//	{
-	//		
-	//	}
-	//
-	//void ClassRegistrator::Reg(glm::vec3 _vec3, sol::table* Lvec3)
-	//{
-	//	*Lvec3 = ScriptProcessor::L[typeid(glm::vec3).name()].get_or_create<sol::table>();
-	//	Lvec3->new_usertype <glm::vec3>(" vec3",
-	//		sol::constructors <glm::vec3(), glm::vec3(float), glm::vec3(float, float, float)>(),
-	//		"x", &glm::vec3::x,
-	//		"y", &glm::vec3::y,
-	//		"z", &glm::vec3::z
-	//		//"__add", GLMAddVecFunc <glm::vec2, float >(),
-	//		//"__sub", GLMSubVecFunc <glm::vec2, float >(),
-	//		//"__mul", GLMMulVecFunc <glm::vec2, float >(),
-	//		//"__div", GLMDivVecFunc <glm::vec2, float >(),
-	//		//"__tostring", GLMToStringFunc <glm::vec2>()
-	//		);
-	//}
+		Lnamespace->new_usertype<glm::vec3>("vec3"
+			, sol::constructors<glm::vec3(), glm::vec3(float, float, float), glm::vec3(glm::vec2, float), glm::vec3(float, glm::vec2), glm::vec3(glm::vec3)>()
 
-	void ClassRegistrator::Reg_vec3()
-	{
-		sol::usertype<Helpers::vector3> vector_table = ScriptProcessor::L.new_usertype<Helpers::vector3>("vector3"
-			, "Constructor", sol::constructors<Helpers::vector3(), Helpers::vector3(float, float, float), Helpers::vector3(Helpers::vector2&, float)>()
-			/*, "__add", &Helpers::vector3::operator+=
-			, "__sub", &Helpers::vector3::operator-=
-			, "__mul", &Helpers::vector3::operator*=*/
-			, "x", &Helpers::vector3::x
-			, "y", &Helpers::vector3::y
-			, "z", &Helpers::vector3::z
+			, sol::meta_function::addition, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator+)
+			, sol::meta_function::subtraction, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator-)
+			, sol::meta_function::multiplication, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator*)
+			//, sol::meta_function::bitwise_xor, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator^)
+			, sol::meta_function::division, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator/)
+
+			, "x", &glm::vec3::x
+			, "y", &glm::vec3::y
+			, "z", &glm::vec3::z
 			);
+	}
+
+	void ClassRegistrator::Reg_GLMvec2(sol::table* Lnamespace)
+	{
+		Lnamespace->new_usertype<glm::vec2>("vec2"
+			, sol::constructors<glm::vec2(), glm::vec2(float, float), glm::vec2(glm::vec2)>()
+
+			, sol::meta_function::addition, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(glm::operator+)
+			, sol::meta_function::subtraction, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(glm::operator-)
+			, sol::meta_function::multiplication, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(glm::operator*)
+			//, sol::meta_function::bitwise_xor, sol::resolve<glm::vec2(const glm::vec2&, const float)>(glm::operator^)
+			, sol::meta_function::division, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(glm::operator/)
+
+			, "x", &glm::vec2::x
+			, "y", &glm::vec2::y
+			);
+	}
+
+	void ClassRegistrator::Reg_GLMMat3(sol::table* Lnamespace)
+	{
+		Lnamespace->new_usertype<glm::mat3>("mat3"
+			, sol::constructors<glm::mat3(), glm::mat3(float), glm::mat3(const glm::mat3&), glm::mat3(glm::vec3&, glm::vec3&, glm::vec3&)>()
+
+			, sol::meta_function::addition, sol::resolve<glm::mat3(const glm::mat3&, const glm::mat3&)>(glm::operator+)
+			, sol::meta_function::subtraction, sol::resolve<glm::mat3(const glm::mat3&, const glm::mat3&)>(glm::operator-)
+			, sol::meta_function::multiplication, sol::resolve<glm::mat3(const glm::mat3&, const glm::mat3&)>(glm::operator*)
+			//, sol::meta_function::bitwise_xor, sol::resolve<glm::vec2(const glm::vec2&, const float)>(glm::operator^)
+			, sol::meta_function::division, sol::resolve<glm::mat3(const glm::mat3&, const glm::mat3&)>(glm::operator/)
+			);
+	}
+
+	int ClassRegistrator::Registration(sol::table* Lnamespace)
+	{
+		if (!IsReg)
+		{
+			Reg_GLMvec2(Lnamespace);
+			Reg_GLMvec3(Lnamespace);
+			Reg_GLMMat3(Lnamespace);
+			
+			return 0;
+		}
+
+		return -1;
 	}
 }

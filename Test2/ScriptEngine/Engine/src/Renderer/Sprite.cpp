@@ -42,7 +42,8 @@ namespace RenderEngine
 
 		GLuint indices[] =
 		{
-			0,1,2,0
+			0,1,2,
+			2,3,0
 		};
 
 

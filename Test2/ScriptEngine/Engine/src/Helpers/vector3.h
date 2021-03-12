@@ -24,6 +24,16 @@ namespace Helpers
 		{}
 		float x,y,z;
 
+		float GetX()
+		{
+			return x;
+		}
+
+		void SetX(float new_x)
+		{
+			x = new_x;
+		}
+
 		vector3& operator+=(const vector3& _vector2);
 									
 		vector3& operator-=(const vector3& _vector2);
