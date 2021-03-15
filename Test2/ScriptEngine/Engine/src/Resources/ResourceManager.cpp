@@ -7,6 +7,8 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <stack>
+#include <filesystem>
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
@@ -17,6 +19,7 @@ ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
 ResourceManager::TexturesMap ResourceManager::m_textures;
 ResourceManager::SpritesMap ResourceManager::m_sprites;
 ResourceManager::AnimatedSpritesMap ResourceManager::m_AnimatedSprites;
+ResourceManager::LuaScriptsUMap ResourceManager::m_LuaScripts;
 std::string ResourceManager::m_path;
 
 void ResourceManager::SetExecutablePath(const std::string& executablePath)
@@ -247,7 +250,36 @@ std::shared_ptr<RenderEngine::Texture2D> ResourceManager::loadTextureAtlas(std::
 	return Texture;
 }
 
-std::string ResourceManager::loadLuaScripts(const std::string& relativepath)
+std::string ResourceManager::loadLuaScript(const std::string& relativePath)
 {
-	return m_path + "/" + relativepath;
+	return m_path + "/" + relativePath;
 }
+
+void ResourceManager::loadLuaScripts()
+{
+	for (const auto& it : std::filesystem::recursive_directory_iterator(m_path))
+	{
+		auto _filename = it.path().filename();
+		if (std::filesystem::is_regular_file(it.status()) && (it.path().extension() == ".lua"))
+		{
+			std::ifstream f;
+			f.open(m_path + "/" + it.path().relative_path().string(), std::ios::in);
+
+			if (!f.is_open())
+			{
+				std::cerr << "failed to open file: " << it.path().relative_path().string() << std::endl;
+				system("pause");
+			}
+
+			std::stringstream buffer;
+			buffer << f.rdbuf();
+			m_LuaScripts.emplace(it.path().filename().string(), buffer.str());
+			f.close();
+		}
+	}
+}
+
+//void ResourceManager::loadLuaScripts(const std::string& relativePath)
+//{
+//
+//}

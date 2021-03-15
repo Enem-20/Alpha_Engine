@@ -36,6 +36,7 @@ void GObject::Translate(glm::vec3 position)
 
 	cellposition = position;
 	model = glm::translate(model, glm::vec3(position));
+	this->position = position;
 	//sprite->setPosition(position);
 }
 

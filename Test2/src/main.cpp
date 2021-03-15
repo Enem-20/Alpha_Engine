@@ -29,17 +29,15 @@ int main(int argc, char** argv)
 	std::string path = {argv[0]};
 	object_test->position = glm::vec3(0, 1, 2);
 	ResourceManager::SetExecutablePath(argv[0]);
+	ResourceManager::loadLuaScripts();
 	sol::table Lobject = ScriptEngine::ScriptProcessor::L["Helpers"].get_or_create<sol::table>();
-	/*ScriptEngine::ClassRegistrator::Reg_vec2(&Lobject);
-	ScriptEngine::ClassRegistrator::Reg_vec3(&Lobject);*/
+
 	ScriptEngine::ClassRegistrator::Registration(&Lobject);
-	ScriptEngine::ScriptProcessor::L.script_file(ResourceManager::loadLuaScripts("res/scripts/function_test.lua"));
+	ScriptEngine::ScriptProcessor::L.script_file(ResourceManager::loadLuaScript("res/scripts/GObject_test.lua"));
 
 	std::shared_ptr<int> integer;
 
 	std::cout << typeid(integer).name();
-	/*int same = L["multiply"](1, 5);
-	std::cout << "Result: " << same;*/
 
 
 #ifdef OGL

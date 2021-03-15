@@ -2,6 +2,7 @@
 
 #include <string>
 #include <memory>
+#include <unordered_map>
 #include <map>
 #include <vector>
 
@@ -53,7 +54,9 @@ public:
 														  std::vector<std::string> subTextures,
 														  const unsigned int subTextureWidth,
 														  const unsigned int subTextureHeight);
-	static std::string loadLuaScripts(const std::string& relativepath);
+	static std::string loadLuaScript(const std::string& relativePath);
+	static void loadLuaScripts();
+	//static void loadLuaScripts(const std::string& relativePath);
 
 private:
 	static std::string getFileString(const std::string& relativeFilePath);
@@ -71,4 +74,7 @@ private:
 	static AnimatedSpritesMap m_AnimatedSprites;
 
 	static std::string m_path;
+
+	typedef std::unordered_map<std::string, std::string> LuaScriptsUMap;
+	static LuaScriptsUMap m_LuaScripts;
 };

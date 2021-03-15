@@ -89,6 +89,16 @@ namespace RenderEngine
 
 		return *this;
 	}
+
+	ShaderProgram::ShaderProgram(ShaderProgram& shaderProgram)
+	{
+		m_ID = shaderProgram.m_ID;
+		m_isCompiled = shaderProgram.m_isCompiled;
+
+		shaderProgram.m_ID = 0;
+		shaderProgram.m_isCompiled = false;
+	}
+
 	ShaderProgram::ShaderProgram(ShaderProgram&& shaderProgram) noexcept
 	{
 		m_ID = shaderProgram.m_ID;

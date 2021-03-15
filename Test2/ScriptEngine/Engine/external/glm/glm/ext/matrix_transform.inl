@@ -14,6 +14,14 @@ namespace glm
 		return Result;
 	}
 
+	/*template<qualifier Q>*/
+	/*GLM_FUNC_QUALIFIER mat4 translate_lua(mat4 const& m, vec3 const& v)
+	{
+		mat4 Result(m);
+		Result[3] = m[0] * v[0] + m[1] * v[1] + m[2] * v[2] + m[3];
+		return Result;
+	}*/
+
 	template<typename T, qualifier Q>
 	GLM_FUNC_QUALIFIER mat<4, 4, T, Q> rotate(mat<4, 4, T, Q> const& m, T angle, vec<3, T, Q> const& v)
 	{

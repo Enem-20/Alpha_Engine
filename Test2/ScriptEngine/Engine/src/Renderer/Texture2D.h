@@ -7,10 +7,16 @@
 #include <iostream>
 #include <map>
 
+namespace ScriptEngine
+{
+	class ClassRegistrator;
+}
+
 namespace RenderEngine
 {
 	class Texture2D
 	{
+		friend ScriptEngine::ClassRegistrator;
 	public:
 		struct SubTexture2D
 		{
@@ -25,14 +31,14 @@ namespace RenderEngine
 				: leftBottomUV(0.f)
 				, rightTopUV(1.f)
 			{}
-				
+
 		};
 
 		Texture2D(const GLuint width, const GLuint height,
-				  const unsigned char* data, const unsigned int channels = 4, 
-				  const GLenum filter = GL_LINEAR, const GLenum wrapMode = GL_CLAMP_TO_EDGE);
+			const unsigned char* data, const unsigned int channels = 4,
+			const GLenum filter = GL_LINEAR, const GLenum wrapMode = GL_CLAMP_TO_EDGE);
 		Texture2D() = delete;
-		Texture2D(const Texture2D&) = delete;
+		Texture2D(Texture2D& texture2d);
 		Texture2D& operator=(const Texture2D&) = delete;
 		Texture2D& operator=(Texture2D&& texture2d) noexcept;
 		Texture2D(Texture2D&& texture2d) noexcept;

@@ -34,8 +34,8 @@ public:
 	glm::vec3 position;
 	glm::ivec2 cellposition;
 
-	virtual glm::vec3& Position() { std::cout << std::endl << "Position" << std::endl; return position; }
-	virtual glm::ivec2& CellPosition() { return cellposition; }
+	/*virtual glm::vec3& Position() { std::cout << std::endl << "Position" << std::endl; return position; }
+	virtual glm::ivec2& CellPosition() { return cellposition; }*/
 protected:
 	glm::mat4 model;
 	std::shared_ptr<RenderEngine::Sprite> sprite;

@@ -48,6 +48,16 @@ namespace RenderEngine
 
 		return *this;
 	}
+
+	Texture2D::Texture2D(Texture2D& texture2d)
+	{
+		m_ID = texture2d.m_ID;
+		texture2d.m_ID = 0;
+		m_mode = texture2d.m_mode;
+		m_width = texture2d.m_width;
+		m_height = texture2d.m_height;
+	}
+
 	Texture2D::Texture2D(Texture2D&& texture2d) noexcept
 	{
 		m_ID = texture2d.m_ID;
