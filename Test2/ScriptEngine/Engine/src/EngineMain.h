@@ -4,7 +4,6 @@
 #include "Game/Game.h"
 #include "Game/GObject.h"
 #include "Game/Desk.h"
-//#include "Algorithms/StandartDebut.h"
 
 namespace Engine
 {

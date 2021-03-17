@@ -6,22 +6,18 @@
 #include <vector>
 #include <iostream>
 #include <functional>
-namespace ScriptEngine
-{
-	class ClassRegistrator;
-}
+
 class GObject
 {
-	friend ScriptEngine::ClassRegistrator;
+	friend class Serializer;
 public:
-	GObject();
+	GObject(std::string name = "");
 	virtual ~GObject();
 	void Translate(const glm::vec3 position);
 
 	void Rotate(const float rotation);
 
 	virtual void render();
-	//virtual void update() = 0;
 
 	virtual void SetSprite(const std::string& spriteName,
 		const std::string& textureName,
@@ -33,9 +29,7 @@ public:
 
 	glm::vec3 position;
 	glm::ivec2 cellposition;
-
-	/*virtual glm::vec3& Position() { std::cout << std::endl << "Position" << std::endl; return position; }
-	virtual glm::ivec2& CellPosition() { return cellposition; }*/
+	std::string name;
 protected:
 	glm::mat4 model;
 	std::shared_ptr<RenderEngine::Sprite> sprite;

@@ -4,6 +4,7 @@
 #include "Game.h"
 
 Desk::Desk()
+	: GObject("")
 {
 	model = glm::scale(model, glm::vec3(1080, 1080, 0));
 	Game::desk = this;

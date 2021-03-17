@@ -175,15 +175,18 @@ namespace ScriptEngine
 		//object::get<glm::mat<4,4, float>>(&glm::translate);
 	/*object->set_function("GLMtranslate", &glm::translate_lua);*/
 		object->new_usertype<GObject>("GObject"
-			, sol::constructors<GObject()>()
+			, sol::constructors<GObject(std::string)>()
 
 			, "Translate", &GObject::Translate
 			, "Rotate", &GObject::Rotate
 			, "render", &GObject::render
 			, "SetSprite", &GObject::SetSprite
 			, "GetSprite", &GObject::GetSprite
+
 			, "position", &GObject::position
-			, "cellposition", &GObject::cellposition);
+			, "cellposition", &GObject::cellposition
+			, "name", &GObject::name);
+			
 	}
 
 	int ClassRegistrator::Registration(sol::table* Lnamespace)

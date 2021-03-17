@@ -41,11 +41,15 @@ add_library(${PROJECT_NAME} STATIC
 	src/Resources/ResourceManager.h
 	src/Resources/ResourceManager.cpp
 	src/Resources/stb_image.h
+	src/Resources/Serializer.h
+	src/Resources/Serializer.cpp
 	
 	src/Scene/Scene.h
 	src/Scene/Scene.cpp
 	src/Scene/Hierarchy.h
 	src/Scene/Hierarchy.cpp
+	src/Scene/Camera.h
+	src/Scene/Camera.cpp
 	
 	src/Game/GObject.h
 	src/Game/GObject.cpp
@@ -81,6 +85,8 @@ add_library(${PROJECT_NAME} STATIC
 	src/Components/Component.cpp
 	src/Components/Physics/Collider.h
 	src/Components/Physics/Collider.cpp
+	src/Components/LuaScript.h
+	src/Components/LuaScript.cpp
 	)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
@@ -92,7 +98,11 @@ set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(external/glfw)
 add_subdirectory(external/glad)
+add_subdirectory(external/Lua)
 
 target_include_directories(${PROJECT_NAME} PUBLIC external/glm)
+target_include_directories(${PROJECT_NAME} PUBLIC external/sol2/include)
+target_include_directories(${PROJECT_NAME} PUBLIC external/rapidjson/include)
 
-target_link_libraries(${PROJECT_NAME} glad glfw)
+target_link_libraries(${PROJECT_NAME} PUBLIC lua_static)
+target_link_libraries(${PROJECT_NAME} PUBLIC glad glfw)

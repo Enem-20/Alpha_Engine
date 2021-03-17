@@ -1,5 +1,6 @@
 #include "GObject.h"
 #include "Game.h"
+#include "../Scene/Hierarchy.h"
 
 #include <typeinfo>
 
@@ -9,12 +10,16 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "../Resources/ResourceManager.h"
 
-GObject::GObject()
+GObject::GObject(std::string name)
 {
 	glm::mat4 model(1.f);
 	this->model = model;
 	glm::vec3 position(0.f);
 	this->position = position;
+
+	this->name = name;
+
+	Hierarchy::addObject(std::make_shared<GObject>(*this));
 }
 
 GObject::~GObject()

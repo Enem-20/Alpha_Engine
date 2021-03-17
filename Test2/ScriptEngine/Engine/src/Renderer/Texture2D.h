@@ -7,16 +7,13 @@
 #include <iostream>
 #include <map>
 
-namespace ScriptEngine
-{
-	class ClassRegistrator;
-}
+class Serializer;
 
 namespace RenderEngine
 {
 	class Texture2D
 	{
-		friend ScriptEngine::ClassRegistrator;
+		friend Serializer;
 	public:
 		struct SubTexture2D
 		{
@@ -50,6 +47,9 @@ namespace RenderEngine
 		unsigned int getHeight() const { return m_height; }
 
 		void bind() const;
+
+		std::string path;
+		std::string name;
 	private:
 		GLuint m_ID;
 		GLenum m_mode;

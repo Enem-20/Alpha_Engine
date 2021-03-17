@@ -6,6 +6,7 @@
 #include <glm/mat4x4.hpp>
 
 AllowedCell::AllowedCell(glm::vec2 Boardposition)
+	: GObject("")
 {
 	model = glm::scale(model, glm::vec3(135, 135, 0));
 	Translate(glm::vec3(Boardposition, 0));

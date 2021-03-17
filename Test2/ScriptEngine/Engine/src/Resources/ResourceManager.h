@@ -54,10 +54,7 @@ public:
 														  std::vector<std::string> subTextures,
 														  const unsigned int subTextureWidth,
 														  const unsigned int subTextureHeight);
-	static std::string loadLuaScript(const std::string& relativePath);
-	static void loadLuaScripts();
-	//static void loadLuaScripts(const std::string& relativePath);
-
+	static std::string GetLuaScriptPath(const std::string& relativePath);
 private:
 	static std::string getFileString(const std::string& relativeFilePath);
 

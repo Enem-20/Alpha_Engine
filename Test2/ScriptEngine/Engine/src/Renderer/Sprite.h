@@ -11,10 +11,7 @@
 #include <memory>
 #include <string>
 
-namespace ScriptEngine
-{
-	class ClassRegistrator;
-}
+class Serializer;
 
 namespace RenderEngine
 {
@@ -24,7 +21,7 @@ namespace RenderEngine
 
 	class Sprite
 	{
-		friend ScriptEngine::ClassRegistrator;
+		friend Serializer;
 	public:
 		Sprite(std::shared_ptr<Texture2D> Texture,
 			   std::string initialSubTexture,

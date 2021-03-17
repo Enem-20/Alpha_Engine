@@ -5,6 +5,7 @@
 #include <queue>
 
 Figure::Figure()
+	: GObject("")
 {
 	model = glm::scale(model, glm::vec3(135,135, 0));
 	fraction = -1;

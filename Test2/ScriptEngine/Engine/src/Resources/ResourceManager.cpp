@@ -3,6 +3,7 @@
 #include "../Renderer/Texture2D.h"
 #include "../Renderer/Sprite.h"
 #include "../Renderer/AnimatedSprite.h"
+#include "Serializer.h"
 
 #include <sstream>
 #include <fstream>
@@ -24,12 +25,16 @@ std::string ResourceManager::m_path;
 
 void ResourceManager::SetExecutablePath(const std::string& executablePath)
 {
+	Serializer::Init();
 	size_t found = executablePath.find_last_of("/\\");
 	m_path = executablePath.substr(0, found);
 }
 
 void ResourceManager::UnloadAllResources()
 {
+	std::ofstream f(m_path + "/res/scene.json");
+	f << Serializer::Serialize(Scene::GetInstance()).GetString();
+	f.close();
 	m_shaderPrograms.clear();
 	m_textures.clear();
 	m_sprites.clear();
@@ -250,36 +255,7 @@ std::shared_ptr<RenderEngine::Texture2D> ResourceManager::loadTextureAtlas(std::
 	return Texture;
 }
 
-std::string ResourceManager::loadLuaScript(const std::string& relativePath)
+std::string ResourceManager::GetLuaScriptPath(const std::string& relativePath)
 {
-	return m_path + "/" + relativePath;
+	 return m_path + "/" + relativePath;
 }
-
-void ResourceManager::loadLuaScripts()
-{
-	for (const auto& it : std::filesystem::recursive_directory_iterator(m_path))
-	{
-		auto _filename = it.path().filename();
-		if (std::filesystem::is_regular_file(it.status()) && (it.path().extension() == ".lua"))
-		{
-			std::ifstream f;
-			f.open(m_path + "/" + it.path().relative_path().string(), std::ios::in);
-
-			if (!f.is_open())
-			{
-				std::cerr << "failed to open file: " << it.path().relative_path().string() << std::endl;
-				system("pause");
-			}
-
-			std::stringstream buffer;
-			buffer << f.rdbuf();
-			m_LuaScripts.emplace(it.path().filename().string(), buffer.str());
-			f.close();
-		}
-	}
-}
-
-//void ResourceManager::loadLuaScripts(const std::string& relativePath)
-//{
-//
-//}

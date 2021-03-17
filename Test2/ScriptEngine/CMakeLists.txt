@@ -9,9 +9,8 @@ add_library(${PROJECT_NAME}
 			src/ClassRegistrator.cpp
 			src/Headers.h
 			)
-add_subdirectory(external/Lua)
+
 add_subdirectory(Engine/)
 
 target_include_directories(${PROJECT_NAME} PUBLIC external/sol2/include)
-
-target_link_libraries(${PROJECT_NAME} lua_static Engine)
+target_link_libraries(${PROJECT_NAME} Engine)
