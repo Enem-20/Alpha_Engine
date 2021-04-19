@@ -5,6 +5,10 @@
 #include "../Engine/src/Helpers/mat3.h"
 #include "../Engine/src/Renderer/Texture2D.h"
 
+#include <memory>
+
+class GameObject;
+
 namespace ScriptEngine
 {
 	class ClassRegistrator
@@ -30,7 +34,10 @@ namespace ScriptEngine
 		static void Reg_SubTexture2D(sol::table* LTexture2D);
 		static void Reg_Texture2D(sol::table* same);
 		static void Reg_Sprite(sol::table* object);
-		static void Reg_GObject(sol::table* object);
+		static void Reg_GameObject(sol::table* object);
+
+		static void Reg_Timer(sol::table* Lnamespace);
+		static void Reg_Hierarchy(sol::table* hierarchy);
 
 		inline static bool IsReg = false;
 	};

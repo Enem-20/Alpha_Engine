@@ -19,6 +19,7 @@ namespace RenderEngine
 		, m_position(position)
 		, m_size(size)
 		, m_rotation(rotation)
+		, m_subTextureName(initialSubTexture)
 		{	
 		GLfloat vertexCoords[] =
 		{
@@ -63,6 +64,71 @@ namespace RenderEngine
 		m_IndexBuffer.unbind();
 	}
 
+	Sprite::Sprite(const Sprite& sprite)
+	{
+		m_Texture = sprite.m_Texture;
+		m_shaderProgram = sprite.m_shaderProgram;
+		m_position = sprite.m_position;
+		m_size = sprite.m_size;
+		m_rotation = sprite.m_rotation;
+
+		GLfloat vertexCoords[] =
+		{
+			//x  y
+			0.f, 0.f,
+			0.f, 1.f,
+			1.f, 1.f,
+			1.f, 0.f
+		};
+
+		auto subTexture = m_Texture->getSubTexture(std::move(m_subTextureName));
+
+		GLfloat textureCoords[] =
+		{
+			//u  v
+			subTexture.leftBottomUV.x, subTexture.leftBottomUV.y,
+			subTexture.leftBottomUV.x, subTexture.rightTopUV.y,
+			subTexture.rightTopUV.x, subTexture.rightTopUV.y,
+			subTexture.rightTopUV.x, subTexture.leftBottomUV.y
+		};
+
+		GLuint indices[] =
+		{
+			0,1,2,
+			2,3,0
+		};
+
+
+		m_vertexCoordsBuffer.init(vertexCoords, 2 * 4 * sizeof(GL_FLOAT));
+		VertexBufferLayout vertexCoordsLayout;
+		vertexCoordsLayout.addElementLayoutFloat(2, false);
+		m_vertexArray.addBuffer(m_vertexCoordsBuffer, vertexCoordsLayout);
+
+		m_textureCoordsBuffer.init(textureCoords, 2 * 4 * sizeof(GL_FLOAT));
+		VertexBufferLayout textureCoordsLayout;
+		textureCoordsLayout.addElementLayoutFloat(2, false);
+		m_vertexArray.addBuffer(m_textureCoordsBuffer, textureCoordsLayout);
+
+		m_IndexBuffer.init(indices, 6);
+
+		m_vertexArray.unbind();
+		m_IndexBuffer.unbind();
+	}
+
+	Sprite::Sprite(Sprite&& sprite) noexcept
+	{
+		m_Texture = std::make_shared<RenderEngine::Texture2D>(std::move(*sprite.m_Texture));
+		m_shaderProgram = std::make_shared<RenderEngine::ShaderProgram>(std::move(*sprite.m_shaderProgram));
+		m_position = std::move(sprite.m_position);
+		m_size = std::move(sprite.m_size);
+		m_rotation = std::move(sprite.m_rotation);
+
+		m_vertexArray = std::move(sprite.m_vertexArray);
+		m_vertexCoordsBuffer = std::move(sprite.m_vertexCoordsBuffer);
+		m_textureCoordsBuffer = std::move(sprite.m_textureCoordsBuffer);
+		m_IndexBuffer = std::move(sprite.m_IndexBuffer);
+	}
+
 	Sprite::~Sprite()
 	{
 	}
@@ -102,8 +168,13 @@ namespace RenderEngine
 		m_rotation = rotation;
 	}
 
-	glm::vec2& Sprite::getSize()
+	glm::vec2 Sprite::getSize() const
 	{
 		return m_size;
+	}
+
+	float Sprite::getRotation() const
+	{
+		return m_rotation;
 	}
 }

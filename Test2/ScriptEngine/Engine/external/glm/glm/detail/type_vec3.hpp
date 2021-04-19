@@ -10,6 +10,11 @@
 #	include "_swizzle_func.hpp"
 #endif
 #include <cstddef>
+#include <rapidjson/rapidjson.h>
+#include <rapidjson/prettywriter.h>
+#include <rapidjson/reader.h>
+#include <typeinfo>
+
 
 namespace glm
 {
@@ -18,6 +23,7 @@ namespace glm
 	{
 		// -- Implementation detail --
 
+		typedef rapidjson::PrettyWriter<rapidjson::StringBuffer> prettywriter;
 		typedef T value_type;
 		typedef vec<3, T, Q> type;
 		typedef vec<3, bool, Q> bool_type;
@@ -247,6 +253,38 @@ namespace glm
 		GLM_FUNC_DECL GLM_CONSTEXPR vec<3, T, Q> & operator>>=(vec<1, U, Q> const& v);
 		template<typename U>
 		GLM_FUNC_DECL GLM_CONSTEXPR vec<3, T, Q> & operator>>=(vec<3, U, Q> const& v);
+
+		/*std::vector<std::string> names{ "x", "y", "z"};
+		rapidjson::StringBuffer Serialize(prettywriter* writer = nullptr, std::string name = "")
+		{
+			std::string names
+			rapidjson::StringBuffer sb;
+			if (!writer && name != "")
+			{
+				writer->Key(name.c_str());
+			}
+			else
+			{
+				writer = new prettywriter(sb);
+			}
+
+			writer->StartArray();
+			for (size_t i = 0; i < 3; ++i)
+			{
+				writer->Key(names[i].c_str());
+				if (typeid(T).name() == "double" || typeid(T).name() == "float")
+				{
+					writer->Double(this[i]);
+				}
+				else
+				{
+					writer->Int(this[i]);
+				}
+			}
+			writer->EndArray();
+
+			return sb;
+		}*/
 	};
 
 	// -- Unary operators --

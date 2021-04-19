@@ -1,0 +1,7 @@
+{
+	"shaders"		  : "res/default/shaders.json",
+	"textures" 		  : "res/default/textures.json",
+	"textureAtlasses" : "res/default/textureAtlasses.json",
+	"sprites"  		  : "res/default/sprites.json",
+	"GameObjects" 	  : "res/saves/GameObjects.json"
+}

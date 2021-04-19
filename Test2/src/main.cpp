@@ -14,7 +14,7 @@
 #include "../ScriptEngine/src/ClassRegistrator.h"
 
 #include <memory>
-
+#include <thread>
 
 void function_CppfromLua()
 {
@@ -23,23 +23,16 @@ void function_CppfromLua()
 
 int main(int argc, char** argv)
 {
+	
 	ScriptEngine::ScriptProcessor::init();
-	std::string path = {argv[0]};
-	ResourceManager::SetExecutablePath(argv[0]);
-
 	sol::table Lobject = ScriptEngine::ScriptProcessor::L["Helpers"].get_or_create<sol::table>();
+	std::thread th(ScriptEngine::ClassRegistrator::Registration, &Lobject);
 
-	ScriptEngine::ClassRegistrator::Registration(&Lobject);
-	ScriptEngine::ScriptProcessor::L.script_file(ResourceManager::GetLuaScriptPath("res/scripts/GObject_test.lua"));
-
-	std::shared_ptr<int> integer;
-
-	std::cout << typeid(integer).name();
-
-
+	th.join();
+	
 #ifdef OGL
 	Engine::EngineMain::Init(argv);
 #endif
-
+	//ScriptEngine::ScriptProcessor::L.script_file(ResourceManager::GetLuaScriptPath("res/scripts/GameObject_test.lua"));
 	return 0;
 }

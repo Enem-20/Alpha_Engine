@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Engine/src/Game/GObject.h"
+//#include "../Engine/src/GameTypes/GameTypes.h"
 
 #include "../src/lua.hpp"
 #include <sol/sol.hpp>

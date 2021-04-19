@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Resources/ResourceManager.h"
-#include "Game/Game.h"
-#include "Game/GObject.h"
-#include "Game/Desk.h"
+#include "GameTypes/Game.h"
+#include "GameTypes/GameObject.h"
+#include "GameTypes/Desk.h"
+//#include <memory>
 
 namespace Engine
 {
@@ -12,5 +13,6 @@ namespace Engine
 	public:
 		static void Init(char** argv);
 	private:
+		static void FirstFrame();
 	};
 }

@@ -13,7 +13,8 @@ namespace RenderEngine
 {
 	class Texture2D
 	{
-		friend Serializer;
+		friend class Serializer;
+		friend class DeserializerTexture2D;
 	public:
 		struct SubTexture2D
 		{
@@ -30,11 +31,11 @@ namespace RenderEngine
 			{}
 
 		};
-
+		Texture2D() = delete;
 		Texture2D(const GLuint width, const GLuint height,
 			const unsigned char* data, const unsigned int channels = 4,
 			const GLenum filter = GL_LINEAR, const GLenum wrapMode = GL_CLAMP_TO_EDGE);
-		Texture2D() = delete;
+		//Texture2D() = default;
 		Texture2D(Texture2D& texture2d);
 		Texture2D& operator=(const Texture2D&) = delete;
 		Texture2D& operator=(Texture2D&& texture2d) noexcept;
@@ -47,6 +48,42 @@ namespace RenderEngine
 		unsigned int getHeight() const { return m_height; }
 
 		void bind() const;
+
+		/*rapidjson::StringBuffer Serialize(prettywriter* writer = nullptr, std::string name = "")
+		{
+			rapidjson::StringBuffer sb;
+			if (writer && name != "")
+			{
+				writer->Key(name.c_str());
+			}
+			else
+			{
+				writer = new prettywriter(sb);
+			}
+
+			writer->StartObject();
+
+			writer->Key("path");
+			writer->String(path.c_str());
+			writer->Key("name");
+			writer->String(name.c_str());
+
+			writer->Key("m_width");
+			writer->Double(m_width);
+			writer->Key("m_height");
+			writer->Double(m_height);
+
+			writer->Key("m_subTextures");
+			writer->StartArray();
+			for (auto& it : m_subTextures)
+			{
+				it.second.leftBottomUV.Serialize(writer, "leftBottomUV");
+				it.second.rightTopUV.Serialize(writer, "rightTopUV");
+			}
+			writer->EndArray();
+
+			writer->EndObject();
+		}*/
 
 		std::string path;
 		std::string name;

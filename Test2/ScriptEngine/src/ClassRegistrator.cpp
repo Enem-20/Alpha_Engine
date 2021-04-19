@@ -1,4 +1,7 @@
 #include "ClassRegistrator.h"
+#include "../Engine/src/GameTypes/GameTypes.h"
+#include "../Engine/src/Scene/Hierarchy.h"
+#include "../Engine/src/Timer.h"
 
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
@@ -11,7 +14,10 @@
 
 namespace ScriptEngine
 {
-
+	static GameObject GetData(std::shared_ptr<GameObject> gameObject)
+	{
+		return *gameObject;
+	}
 
 	void ClassRegistrator::Reg_GLMvec2(sol::table* Lnamespace)
 	{
@@ -170,23 +176,41 @@ namespace ScriptEngine
 			);
 	}
 
-	void ClassRegistrator::Reg_GObject(sol::table* object)
+	void ClassRegistrator::Reg_GameObject(sol::table* object)
 	{
-		//object::get<glm::mat<4,4, float>>(&glm::translate);
-	/*object->set_function("GLMtranslate", &glm::translate_lua);*/
-		object->new_usertype<GObject>("GObject"
-			, sol::constructors<GObject(std::string)>()
+		object->new_usertype<GameObject>("GameObject"
+			, sol::constructors<GameObject(std::string), GameObject(const GameObject&)>()
 
-			, "Translate", &GObject::Translate
-			, "Rotate", &GObject::Rotate
-			, "render", &GObject::render
-			, "SetSprite", &GObject::SetSprite
-			, "GetSprite", &GObject::GetSprite
+			, "Translate", &GameObject::Translate
+			, "Rotate", &GameObject::Rotate
+			, "render", &GameObject::render
+			, "SetSprite", sol::overload(&GameObject::SetSprite, &GameObject::SetSpriteCopy)
+			, "GetSprite", &GameObject::GetSprite
+			/*, "GetRaw", &GameObject::GetRaw
+			, "testShared", &GameObject::testShared*/
 
-			, "position", &GObject::position
-			, "cellposition", &GObject::cellposition
-			, "name", &GObject::name);
-			
+			, "position", &GameObject::position
+			, "cellposition", &GameObject::cellposition
+			, "name", &GameObject::name
+			);
+	}
+
+	void ClassRegistrator::Reg_Timer(sol::table* Lnamespace)
+	{
+		Lnamespace->new_usertype<Timer>("Timer"
+			, "StartTimer", &Timer::StartTimer
+			, "EndTimer", &Timer::EndTimer
+			, "GetDelta", &Timer::GetDelta
+			, "GetTimeSec", &Timer::GetTimeSec
+			, "IsStart", &Timer::IsStart
+			, "GetStart", &Timer::GetStart
+			, "GetEnd", &Timer::GetEnd);
+	}
+
+	void ClassRegistrator::Reg_Hierarchy(sol::table* hierarchy)
+	{
+		hierarchy->new_usertype<Hierarchy>("Hierarchy"
+			, "getObject", &Hierarchy::getObject);
 	}
 
 	int ClassRegistrator::Registration(sol::table* Lnamespace)
@@ -203,7 +227,10 @@ namespace ScriptEngine
 			Reg_Texture2D(Lnamespace);
 			Reg_Sprite(Lnamespace);
 			Reg_ShaderProgram(Lnamespace);
-			Reg_GObject(Lnamespace);
+			Reg_GameObject(Lnamespace);
+			Reg_Hierarchy(Lnamespace);
+			Reg_Timer(Lnamespace);
+			//Lnamespace->set_function("GetData", &GetData);
 
 			return 0;
 		}

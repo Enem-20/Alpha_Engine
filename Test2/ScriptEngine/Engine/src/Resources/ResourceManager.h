@@ -6,6 +6,9 @@
 #include <map>
 #include <vector>
 
+#include <rapidjson/rapidjson.h>
+#include <rapidjson/document.h>
+
 namespace RenderEngine
 {
 	class ShaderProgram;
@@ -55,6 +58,15 @@ public:
 														  const unsigned int subTextureWidth,
 														  const unsigned int subTextureHeight);
 	static std::string GetLuaScriptPath(const std::string& relativePath);
+
+	static bool loadJSONScene(const std::string& relativePath);
+	static bool loadJSONGameOjects(const std::string& relativePath);
+	static bool loadJSONSprites(const std::string& relativePath);
+	static bool loadJSONTextureAtlasses(const std::string& relativePath);
+	static bool loadJSONTextures(const std::string& relativePath);
+	static bool loadJSONShaders(const std::string& relativePath);
+
+	static std::string GetPath() { return m_path; }
 private:
 	static std::string getFileString(const std::string& relativeFilePath);
 

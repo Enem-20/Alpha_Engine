@@ -1,6 +1,13 @@
 #include "Serializer.h"
 
-rapidjson::StringBuffer Serializer::Serialize(std::shared_ptr<GObject> object, pretrywriter* writer, std::string name)
+#include <fstream>
+#include <sstream>
+#include <rapidjson/document.h>
+
+#include "../Scene/Hierarchy.h"
+
+
+const rapidjson::StringBuffer Serializer::Serialize(std::shared_ptr<GameObject> object, prettywriter* writer, std::string name)
 {
 	rapidjson::StringBuffer sb;
 	if (!object) { return sb; }
@@ -10,7 +17,7 @@ rapidjson::StringBuffer Serializer::Serialize(std::shared_ptr<GObject> object, p
 	}
 	else
 	{
-		writer = new pretrywriter(sb);
+		writer = new prettywriter(sb);
 	}
 
 	writer->StartObject();
@@ -26,7 +33,7 @@ rapidjson::StringBuffer Serializer::Serialize(std::shared_ptr<GObject> object, p
 
 	return sb;
 }
-rapidjson::StringBuffer Serializer::Serialize(Scene* scene, pretrywriter* writer, std::string name)
+const rapidjson::StringBuffer Serializer::Serialize(Scene* scene, prettywriter* writer, std::string name)
 {
 	rapidjson::StringBuffer sb;
 	if (!scene) { return sb; }
@@ -37,7 +44,7 @@ rapidjson::StringBuffer Serializer::Serialize(Scene* scene, pretrywriter* writer
 	}
 	else
 	{
-		writer = new pretrywriter(sb);
+		writer = new prettywriter(sb);
 	}
 
 	writer->StartArray();
@@ -50,7 +57,7 @@ rapidjson::StringBuffer Serializer::Serialize(Scene* scene, pretrywriter* writer
 	return sb;
 }
 
-rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<RenderEngine::Sprite> sprite, pretrywriter* writer, std::string name)
+const rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<RenderEngine::Sprite> sprite, prettywriter* writer, std::string name)
 {
 	rapidjson::StringBuffer sb;
 	if (!sprite) { return sb; }
@@ -61,7 +68,7 @@ rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<RenderEngine::Spr
 	}
 	else
 	{
-		writer = new pretrywriter(sb);
+		writer = new prettywriter(sb);
 	}
 
 	writer->StartObject();
@@ -74,7 +81,7 @@ rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<RenderEngine::Spr
 
 	return sb;
 }
-rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<RenderEngine::Texture2D> tex2D, pretrywriter* writer, std::string name)
+const rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<RenderEngine::Texture2D> tex2D, prettywriter* writer, std::string name)
 {
 	rapidjson::StringBuffer sb;
 	if (!tex2D) { return sb; }
@@ -85,7 +92,7 @@ rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<RenderEngine::Tex
 	}
 	else
 	{
-		writer = new pretrywriter(sb);
+		writer = new prettywriter(sb);
 	}
 
 	writer->StartObject();
@@ -99,6 +106,8 @@ rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<RenderEngine::Tex
 	writer->StartArray();
 	for (const auto& it : tex2D->m_subTextures)
 	{
+		writer->Key("subName");
+		writer->String(it.first.c_str());
 		Serialize(it.second.leftBottomUV, writer, "leftBottomUV");
 		Serialize(it.second.rightTopUV,   writer, "rightTopUV");
 	}
@@ -109,7 +118,7 @@ rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<RenderEngine::Tex
 	return sb;
 }
 
-rapidjson::StringBuffer  Serializer::Serialize(glm::ivec2 _ivec2, pretrywriter* writer, std::string name)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec2 _ivec2, prettywriter* writer, std::string name)
 {
 	rapidjson::StringBuffer sb;
 
@@ -119,7 +128,7 @@ rapidjson::StringBuffer  Serializer::Serialize(glm::ivec2 _ivec2, pretrywriter* 
 	}
 	else
 	{
-		writer = new pretrywriter(sb);
+		writer = new prettywriter(sb);
 	}
 
 	writer->StartArray();
@@ -134,7 +143,7 @@ rapidjson::StringBuffer  Serializer::Serialize(glm::ivec2 _ivec2, pretrywriter* 
 
 	return sb;
 }
-rapidjson::StringBuffer  Serializer::Serialize(glm::vec2   _vec2, pretrywriter* writer, std::string name)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::vec2   _vec2, prettywriter* writer, std::string name)
 {
 	rapidjson::StringBuffer sb;
 
@@ -144,7 +153,7 @@ rapidjson::StringBuffer  Serializer::Serialize(glm::vec2   _vec2, pretrywriter* 
 	}
 	else
 	{
-		writer = new pretrywriter(sb);
+		writer = new prettywriter(sb);
 	}
 
 	writer->StartArray();
@@ -159,7 +168,7 @@ rapidjson::StringBuffer  Serializer::Serialize(glm::vec2   _vec2, pretrywriter* 
 
 	return sb;
 }
-rapidjson::StringBuffer  Serializer::Serialize(glm::ivec3 _ivec3, pretrywriter* writer, std::string name)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec3 _ivec3, prettywriter* writer, std::string name)
 {
 	rapidjson::StringBuffer sb;
 
@@ -169,7 +178,7 @@ rapidjson::StringBuffer  Serializer::Serialize(glm::ivec3 _ivec3, pretrywriter* 
 	}
 	else
 	{
-		writer = new pretrywriter(sb);
+		writer = new prettywriter(sb);
 	}
 
 	writer->StartArray();
@@ -184,7 +193,7 @@ rapidjson::StringBuffer  Serializer::Serialize(glm::ivec3 _ivec3, pretrywriter* 
 
 	return sb;
 }
-rapidjson::StringBuffer  Serializer::Serialize(glm::vec3   _vec3, pretrywriter* writer, std::string name)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::vec3   _vec3, prettywriter* writer, std::string name)
 {
 	rapidjson::StringBuffer sb;
 
@@ -194,7 +203,7 @@ rapidjson::StringBuffer  Serializer::Serialize(glm::vec3   _vec3, pretrywriter* 
 	}
 	else
 	{
-		writer = new pretrywriter(sb);
+		writer = new prettywriter(sb);
 	}
 
 	writer->StartArray();
@@ -209,7 +218,7 @@ rapidjson::StringBuffer  Serializer::Serialize(glm::vec3   _vec3, pretrywriter* 
 
 	return sb;
 }
-rapidjson::StringBuffer  Serializer::Serialize(glm::ivec4 _ivec4, pretrywriter* writer, std::string name)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec4 _ivec4, prettywriter* writer, std::string name)
 {
 	rapidjson::StringBuffer sb;
 
@@ -219,7 +228,7 @@ rapidjson::StringBuffer  Serializer::Serialize(glm::ivec4 _ivec4, pretrywriter* 
 	}
 	else
 	{
-		writer = new pretrywriter(sb);
+		writer = new prettywriter(sb);
 	}
 
 	writer->StartArray();
@@ -234,7 +243,7 @@ rapidjson::StringBuffer  Serializer::Serialize(glm::ivec4 _ivec4, pretrywriter* 
 
 	return sb;
 }
-rapidjson::StringBuffer  Serializer::Serialize(glm::vec4   _vec4, pretrywriter* writer, std::string name)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::vec4   _vec4, prettywriter* writer, std::string name)
 {
 	rapidjson::StringBuffer sb;
 
@@ -244,7 +253,7 @@ rapidjson::StringBuffer  Serializer::Serialize(glm::vec4   _vec4, pretrywriter* 
 	}
 	else
 	{
-		writer = new pretrywriter(sb);
+		writer = new prettywriter(sb);
 	}
 
 	writer->StartArray();
@@ -259,7 +268,7 @@ rapidjson::StringBuffer  Serializer::Serialize(glm::vec4   _vec4, pretrywriter* 
 
 	return sb;
 }
-rapidjson::StringBuffer  Serializer::Serialize(glm::mat3   _mat3, pretrywriter* writer, std::string name)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::mat3   _mat3, prettywriter* writer, std::string name)
 {
 	rapidjson::StringBuffer sb;
 
@@ -269,7 +278,7 @@ rapidjson::StringBuffer  Serializer::Serialize(glm::mat3   _mat3, pretrywriter* 
 	}
 	else
 	{
-		writer = new pretrywriter(sb);
+		writer = new prettywriter(sb);
 	}
 
 	writer->StartArray();
@@ -281,7 +290,7 @@ rapidjson::StringBuffer  Serializer::Serialize(glm::mat3   _mat3, pretrywriter* 
 
 	return sb;
 }
-rapidjson::StringBuffer  Serializer::Serialize(glm::mat4   _mat4, pretrywriter* writer, std::string name)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::mat4   _mat4, prettywriter* writer, std::string name)
 {
 	rapidjson::StringBuffer sb;
 
@@ -291,7 +300,7 @@ rapidjson::StringBuffer  Serializer::Serialize(glm::mat4   _mat4, pretrywriter* 
 	}
 	else
 	{
-		writer = new pretrywriter(sb);
+		writer = new prettywriter(sb);
 	}
 
 	writer->StartArray();

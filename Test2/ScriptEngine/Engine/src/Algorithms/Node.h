@@ -2,7 +2,7 @@
 
 #include<list>
 
-#include "../Game/Figure.h"
+#include "../GameTypes/Figure.h"
 
 class Move;
 

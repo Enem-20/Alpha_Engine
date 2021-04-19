@@ -2,7 +2,7 @@
 
 #include "../Algorithms/Node.h"
 #include "../Algorithms/FindPaths.h"
-#include "GObject.h"
+#include "GameObject.h"
 #include "Desk.h"
 #include "AllowedCell.h"
 #include "Figure.h"

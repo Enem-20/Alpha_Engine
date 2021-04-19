@@ -1,0 +1,25 @@
+[
+	{
+		"name" : "Figures",
+		"filePath" : "res/textures/GameObjects_Atlas.png",
+		"width" : 400,
+		"height" : 138,
+		"subTextureWidth" : 67,
+		"subTextureHeight" : 67,
+		"subTextures" : 
+		[
+			"black_castle",
+			"black_knight",
+			"black_bishop",
+			"black_queen",
+			"black_king",
+			"black_pawn",
+			"white_castle",
+			"white_knight",
+			"white_bishop",
+			"white_queen",
+			"white_king",
+			"white_pawn"
+		]
+	}
+]

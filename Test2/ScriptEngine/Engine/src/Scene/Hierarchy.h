@@ -1,12 +1,19 @@
 #pragma once
 
-#include <map>
+//#include <map>
+//#include <string>
+//#include "../GameTypes/GameTypes.h"
+//#include "../Resources/Resources.h"
+
+#include <memory>
 #include <string>
-#include "../Game/GObject.h"
+#include <map>
+
+class GameObject;
 
 class Hierarchy
 {
-	friend class SceneManager;
+	//friend class SceneManager;
 public:
 	static Hierarchy* GetInstanceHierarchy()
 	{
@@ -17,12 +24,11 @@ public:
 
 		return hierarchy;
 	}
-	static void addObject(std::shared_ptr<GObject> obj);
-	static std::shared_ptr<GObject> getObject(std::string name);
-	inline static std::map<std::string, std::shared_ptr<GObject>> SceneObjects;
+	static void addObject(std::shared_ptr<GameObject> obj);
+	static std::shared_ptr<GameObject> getObject(std::string name);
+	inline static std::map<std::string, std::shared_ptr<GameObject>> SceneObjects;
 	
 private:
-	static Hierarchy* hierarchy;
+	inline static Hierarchy* hierarchy;
 	Hierarchy() = default;
-	
 };

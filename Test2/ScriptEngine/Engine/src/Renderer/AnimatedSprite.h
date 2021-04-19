@@ -22,7 +22,7 @@ namespace RenderEngine
 			const glm::vec2& size = glm::vec2(1.f),
 			const float rotation = 0.f);
 		void insertState(std::string state, std::vector<std::pair<std::string, uint64_t>> subTexturesDuration);
-		void AnimatedSprite::render(glm::mat4 model) const override;
+		void render(glm::mat4 model) const override;
 		void Update(const uint64_t deltaTime);
 		void setState(const std::string& newState);
 	private:

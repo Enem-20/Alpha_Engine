@@ -214,6 +214,38 @@ namespace glm
 		GLM_FUNC_DECL GLM_CONSTEXPR vec<2, T, Q> & operator>>=(vec<1, U, Q> const& v);
 		template<typename U>
 		GLM_FUNC_DECL GLM_CONSTEXPR vec<2, T, Q> & operator>>=(vec<2, U, Q> const& v);
+	
+		/*std::vector<std::string> names{ "x", "y" };
+		rapidjson::StringBuffer Serialize(prettywriter* writer = nullptr, std::string name = "")
+		{
+			std::string names
+				rapidjson::StringBuffer sb;
+			if (!writer && name != "")
+			{
+				writer->Key(name.c_str());
+			}
+			else
+			{
+				writer = new prettywriter(sb);
+			}
+
+			writer->StartArray();
+			for (size_t i = 0; i < 2; ++i)
+			{
+				writer->Key();
+				if (typeid(T).name() == "double" || typeid(T).name() == "float")
+				{
+					writer->Double(this[i]);
+				}
+				else
+				{
+					writer->Int(this[i]);
+				}
+			}
+			writer->EndArray();
+
+			return sb;
+		}*/
 	};
 
 	// -- Unary operators --

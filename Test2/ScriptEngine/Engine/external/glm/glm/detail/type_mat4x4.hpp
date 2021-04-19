@@ -109,6 +109,36 @@ namespace glm
 		GLM_FUNC_DECL mat<4, 4, T, Q> & operator--();
 		GLM_FUNC_DECL mat<4, 4, T, Q> operator++(int);
 		GLM_FUNC_DECL mat<4, 4, T, Q> operator--(int);
+
+		/*rapidjson::StringBuffer Serialize(prettywriter* writer = nullptr, std::string name = "")
+		{
+			std::string names
+				rapidjson::StringBuffer sb;
+			if (!writer && name != "")
+			{
+				writer->Key(name.c_str());
+			}
+			else
+			{
+				writer = new prettywriter(sb);
+			}
+
+			writer->StartArray();
+			for (size_t i = 0; i < 4; ++i)
+			{
+				if (typeid(T).name() == "double" || typeid(T).name() == "float")
+				{
+					this[i].Serialize(writer, "vec4");
+				}
+				else
+				{
+					this[i].Serialize(writer, "ivec4");
+				}
+			}
+			writer->EndArray();
+
+			return sb;
+		}*/
 	};
 
 	// -- Unary operators --

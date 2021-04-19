@@ -5,6 +5,8 @@
 #include "../Renderer/AnimatedSprite.h"
 #include "Serializer.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <sstream>
 #include <fstream>
 #include <iostream>
@@ -16,6 +18,7 @@
 
 #include "stb_image.h"
 
+
 ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
 ResourceManager::TexturesMap ResourceManager::m_textures;
 ResourceManager::SpritesMap ResourceManager::m_sprites;
@@ -26,6 +29,8 @@ std::string ResourceManager::m_path;
 void ResourceManager::SetExecutablePath(const std::string& executablePath)
 {
 	Serializer::Init();
+	
+
 	size_t found = executablePath.find_last_of("/\\");
 	m_path = executablePath.substr(0, found);
 }
@@ -47,8 +52,7 @@ std::string ResourceManager::getFileString(const std::string& relativeFilePath)
 	f.open(m_path + "/" + relativeFilePath.c_str(), std::ios::in | std::ios::binary);
 
 	if (!f.is_open())
-	{
-		std::cerr << "failed to open file: " << relativeFilePath << std::endl;
+	{ 
 		system("pause");
 		return std::string();
 	}
@@ -258,4 +262,202 @@ std::shared_ptr<RenderEngine::Texture2D> ResourceManager::loadTextureAtlas(std::
 std::string ResourceManager::GetLuaScriptPath(const std::string& relativePath)
 {
 	 return m_path + "/" + relativePath;
+}
+
+
+
+bool ResourceManager::loadJSONScene(const std::string& relativePath)
+{
+	const std::string JSONstring = getFileString(relativePath);
+
+	rapidjson::Document d;
+	rapidjson::ParseResult parseScene = d.Parse(JSONstring.c_str());
+
+	if (parseScene.IsError())
+	{
+		std::cerr << "document isn't parse" << std::endl;
+	}
+
+	loadJSONShaders(d.FindMember("shaders")->value.GetString());
+	loadJSONTextureAtlasses(d.FindMember("textureAtlasses")->value.GetString());
+	loadJSONTextures(d.FindMember("textures")->value.GetString());
+	loadJSONSprites(d.FindMember("sprites")->value.GetString());
+	loadJSONGameOjects(d.FindMember("GameObjects")->value.GetString());
+
+	return true;
+}
+
+bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
+{
+	std::string JSONGameObjects = getFileString(relativePath);
+	rapidjson::Document d;
+	rapidjson::ParseResult JSONgameObjects_parsed = d.Parse(JSONGameObjects.c_str());
+
+	if (JSONgameObjects_parsed.IsError())
+	{
+		std::cerr << "JSON " << relativePath << " can't parse" << std::endl;
+	}
+
+	if (d.IsObject())
+	{
+		std::cout << "that's object" << std::endl;
+	}
+
+	for (const auto& it : d.GetArray())
+	{
+		const std::string GameObjectName = it.FindMember("name")->value.GetString();
+
+		glm::vec3 buf3;
+		int itBuf = 0;
+		for (const auto& itPosition : it.FindMember("position")->value.GetArray())
+		{
+			buf3[itBuf] = itPosition.GetDouble();
+			++itBuf;
+		}
+
+		glm::ivec2 ibuf2;
+		itBuf = 0;
+		for (const auto& itCellPosition : it.FindMember("cellposition")->value.GetArray())
+		{
+			ibuf2[itBuf] = itCellPosition.GetInt();
+			++itBuf;
+		}
+		glm::mat4 buf_mat4;
+		size_t it_bufmat4Lines = 0;
+		size_t it_bufmat4Columns = 0;
+		for (const auto& itLines : it.FindMember("model")->value.GetArray())
+		{
+			
+			for (const auto& itColumns : itLines.GetArray())
+			{
+				buf_mat4[it_bufmat4Lines][it_bufmat4Columns] = itColumns.GetDouble();
+				++it_bufmat4Columns;
+			}
+			it_bufmat4Columns = 0;
+			++it_bufmat4Lines;
+		}
+		it_bufmat4Lines = 0;
+		std::unordered_map<std::string, std::variant<Components::LuaScript>> _components;
+
+		if(it.FindMember("Components")->value.IsArray())
+			for (const auto& it2 : it.FindMember("Components")->value.GetArray())
+				_components.emplace("", Components::LuaScript("", it2.GetString()));
+		 
+		std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>(GameObjectName, getSprite(it.FindMember("sprite")->value.GetString()), buf3, ibuf2, glm::mat4(1.f), _components);
+	}
+
+	return true;
+}
+
+bool ResourceManager::loadJSONSprites(const std::string& relativePath)
+{
+	std::string JSONsprites = getFileString(relativePath);
+	rapidjson::Document d;
+	rapidjson::ParseResult JSONsprites_parsed = d.Parse(JSONsprites.c_str());
+
+	auto it = d.Begin();
+
+	while (it != d.End())
+	{
+		const std::string spriteName = it->FindMember("spriteName")->value.GetString();
+		const std::string textureName = it->FindMember("textureName")->value.GetString();
+		const std::string shaderName = it->FindMember("shaderName")->value.GetString();
+		const glm::vec2 spriteSize = 
+			  glm::vec2(it->FindMember("spriteWidth")->value.GetInt(),
+						it->FindMember("spriteHeight")->value.GetInt());
+		const std::string subTextureName = it->FindMember("subTextureName")->value.GetString();
+
+		loadSprite(spriteName, textureName, shaderName, spriteSize.x, spriteSize.y, subTextureName);
+
+		++it;
+	}
+
+	return true;
+}
+
+bool ResourceManager::loadJSONTextureAtlasses(const std::string& relativePath)
+{
+	std::string JSONTextureAtlasses = getFileString(relativePath);
+
+	rapidjson::Document d;
+
+	rapidjson::ParseResult JSONTextureAtlasses_parsed = d.Parse(JSONTextureAtlasses.c_str());
+
+	if (JSONTextureAtlasses_parsed.IsError())
+	{
+		std::cerr << "JSON " << relativePath << " can't parse";
+	}
+
+	for (const auto& it : d.GetArray())
+	{
+		const std::string name = it.FindMember("name")->value.GetString();
+		const std::string filePath = it.FindMember("filePath")->value.GetString();
+		const unsigned int width = it.FindMember("width")->value.GetUint();
+		const unsigned int height = it.FindMember("height")->value.GetUint();
+		const unsigned int subTextureWidth = it.FindMember("subTextureWidth")->value.GetUint();
+		const unsigned int subTextureHeight = it.FindMember("subTextureHeight")->value.GetUint();
+		std::vector<std::string> subTextures;
+
+		for (auto itSubTextures = it.FindMember("subTextures")->value.Begin(); 
+			itSubTextures != it.FindMember("subTextures")->value.End();
+			++itSubTextures)
+		{
+			subTextures.push_back(itSubTextures->GetString());
+		}
+		loadTextureAtlas(name, filePath, subTextures, subTextureWidth, subTextureHeight);
+	}
+
+	return true;
+}
+
+bool ResourceManager::loadJSONTextures(const std::string& relativePath)
+{
+	std::string JSONtextures = getFileString(relativePath);
+
+	rapidjson::Document d;
+
+	rapidjson::ParseResult JSONtextures_parsed = d.Parse(JSONtextures.c_str());
+	auto it = d.Begin();
+	while (it != d.End())
+	{
+		std::string Name = it->GetString();
+		++it;
+		std::string path = it->GetString();
+		++it;
+		loadTexture(Name, path);
+	}
+
+	return true;
+}
+
+bool ResourceManager::loadJSONShaders(const std::string& relativePath)
+{
+	std::string JSONshaders = getFileString(relativePath);
+	rapidjson::Document d;
+
+	rapidjson::ParseResult JSONshaders_parsed = d.Parse(JSONshaders.c_str());
+
+	if (JSONshaders_parsed.IsError())
+	{
+		std::cerr << "JSON " << relativePath << " can't parse";
+	}
+
+	for (const auto& itShaders : d.GetArray())
+	{
+		std::string shaderName = itShaders.FindMember("name")->value.GetString();
+		std::string shader_v = itShaders.FindMember("filePath_v")->value.GetString();
+		std::string shader_f = itShaders.FindMember("filePath_f")->value.GetString();
+		auto ShaderProgram = loadShaders(std::move(shaderName), std::move(shader_v), std::move(shader_f));
+
+		glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(1080.f), 0.f, static_cast<float>(1080.f), -100.f, 100.f);
+
+		ShaderProgram->setMatrix4("projectionMat", projectionMatrix);
+
+		ShaderProgram->use();
+		ShaderProgram->setInt("tex", 0);
+		ShaderProgram->setMatrix4("projectionMat", projectionMatrix);
+	}
+
+
+	return true;
 }

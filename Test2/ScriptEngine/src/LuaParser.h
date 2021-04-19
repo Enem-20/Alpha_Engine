@@ -1,6 +1,6 @@
 #pragma once
 
-#include <functional>
+#include<sol/sol.hpp>
 
 namespace ScriptEngine
 {
@@ -17,11 +17,11 @@ namespace ScriptEngine
 		static void SetFunctions();
 		static void SetExexcutablePath(const std::string new_path);
 	private:
-		static std::function<void()> m_Updates;
-		static std::function<void()> m_Awakes;
-		static std::function<void()> m_FixedUpdates;
-		static std::function<void()> m_Starts;
-		static std::function<void()> m_LastUpdates;
+		static sol::function m_Update;
+		static sol::function m_Awake;
+		static sol::function m_FixedUpdate;
+		static sol::function m_Start;
+		static sol::function m_LastUpdate;
 
 		static std::string m_path;
 	};

@@ -1,0 +1,14 @@
+[
+	{
+		"name" : "SpriteShader",
+		"filePath_v" : "res/shaders/vertex_sprite.txt",
+		"filePath_f" : "res/shaders/fragment_sprite.txt"
+	},
+	
+	{
+		"name" : "DefaultShader",
+		"filePath_v" : "res/shaders/vertex.txt",
+		"filePath_f" : "res/shaders/fragment.txt"
+	}
+]
+

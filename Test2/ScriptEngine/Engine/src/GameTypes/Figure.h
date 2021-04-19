@@ -1,13 +1,13 @@
 #pragma once
 
-#include "GObject.h"
+#include "GameObject.h"
 #include "AllowedCell.h"
 #include <list>
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/vec3.hpp"
 #include "glm/vec2.hpp"
 
-class Figure : public GObject
+class Figure : public GameObject
 {
 public:
 	Figure();

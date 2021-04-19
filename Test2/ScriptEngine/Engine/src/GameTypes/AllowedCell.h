@@ -1,8 +1,8 @@
 #pragma once
 
-#include "GObject.h"
+#include "GameObject.h"
 
-class AllowedCell : public GObject
+class AllowedCell : public GameObject
 {
 public:
 	AllowedCell(glm::vec2 Boardposition);

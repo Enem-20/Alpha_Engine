@@ -13,7 +13,7 @@ namespace Helpers
 
 		
 		mat3& operator-=(mat3& _mat2);
-		mat3& mat3::operator+=(mat3& _mat2);
+		//mat3& mat3::operator+=(mat3& _mat2);
 		mat3& operator*=(float same);
 		mat3& operator*=(mat3& _mat2);
 

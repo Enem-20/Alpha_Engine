@@ -7,17 +7,21 @@ project(${PROJECT_NAME})
 add_library(${PROJECT_NAME} STATIC
 	src/EngineMain.h
 	src/EngineMain.cpp
-	src/Messenger.h
-	src/Messenger.cpp
+	src/Timer.h
+	src/Timer.cpp
 	
-	src/Helpers/casts.h
-	src/Helpers/casts.cpp
-	src/Helpers/vector3.h
-	src/Helpers/vector3.cpp
-	src/Helpers/vector2.h
-	src/Helpers/vector2.cpp
-	src/Helpers/mat3.h
-	src/Helpers/mat3.cpp
+	src/Interfaces/ISerializer.h
+#	src/Messenger.h
+#	src/Messenger.cpp
+	
+#	src/Helpers/casts.h
+#	src/Helpers/casts.cpp
+#	src/Helpers/vector3.h
+#	src/Helpers/vector3.cpp
+#	src/Helpers/vector2.h
+#	src/Helpers/vector2.cpp
+#	src/Helpers/mat3.h
+#	src/Helpers/mat3.cpp
 	
 	src/Renderer/ShaderProgram.h
 	src/Renderer/ShaderProgram.cpp
@@ -43,6 +47,7 @@ add_library(${PROJECT_NAME} STATIC
 	src/Resources/stb_image.h
 	src/Resources/Serializer.h
 	src/Resources/Serializer.cpp
+	src/Resources/Resources.h
 	
 	src/Scene/Scene.h
 	src/Scene/Scene.cpp
@@ -51,29 +56,30 @@ add_library(${PROJECT_NAME} STATIC
 	src/Scene/Camera.h
 	src/Scene/Camera.cpp
 	
-	src/Game/GObject.h
-	src/Game/GObject.cpp
-	src/Game/Desk.h
-	src/Game/Desk.cpp
-	src/Game/Game.h
-	src/Game/Game.cpp
-	src/Game/AllowedCell.h
-	src/Game/AllowedCell.cpp
-	src/Game/Figure.h
-	src/Game/Figure.cpp
-	src/Game/AI.h
-	src/Game/AI.cpp
+	src/GameTypes/GameObject.h
+	src/GameTypes/GameObject.cpp
+	src/GameTypes/Desk.h
+	src/GameTypes/Desk.cpp
+	src/GameTypes/Game.h
+	src/GameTypes/Game.cpp
+	src/GameTypes/AllowedCell.h
+	src/GameTypes/AllowedCell.cpp
+	src/GameTypes/Figure.h
+	src/GameTypes/Figure.cpp
+	src/GameTypes/GameTypes.h
+#	src/Game/AI.h
+#	src/Game/AI.cpp
 	
-	src/Algorithms/Node.h
-	src/Algorithms/Node.cpp
-	src/Algorithms/Move.h
-	src/Algorithms/Move.cpp
-	src/Algorithms/hash_table.h
-	src/Algorithms/hash_table.cpp
-	src/Algorithms/FindPaths.h
-	src/Algorithms/FindPaths.cpp
-	src/Algorithms/StandartDebut.h
-	src/Algorithms/StandartDebut.cpp
+#	src/Algorithms/Node.h
+#	src/Algorithms/Node.cpp
+#	src/Algorithms/Move.h
+#	src/Algorithms/Move.cpp
+#	src/Algorithms/hash_table.h
+#	src/Algorithms/hash_table.cpp
+#	src/Algorithms/FindPaths.h
+#	src/Algorithms/FindPaths.cpp
+#	src/Algorithms/StandartDebut.h
+#	src/Algorithms/StandartDebut.cpp
 	
 	src/Input/Input.h
 	src/Input/Input.cpp
@@ -81,10 +87,10 @@ add_library(${PROJECT_NAME} STATIC
 	src/GLPref/GLPref.h
 	src/GLPref/GLPref.cpp
 	
-	src/Components/Component.h
-	src/Components/Component.cpp
-	src/Components/Physics/Collider.h
-	src/Components/Physics/Collider.cpp
+#	src/Components/Component.h
+#	src/Components/Component.cpp
+#	src/Components/Physics/Collider.h
+#	src/Components/Physics/Collider.cpp
 	src/Components/LuaScript.h
 	src/Components/LuaScript.cpp
 	)

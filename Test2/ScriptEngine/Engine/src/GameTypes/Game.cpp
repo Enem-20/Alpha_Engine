@@ -88,7 +88,7 @@ bool Game::init(const glm::ivec2& boardSize, const std::string& ExecutablePath)
 {
 	m_BoardSize = boardSize;
 	ResourceManager::SetExecutablePath(ExecutablePath);
-	auto DefaultShaderProgram = ResourceManager::loadShaders("DefaultShader", "res/shaders/vertex.txt", "res/shaders/fragment.txt");
+	/*auto DefaultShaderProgram = ResourceManager::loadShaders("DefaultShader", "res/shaders/vertex.txt", "res/shaders/fragment.txt");
 	if (!DefaultShaderProgram)
 	{
 		std::cerr << "Can't create shader program: " << "DefaultShader" << std::endl;
@@ -112,15 +112,7 @@ bool Game::init(const glm::ivec2& boardSize, const std::string& ExecutablePath)
 
 	ResourceManager::loadSprite("sprite_Desk", "Desk", "SpriteShader", m_BoardSize.x, m_BoardSize.y, "");
 
-	ResourceManager::loadSprite("sprite_allowed_cell", "allowed_cell", "SpriteShader", m_BoardSize.x / 8u, m_BoardSize.y / 8u, "");
-
-	glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(m_BoardSize.x), 0.f, static_cast<float>(m_BoardSize.y), -100.f, 100.f);
-
-	SpriteShaderProgram->setMatrix4("projectionMat", projectionMatrix);
-
-	SpriteShaderProgram->use();
-	SpriteShaderProgram->setInt("tex", 0);
-	SpriteShaderProgram->setMatrix4("projectionMat", projectionMatrix);
+	ResourceManager::loadSprite("sprite_allowed_cell", "allowed_cell", "SpriteShader", m_BoardSize.x / 8u, m_BoardSize.y / 8u, "");*/
 
 	return true;
 }

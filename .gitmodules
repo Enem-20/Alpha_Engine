@@ -1,7 +1,7 @@
 [submodule "Lua"]
 	path = Test2/ScriptEngine/external/Lua
 	url = https://github.com/walterschell/Lua.git
-[submodule "LuaBridge"]
+[submodule "sol2"]
 	path = Test2/ScriptEngine/external/sol2
 	url = https://github.com/ThePhD/sol2.git
 [submodule "pugixml"]

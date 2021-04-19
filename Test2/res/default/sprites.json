@@ -1,0 +1,37 @@
+[
+	{
+		"spriteName" : "Figure_black",
+		"textureName" : "Figures",
+		"shaderName" : "SpriteShader",
+		"spriteWidth" : 135,
+		"spriteHeight" : 135,
+		"subTextureName" : "black_pawn"
+	},
+	
+	{
+		"spriteName" : "Figure_white",
+		"textureName" : "Figures",
+		"shaderName" : "SpriteShader",
+		"spriteWidth" : 135,
+		"spriteHeight" : 135,
+		"subTextureName" : "white_pawn"
+	},
+
+	{
+		"spriteName" : "sprite_Desk",
+		"textureName" : "Desk",
+		"shaderName" : "SpriteShader",
+		"spriteWidth" : 1080,
+		"spriteHeight" : 1080,
+		"subTextureName" : ""
+	},
+	
+	{
+		"spriteName" : "sprite_allowed_cell",
+		"textureName" : "allowed_cell",
+		"shaderName" : "SpriteShader",
+		"spriteWidth" : 135,
+		"spriteHeight" : 135,
+		"subTextureName" : ""
+	}
+]
