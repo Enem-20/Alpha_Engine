@@ -6,117 +6,101 @@
          0.0,
          0.0
       ],
-	  "cellposition":[
-         0,
-         0
+      "rotation":[
+         0.0,
+         0.0,
+         0.0
       ],
-      "model":[
-         [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ],
-         [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ],
-         [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ],
-         [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ]
+      "scale":[
+         0.0,
+         0.0,
+         0.0
       ],
-      "sprite":"sprite_Desk"
+      
+      "Components":[
+      ],
+	  "sprite": "sprite_Desk",
+	  "render_priority":0
    },
    {
       "name":"object1",
       "position":[
-         135.0,
-         135.0,
+         200.0,
+         200.0,
          0.0
       ],
-      "cellposition":[
-         0,
-         0
+      "rotation":[
+         0.0,
+         0.0,
+         0.0
       ],
-      "model":[
-         [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ],
-         [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ],
-         [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ],
-         [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ]
+      "scale":[
+         0.0,
+         0.0,
+         0.0
       ],
       "Components":[
-         "res/scripts/move.lua"
+         {
+            "type":"LuaScript",
+            "path":"res/components/scripts/move.lua",
+            "name":"move"
+         }
       ],
-      "sprite":"Figure_black"
+	  "sprite":"sprite_figure_white",
+      "render_priority":1
    },
    {
       "name":"object2",
+      "position":[
+         100.0,
+         100.0,
+         0.0
+      ],
+      "rotation":[
+         0.0,
+         0.0,
+         0.0
+      ],
+      "scale":[
+         0.0,
+         0.0,
+         0.0
+      ],
+      
+      "Components":[
+      ],
+	  "sprite":"sprite_figure_black",
+	  "render_priority":1
+   },
+   {
+      "name":"Button",
       "position":[
          0.0,
          0.0,
          0.0
       ],
-      "cellposition":[
-         1,
-         1
+      "rotation":[
+         0.0,
+         0.0,
+         0.0
       ],
-      "model":[
-         [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ],
-         [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ],
-         [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ],
-         [
-            0.0,
-            0.0,
-            0.0,
-            0.0
-         ]
+      "scale":[
+         0.0,
+         0.0,
+         0.0
       ],
-      "sprite":"Figure_white"
+      "Components":[
+         {
+            "type":"Button",
+            "name":"Button1"
+         },
+		 {
+			 "type":"LuaScript",
+            "path":"res/components/scripts/button.lua",
+            "name":"button"
+		 }
+      ],
+	  "sprite":"sprite_Button",
+	  "render_priority":2
    }
 ]

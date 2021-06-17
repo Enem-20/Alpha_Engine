@@ -19,8 +19,8 @@ namespace RenderEngine
 			std::string initialSubTexture,
 			std::shared_ptr<ShaderProgram> shaderProgram,
 			const glm::vec2& position = glm::vec2(0.f),
-			const glm::vec2& size = glm::vec2(1.f),
-			const float rotation = 0.f);
+			const glm::vec3& rotation = glm::vec3(0.f),
+			const glm::vec2& size = glm::vec2(1.f));
 		void insertState(std::string state, std::vector<std::pair<std::string, uint64_t>> subTexturesDuration);
 		void render(glm::mat4 model) const override;
 		void Update(const uint64_t deltaTime);

@@ -34,6 +34,9 @@ namespace ScriptEngine
 		static void Reg_SubTexture2D(sol::table* LTexture2D);
 		static void Reg_Texture2D(sol::table* same);
 		static void Reg_Sprite(sol::table* object);
+		static void Reg_UIelement(sol::table* UIElement);
+		static void Reg_Input(sol::table* Lnamespace);
+		static void Reg_Transform(sol::table* Lnamespace);
 		static void Reg_GameObject(sol::table* object);
 
 		static void Reg_Timer(sol::table* Lnamespace);

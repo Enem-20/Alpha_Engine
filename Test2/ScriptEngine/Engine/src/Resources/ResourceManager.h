@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <map>
 #include <vector>
+#include <variant>
 
 #include <rapidjson/rapidjson.h>
 #include <rapidjson/document.h>
@@ -17,9 +18,24 @@ namespace RenderEngine
 	class AnimatedSprite;
 }
 
+namespace Components
+{
+	class LuaScript;
+}
+
+namespace UI
+{
+	class Button;
+}
+
 class ResourceManager
 {
 public:
+	struct m_Components
+	{
+		std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts;
+		std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons;
+	};
 	static void SetExecutablePath(const std::string& executablePath);
 	static void UnloadAllResources();
 
@@ -40,6 +56,7 @@ public:
 												const std::string& shaderName,
 												const unsigned int spriteWidth,
 												const unsigned int spriteHeight,
+												const int RenderMode,
 												const std::string& subTextureName = "default");
 	static std::shared_ptr<RenderEngine::Sprite> getSprite(const std::string& spriteName);
 
@@ -59,12 +76,16 @@ public:
 														  const unsigned int subTextureHeight);
 	static std::string GetLuaScriptPath(const std::string& relativePath);
 
+	static rapidjson::Document documentParse(const std::string& relativePath);
+
 	static bool loadJSONScene(const std::string& relativePath);
 	static bool loadJSONGameOjects(const std::string& relativePath);
 	static bool loadJSONSprites(const std::string& relativePath);
 	static bool loadJSONTextureAtlasses(const std::string& relativePath);
+	static bool loadJSONText(const std::string& relativePath);
 	static bool loadJSONTextures(const std::string& relativePath);
 	static bool loadJSONShaders(const std::string& relativePath);
+	static m_Components loadJSONComponents(const rapidjson::Value& it);
 
 	static std::string GetPath() { return m_path; }
 private:

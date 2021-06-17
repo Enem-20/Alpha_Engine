@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 {
 	
 	ScriptEngine::ScriptProcessor::init();
-	sol::table Lobject = ScriptEngine::ScriptProcessor::L["Helpers"].get_or_create<sol::table>();
+	sol::table Lobject = ScriptEngine::ScriptProcessor::L["Engine"].get_or_create<sol::table>();
 	std::thread th(ScriptEngine::ClassRegistrator::Registration, &Lobject);
 
 	th.join();
@@ -33,6 +33,5 @@ int main(int argc, char** argv)
 #ifdef OGL
 	Engine::EngineMain::Init(argv);
 #endif
-	//ScriptEngine::ScriptProcessor::L.script_file(ResourceManager::GetLuaScriptPath("res/scripts/GameObject_test.lua"));
 	return 0;
 }

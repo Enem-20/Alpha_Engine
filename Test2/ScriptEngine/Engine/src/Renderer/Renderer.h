@@ -4,6 +4,8 @@
 #include "IndexBuffer.h"
 #include "ShaderProgram.h"
 
+#include <glm/vec2.hpp>
+
 #include <string>
 
 namespace RenderEngine
@@ -18,5 +20,7 @@ namespace RenderEngine
 		
 		static const std::string getRendererStr();
 		static const std::string getVersionStr();
+
+		static glm::dvec2 ViewportSize;
 	};
 }

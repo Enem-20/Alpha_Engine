@@ -1,20 +1,22 @@
 [
 	{
-		"spriteName" : "Figure_black",
+		"spriteName" : "sprite_figure_black",
 		"textureName" : "Figures",
 		"shaderName" : "SpriteShader",
 		"spriteWidth" : 135,
 		"spriteHeight" : 135,
-		"subTextureName" : "black_pawn"
+		"subTextureName" : "subTexture_black_queen",
+		"RenderMode" : 1
 	},
 	
 	{
-		"spriteName" : "Figure_white",
+		"spriteName" : "sprite_figure_white",
 		"textureName" : "Figures",
 		"shaderName" : "SpriteShader",
 		"spriteWidth" : 135,
 		"spriteHeight" : 135,
-		"subTextureName" : "white_pawn"
+		"subTextureName" : "subTexture_white_queen",
+		"RenderMode" : 1
 	},
 
 	{
@@ -23,7 +25,8 @@
 		"shaderName" : "SpriteShader",
 		"spriteWidth" : 1080,
 		"spriteHeight" : 1080,
-		"subTextureName" : ""
+		"subTextureName" : "",
+		"RenderMode" : 1
 	},
 	
 	{
@@ -32,6 +35,17 @@
 		"shaderName" : "SpriteShader",
 		"spriteWidth" : 135,
 		"spriteHeight" : 135,
-		"subTextureName" : ""
+		"subTextureName" : "",
+		"RenderMode" : 1
+	},
+	
+	{
+		"spriteName" : "sprite_Button",
+		"textureName" : "Button",
+		"shaderName" : "SpriteShader",
+		"spriteWidth" : 135,
+		"spriteHeight" : 80,
+		"subTextureName" : "",
+		"RenderMode" : 1
 	}
 ]

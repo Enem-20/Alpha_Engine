@@ -49,42 +49,6 @@ namespace RenderEngine
 
 		void bind() const;
 
-		/*rapidjson::StringBuffer Serialize(prettywriter* writer = nullptr, std::string name = "")
-		{
-			rapidjson::StringBuffer sb;
-			if (writer && name != "")
-			{
-				writer->Key(name.c_str());
-			}
-			else
-			{
-				writer = new prettywriter(sb);
-			}
-
-			writer->StartObject();
-
-			writer->Key("path");
-			writer->String(path.c_str());
-			writer->Key("name");
-			writer->String(name.c_str());
-
-			writer->Key("m_width");
-			writer->Double(m_width);
-			writer->Key("m_height");
-			writer->Double(m_height);
-
-			writer->Key("m_subTextures");
-			writer->StartArray();
-			for (auto& it : m_subTextures)
-			{
-				it.second.leftBottomUV.Serialize(writer, "leftBottomUV");
-				it.second.rightTopUV.Serialize(writer, "rightTopUV");
-			}
-			writer->EndArray();
-
-			writer->EndObject();
-		}*/
-
 		std::string path;
 		std::string name;
 	private:

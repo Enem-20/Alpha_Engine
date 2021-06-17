@@ -1,33 +1,23 @@
 #pragma once
 
-#include <memory>
 #include <string>
-#include <list>
-#include <functional>
+#include <memory>
 
-#include <glm/vec2.hpp>
+class GameObject;
 
-#include "../Game/Figure.h"
-
-#define CLASS_DECLARATION { public: Component() : componentIdentificator(std::hash<std::string>(className))}
-
-class Component
+namespace Components
 {
-public:
-	Component(Figure* gObject = nullptr);
+	class Component
+	{
+	public:
+		Component(std::string name = "", std::shared_ptr<GameObject> gameObject = nullptr)
+			: name(name)
+			, gameObject(gameObject)
+		{}
 
-public:
-	virtual void Set_cell_size(const glm::ivec2 new_cell_size) = 0;
-	virtual glm::ivec2& Get_cell_size() = 0;
-	virtual Figure* Get_Visitor(size_t concrete_visitor) = 0;
-	virtual std::list<Figure*>& Get_Visitors() = 0;
-	
-	virtual void GetUpdater(std::function<void()> updater) = 0;
-	Figure* gObject;
-	std::hash<std::string> componentIdentificator;
-	std::string className;
-protected:
-	std::list<Figure*> visitors;
-	std::function<void()> update;
-	glm::ivec2 cell_size;
-};
+		std::string name;
+		std::shared_ptr<GameObject> gameObject;
+	protected:
+
+	};
+}

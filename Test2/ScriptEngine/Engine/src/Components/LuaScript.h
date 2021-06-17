@@ -1,17 +1,19 @@
 #pragma once
 
 #include "../../../src/ScriptEngine.h"
+#include "Component.h"
 
 #include <sol/sol.hpp>
 
+class GameObject;
 
 namespace Components
 {
-	class LuaScript
+	class LuaScript : public Component
 	{
 	public:
 		LuaScript(sol::function& Awake, sol::function& Start, sol::function& Update, sol::function& FixedUpdate, sol::function& LastUpdate);
-		LuaScript(std::string name, std::string path);
+		LuaScript(std::string name, std::string path, std::shared_ptr<GameObject> gameObject = nullptr);
 		void AddAwake(sol::function& Awake);
 		void AddStart(sol::function& Start);
 		void AddUpdate(sol::function& Update);
@@ -26,7 +28,6 @@ namespace Components
 		void FixedUpdate() { m_FixedUpdate(); }
 		void LastUpdate() { m_LastUpdate(); }
 
-		std::string m_name;
 		std::string m_path;
 	private:
 		sol::function m_Awake;

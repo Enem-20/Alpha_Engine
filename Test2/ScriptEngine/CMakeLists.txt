@@ -1,6 +1,6 @@
 project(ScriptEngine)
 
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} STATIC
 			src/ScriptEngine.h
 			src/ScriptEngine.cpp
 			src/LuaParser.h

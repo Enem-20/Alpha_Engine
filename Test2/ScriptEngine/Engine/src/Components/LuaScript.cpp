@@ -10,8 +10,8 @@ namespace Components
 		, m_FixedUpdate(FixedUpdate)
 		, m_LastUpdate(LastUpdate)
 	{}
-	LuaScript::LuaScript(std::string name, std::string path)
-		: m_name(name)
+	LuaScript::LuaScript(std::string name, std::string path, std::shared_ptr<GameObject> gameObject)
+		: Component(name, gameObject)
 		, m_path(path)
 	{
 		LoadScript();

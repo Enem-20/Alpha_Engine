@@ -2,6 +2,9 @@
 #include "../Engine/src/GameTypes/GameTypes.h"
 #include "../Engine/src/Scene/Hierarchy.h"
 #include "../Engine/src/Timer.h"
+#include "../Engine/src/UI/Button.h"
+#include "../Engine/src/Input/Input.h"
+#include "../Engine/src/Components/Components.h"
 
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
@@ -165,8 +168,8 @@ namespace ScriptEngine
 				std::string,
 				std::shared_ptr<RenderEngine::ShaderProgram>,
 				const glm::vec2& position,
-				const glm::vec2& size,
-				const float rotation)>()
+				const glm::vec3& rotation,
+				const glm::vec2& size)>()
 
 			, "render", &RenderEngine::Sprite::render
 			, "setPosition", &RenderEngine::Sprite::setPosition
@@ -176,21 +179,31 @@ namespace ScriptEngine
 			);
 	}
 
+	void ClassRegistrator::Reg_UIelement(sol::table* UIElement)
+	{
+		UIElement->new_usertype<UI::UIelement>("UIelement"
+			, "AddListener", &UI::UIelement::AddListener);
+	}
+
+	void ClassRegistrator::Reg_Transform(sol::table* Lnamespace)
+	{
+		Lnamespace->new_usertype<Components::Transform>("Transform"
+			, sol::constructors<Components::Transform(std::string, std::shared_ptr<GameObject>), Components::Transform(const Components::Transform&)>()
+			, "position", &Components::Transform::position
+			, "rotation", &Components::Transform::rotation
+			, "scale", &Components::Transform::scale);
+	}
+
 	void ClassRegistrator::Reg_GameObject(sol::table* object)
 	{
 		object->new_usertype<GameObject>("GameObject"
 			, sol::constructors<GameObject(std::string), GameObject(const GameObject&)>()
 
 			, "Translate", &GameObject::Translate
-			, "Rotate", &GameObject::Rotate
-			, "render", &GameObject::render
-			, "SetSprite", sol::overload(&GameObject::SetSprite, &GameObject::SetSpriteCopy)
-			, "GetSprite", &GameObject::GetSprite
-			/*, "GetRaw", &GameObject::GetRaw
-			, "testShared", &GameObject::testShared*/
+			, "Rotate",   &GameObject::Rotate
+			, "AddChild", &GameObject::AddChild
+			, "GetChild", &GameObject::GetChild
 
-			, "position", &GameObject::position
-			, "cellposition", &GameObject::cellposition
 			, "name", &GameObject::name
 			);
 	}
@@ -205,6 +218,12 @@ namespace ScriptEngine
 			, "IsStart", &Timer::IsStart
 			, "GetStart", &Timer::GetStart
 			, "GetEnd", &Timer::GetEnd);
+	}
+
+	void ClassRegistrator::Reg_Input(sol::table* Lnamespace)
+	{
+		Lnamespace->new_usertype<Input>("Input"
+			, "GetUI", &Input::GetUI);
 	}
 
 	void ClassRegistrator::Reg_Hierarchy(sol::table* hierarchy)
@@ -230,7 +249,9 @@ namespace ScriptEngine
 			Reg_GameObject(Lnamespace);
 			Reg_Hierarchy(Lnamespace);
 			Reg_Timer(Lnamespace);
-			//Lnamespace->set_function("GetData", &GetData);
+			Reg_UIelement(Lnamespace);
+			Reg_Input(Lnamespace);
+			Reg_Transform(Lnamespace);
 
 			return 0;
 		}

@@ -4,24 +4,44 @@ set(PROJECT_NAME Engine)
 
 project(${PROJECT_NAME})
 
+# set(UI
+	# src/UI/WindowManager.h
+	# src/UI/WindowManager.cpp
+	# src/UI/Window.h
+	# src/UI/Window.cpp
+	# src/UI/UIelement.h
+	# src/UI/UIelement.cpp
+	# src/UI/Button.h
+	# src/UI/Button.cpp
+	# src/UI/Canvas.h
+	# src/UI/Canvas.cpp
+	# src/UI/ColorBuffer.h
+	# src/UI/ColorBuffer.cpp
+	# src/UI/Text.h
+	# src/UI/Text.cpp)
+
+# source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}\src" PREFIX "UI" FILES ${UI})
+
 add_library(${PROJECT_NAME} STATIC
 	src/EngineMain.h
 	src/EngineMain.cpp
 	src/Timer.h
 	src/Timer.cpp
 	
-	src/Interfaces/ISerializer.h
-#	src/Messenger.h
-#	src/Messenger.cpp
-	
-#	src/Helpers/casts.h
-#	src/Helpers/casts.cpp
-#	src/Helpers/vector3.h
-#	src/Helpers/vector3.cpp
-#	src/Helpers/vector2.h
-#	src/Helpers/vector2.cpp
-#	src/Helpers/mat3.h
-#	src/Helpers/mat3.cpp
+	src/UI/WindowManager.h
+	src/UI/WindowManager.cpp
+	src/UI/Window.h
+	src/UI/Window.cpp
+	src/UI/UIelement.h
+	src/UI/UIelement.cpp
+	src/UI/Button.h
+	src/UI/Button.cpp
+	src/UI/Canvas.h
+	src/UI/Canvas.cpp
+	src/UI/ColorBuffer.h
+	src/UI/ColorBuffer.cpp
+	src/UI/Text.h
+	src/UI/Text.cpp
 	
 	src/Renderer/ShaderProgram.h
 	src/Renderer/ShaderProgram.cpp
@@ -58,15 +78,13 @@ add_library(${PROJECT_NAME} STATIC
 	
 	src/GameTypes/GameObject.h
 	src/GameTypes/GameObject.cpp
-	src/GameTypes/Desk.h
-	src/GameTypes/Desk.cpp
-	src/GameTypes/Game.h
-	src/GameTypes/Game.cpp
-	src/GameTypes/AllowedCell.h
-	src/GameTypes/AllowedCell.cpp
-	src/GameTypes/Figure.h
-	src/GameTypes/Figure.cpp
 	src/GameTypes/GameTypes.h
+	
+	src/Physics/Raycast2D.h
+	src/Physics/Raycast2D.cpp
+	src/Physics/Collider.h
+	src/Physics/Collider.cpp
+	
 #	src/Game/AI.h
 #	src/Game/AI.cpp
 	
@@ -87,12 +105,15 @@ add_library(${PROJECT_NAME} STATIC
 	src/GLPref/GLPref.h
 	src/GLPref/GLPref.cpp
 	
-#	src/Components/Component.h
-#	src/Components/Component.cpp
+	src/Components/Component.h
+	src/Components/Component.cpp
+	src/Components/Components.h
 #	src/Components/Physics/Collider.h
 #	src/Components/Physics/Collider.cpp
 	src/Components/LuaScript.h
 	src/Components/LuaScript.cpp
+	src/Components/Transform.h
+	src/Components/Transform.cpp
 	)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
@@ -105,10 +126,11 @@ set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 add_subdirectory(external/glfw)
 add_subdirectory(external/glad)
 add_subdirectory(external/Lua)
+add_subdirectory(external/freetype)
 
 target_include_directories(${PROJECT_NAME} PUBLIC external/glm)
 target_include_directories(${PROJECT_NAME} PUBLIC external/sol2/include)
 target_include_directories(${PROJECT_NAME} PUBLIC external/rapidjson/include)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC lua_static)
-target_link_libraries(${PROJECT_NAME} PUBLIC glad glfw)
+target_link_libraries(${PROJECT_NAME} PUBLIC glad glfw freetype)

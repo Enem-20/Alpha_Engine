@@ -8,18 +8,18 @@
 		"subTextureHeight" : 67,
 		"subTextures" : 
 		[
-			"black_castle",
-			"black_knight",
-			"black_bishop",
-			"black_queen",
-			"black_king",
-			"black_pawn",
-			"white_castle",
-			"white_knight",
-			"white_bishop",
-			"white_queen",
-			"white_king",
-			"white_pawn"
+			"subTexture_black_castle",
+			"subTexture_black_knight",
+			"subTexture_black_bishop",
+			"subTexture_black_queen",
+			"subTexture_black_king",
+			"subTexture_black_pawn",
+			"subTexture_white_castle",
+			"subTexture_white_knight",
+			"subTexture_white_bishop",
+			"subTexture_white_queen",
+			"subTexture_white_king",
+			"subTexture_white_pawn"
 		]
 	}
 ]

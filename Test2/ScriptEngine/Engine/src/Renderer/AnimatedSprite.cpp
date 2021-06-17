@@ -8,9 +8,9 @@ namespace RenderEngine
 		std::string initialSubTexture,
 		std::shared_ptr<ShaderProgram> shaderProgram,
 		const glm::vec2& position,
-		const glm::vec2& size,
-		const float rotation)
-		: Sprite (std::move(Texture), std::move(initialSubTexture), std::move(shaderProgram), position, size, rotation)
+		const glm::vec3& rotation,
+		const glm::vec2& size)
+		: Sprite (std::move(Texture), std::move(initialSubTexture), std::move(shaderProgram), position, rotation, size)
 	{
 		m_CurrentAnimationDurations = m_statesMap.end();
 

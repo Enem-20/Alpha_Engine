@@ -25,38 +25,47 @@ namespace RenderEngine
 		friend Serializer;
 		friend DeserializerSprite;
 	public:
+		std::string name;
 		//Sprite() = default;
 		Sprite(std::shared_ptr<Texture2D> Texture,
 			   std::string initialSubTexture,
 			   std::shared_ptr<ShaderProgram> shaderProgram, 
-			   const glm::vec2& position = glm::vec2(135.f, 135.f),
+			   const glm::vec2& position = glm::vec2(0.f, 0.f),
+			   const glm::vec3& rotation = glm::vec3(1.f),
 			   const glm::vec2& size = glm::vec2(1.f),
-			   const float rotation = 0.f);
-		~Sprite();
+			   const int RenderMode = GL_DYNAMIC_DRAW);
+		virtual ~Sprite();
 
 		Sprite() = delete;
 		Sprite(const Sprite& sprite);
 		Sprite& operator=(const Sprite&) = delete;
 		Sprite(Sprite&& sprite) noexcept;
 
+		void Translate(glm::vec3 position);
+		void Rotate(glm::vec3 rotation);
+		void Scale(glm::vec3 scale);
 		virtual void render(glm::mat4 model) const;
 		virtual void InstanceRender(glm::mat4 model) const;
 		void setPosition(const glm::vec2& position);
 		glm::vec2 getSize() const;
-		float getRotation() const;
+		glm::vec3 getRotation() const;
 		void setSize(const glm::vec2& size);
-		void setRotation(const float rotation);
+		void setRotation(const glm::vec3& rotation);
+		int GetRenderMode() const;
+		void SetRenderMode(int RenderMode);
 	protected:
 		std::shared_ptr<Texture2D> m_Texture;
 		std::shared_ptr<ShaderProgram> m_shaderProgram;
 		glm::vec2 m_position;
+		glm::vec3 m_rotation;
 		glm::vec2 m_size;
-		float m_rotation;
+		glm::mat4 model;
 
 		std::string m_subTextureName;
 		VertexArray m_vertexArray;
 		VertexBuffer m_vertexCoordsBuffer;
 		VertexBuffer m_textureCoordsBuffer;
 		IndexBuffer m_IndexBuffer;
+		int RenderMode;
 	};
 }

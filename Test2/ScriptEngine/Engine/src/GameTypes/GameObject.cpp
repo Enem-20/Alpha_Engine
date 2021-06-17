@@ -1,6 +1,8 @@
 #include "GameObject.h"
-#include "Game.h"
+
 #include "../Scene/Hierarchy.h"
+#include "../Resources/ResourceManager.h"
+#include "../UI/Button.h"
 
 #include <typeinfo>
 
@@ -8,116 +10,134 @@
 #include <../glm/glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "../Resources/ResourceManager.h"
-
-
-struct callAwake final
-{
-	void operator()(Components::LuaScript& l) { l.Awake(); }
-};
 
 GameObject::GameObject(std::string name,
+	std::shared_ptr<Components::Transform> transform,
 	std::shared_ptr<RenderEngine::Sprite> sprite,
-	glm::vec3 position,
-	glm::ivec2 cellposition,
-	glm::mat4 model,
-	std::unordered_map<std::string, std::variant<Components::LuaScript>> Components)
+	std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts,
+	std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons,
+	int render_priority)
 	: name(name)
+	, transform(transform)
 	, sprite(sprite)
-	, position(position)
-	, cellposition(cellposition)
-	, model(model)
-	, m_Components(Components)
+	, scripts(scripts)
+	, buttons(buttons)
+	, render_priority(render_priority)
 {
-	this->model = glm::mat4(1.f);
+	transform->Translate(glm::vec3(0.f));
+	transform->Rotate(glm::vec3(0.f));
+	transform->Scale(glm::vec3(sprite->getSize(), 0.f));
 
-	if (sprite) 
-	{ 
-		this->model = glm::translate(this->model, position);
-		this->model = glm::scale(this->model, glm::vec3(this->sprite->getSize(), 0));
-	}
-	else{ this->model = glm::scale(this->model, glm::vec3(135, 135, 0)); }
+	this->render_priority = render_priority;
 
-	for (auto& itComponents : m_Components)
+	Hierarchy::addObject(std::make_shared<GameObject>(*this));		
+	for (auto itScripts : scripts)
 	{
-		std::visit(callAwake{}, itComponents.second);
+		itScripts.second->gameObject = Hierarchy::getObject(name);
+		itScripts.second->Awake();
 	}
-
-	Hierarchy::addObject(std::make_shared<GameObject>(*this));
+	for (auto button : buttons)
+	{
+		button.second->gameObject = Hierarchy::getObject(name);
+		button.second->setParamCollider();
+	}
 }
 
 GameObject::GameObject(const GameObject& gameObject)
+	: transform(gameObject.transform)
+	, scripts(gameObject.scripts)
+	, buttons(gameObject.buttons)
 {
-	this->cellposition = gameObject.cellposition;
-	this->model = gameObject.model;
-	this->m_ShaderProgram = gameObject.m_ShaderProgram;
 	this->name = gameObject.name;
-	this->position = gameObject.position;
 	this->sprite = gameObject.sprite;
-	this->m_Components = gameObject.m_Components;
+	this->render_priority = gameObject.render_priority;
 }
 
 GameObject::~GameObject()
 {
-	sprite.reset();
-	m_ShaderProgram.reset();
 }
 
 void GameObject::render()
 {
-	if (sprite) { sprite->render(model); }
+	if (sprite)
+	{
+		sprite->render(transform->GetModel());
+	}
+
+	for (auto it : children)
+	{
+		it->render();
+	}
 }
 
 void GameObject::Translate(glm::vec3 position)
 {
-	model = glm::mat4(1.f);
+	transform->Translate(position);
+	for (auto it : children)
+	{
+		it->Translate(position);
+	}
 
-	cellposition.x = position.x / 8;
-	cellposition.y = position.y / 8;
-	this->position += position;
-
-	model = glm::rotate(model, this->sprite->getRotation(), glm::vec3(0, 0, 1));
-	model = glm::translate(model, this->position);
-	model = glm::scale(model, glm::vec3(this->sprite->getSize(), 0));
-
-	sprite->setPosition(position);
+	Update();
 }
 
-void GameObject::Rotate(const float rotation)
+void GameObject::Rotate(glm::vec3 rotation)
 {
-	glm::mat4 model(1.f);
+	transform->Rotate(std::move(rotation));
+	for (auto it : children)
+	{
+		it->Rotate(rotation);
+	}
 
-	model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 0));
+	Update();
 }
 
-std::shared_ptr<RenderEngine::Sprite> GameObject::GetSprite()
+void GameObject::Scale(glm::vec3 scale)
+{
+	transform->Scale(std::move(scale));
+	for (auto it : children)
+	{
+		it->Scale(scale);
+	}
+
+	Update();
+}
+
+void GameObject::Update()
+{
+	for (auto it : buttons)
+	{
+		it.second->setParamCollider();
+	}
+}
+
+std::shared_ptr<RenderEngine::Sprite> GameObject::GetSprite() const
 {
 	return sprite;
 }
 
-void GameObject::SetSprite(const std::string& spriteName,
-	const std::string& textureName,
-	const std::string& shaderName,
-	const unsigned int spriteWidth,
-	const unsigned int spriteHeight,
-	const std::string& subTextureName)
-{
-	if (ResourceManager::getSprite(spriteName) == nullptr)
-	{
-		ResourceManager::loadSprite(spriteName, textureName, shaderName, spriteWidth, spriteHeight, subTextureName);
-	}
-	else
-	{
-		sprite = ResourceManager::getSprite(spriteName);
-	}
-}
+//void GameObject::SetSprite(const std::string& spriteName,
+//	const std::string& textureName,
+//	const std::string& shaderName,
+//	const unsigned int spriteWidth,
+//	const unsigned int spriteHeight,
+//	const std::string& subTextureName)
+//{
+//	if (ResourceManager::getSprite(spriteName) == nullptr)
+//	{
+//		ResourceManager::loadSprite(spriteName, textureName, shaderName, spriteWidth, spriteHeight, subTextureName);
+//	}
+//	else
+//	{
+//		sprite = ResourceManager::getSprite(spriteName);
+//	}
+//}
 
-void GameObject::SetSpriteCopy(const std::shared_ptr<RenderEngine::Sprite> sprite)
+void GameObject::AddChild(std::shared_ptr<GameObject> gameObject)
 {
-	this->sprite = std::make_shared<RenderEngine::Sprite>(*sprite);
+	children.push_back(gameObject);
 }
-
-void GameObject::SetModel(glm::mat4&& model)
+std::shared_ptr<GameObject> GameObject::GetChild(int i) const
 {
-	this->model = std::move(model);
+	return children[i];
 }

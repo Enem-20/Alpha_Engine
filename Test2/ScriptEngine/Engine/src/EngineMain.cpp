@@ -3,6 +3,10 @@
 #include "Renderer/Renderer.h"
 #include "Scene/Scene.h"
 #include "../../src/ScriptEngine.h"
+#include "UI/WindowManager.h"
+#include "Resources/ResourceManager.h"
+#include "GameTypes/GameTypes.h"
+#include "Input/Input.h"
 
 #include <filesystem>
 #include <fstream>
@@ -10,57 +14,79 @@
 
 namespace Engine
 {
+#ifdef OGL
 	void EngineMain::FirstFrame()
 	{
-		glfwPollEvents();
+		GLPref::PollEvents();
 
 		RenderEngine::Renderer::clear();
 
 		ScriptEngine::ScriptProcessor::Start();
 
-		for (auto Objects : Hierarchy::SceneObjects)
+		render();
+
+		Input::Update();
+
+		GLPref::SwapBuffers();
+	}
+
+	void EngineMain::ScriptUpdates()
+	{
+		ScriptEngine::ScriptProcessor::Update();
+		ScriptEngine::ScriptProcessor::FixedUpdate();
+		ScriptEngine::ScriptProcessor::LastUpdate();
+	}
+
+	void EngineMain::render()
+	{
+		auto cmp = [](const std::shared_ptr<GameObject> a, const std::shared_ptr<GameObject> b) {return (a->render_priority > b->render_priority); };
+		std::priority_queue < std::shared_ptr<GameObject>, std::vector<std::shared_ptr<GameObject>>, decltype(cmp)>render_queue(cmp);
+		for (auto it : Hierarchy::SceneObjects)
 		{
-			Objects.second->render();
+			render_queue.push(it.second);
 		}
 
-		glfwSwapBuffers(Game::MainWindow);
+		while (!render_queue.empty())
+		{
+			render_queue.top()->render();
+			render_queue.pop();
+		}
 	}
 
 	void EngineMain::Init(char** argv)
 	{
+
 		GLPref::init();
 		{
-			Game game;
-			int width, height;
-			glfwGetWindowSize(GLPref::Mainwindow, &width, &height);
-			Game::init(glm::ivec2(width, height), argv[0]);
+			ResourceManager::SetExecutablePath(argv[0]);
 
 			ResourceManager::loadJSONScene("res/default/main.json");
 
 			FirstFrame();
 
-			while (!glfwWindowShouldClose(Game::MainWindow))
-			{
-				glfwPollEvents();
 
+			while (!GLPref::isNeedClose())
+			{
+				GLPref::PollEvents();
+
+				
 				RenderEngine::Renderer::clear();
 
-				ScriptEngine::ScriptProcessor::Update();
-				ScriptEngine::ScriptProcessor::FixedUpdate();
-				ScriptEngine::ScriptProcessor::LastUpdate();
+				render();
+				
+				std::thread th(Input::Update);
+				
+				ScriptUpdates();
+				
+				th.join();
 
-				for (auto Objects : Hierarchy::SceneObjects)
-				{
-					Objects.second->render();
-				}
-
-				glfwSwapBuffers(Game::MainWindow);
+				GLPref::SwapBuffers();
 			}
 		}
 
-		
 		std::thread th(ResourceManager::UnloadAllResources);
 		glfwTerminate();
 		th.join();
 	}
+#endif
 }

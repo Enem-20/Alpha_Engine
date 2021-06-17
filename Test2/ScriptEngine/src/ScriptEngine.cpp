@@ -3,22 +3,30 @@
 #include "../Engine/src/GameTypes/GameObject.h"
 
 
-struct callStart final
-{
-	void operator()(Components::LuaScript& l) { l.Start(); }
-};
-struct callUpdate final
-{
-	void operator()(Components::LuaScript& l) { l.Update(); }
-};
-struct callFixedUpdate final
-{
-	void operator()(Components::LuaScript& l) { l.FixedUpdate(); }
-};
-struct callLastUpdate final
-{
-	void operator()(Components::LuaScript& l) { l.LastUpdate(); }
-};
+//struct callStart final
+//{
+//	void operator()(Components::LuaScript& l) { l.Start(); }
+//	void operator()(UI::Button& button) {}
+//	void operator()(RenderEngine::Sprite& sprite){}
+//};
+//struct callUpdate final
+//{
+//	void operator()(Components::LuaScript& l) { l.Update(); }
+//	void operator()(UI::Button& button){}
+//	void operator()(RenderEngine::Sprite& sprite) {}
+//};
+//struct callFixedUpdate final
+//{
+//	void operator()(Components::LuaScript& l) { l.FixedUpdate(); }
+//	void operator()(UI::Button& button) {}
+//	void operator()(RenderEngine::Sprite& sprite) {}
+//};
+//struct callLastUpdate final
+//{
+//	void operator()(Components::LuaScript& l) { l.LastUpdate(); }
+//	void operator()(UI::Button& button) {}
+//	void operator()(RenderEngine::Sprite& sprite) {}
+//};
 
 namespace ScriptEngine
 {
@@ -32,9 +40,9 @@ namespace ScriptEngine
 	{
 		for (const auto& itObjects : Hierarchy::SceneObjects)
 		{
-			for (auto& itComponents : itObjects.second->m_Components)
+			for (auto& itScripts : itObjects.second->scripts)
 			{
-				std::visit(callStart{}, itComponents.second);
+				itScripts.second->Start();
 			}
 		}
 	}
@@ -42,10 +50,10 @@ namespace ScriptEngine
 	{
 		for (const auto& itObjects : Hierarchy::SceneObjects)
 		{
-			for (auto& itComponents : itObjects.second->m_Components)
+			for (auto& itScripts : itObjects.second->scripts)
 			{
 				GeneralTimer->StartUpdateTimer();
-				std::visit(callUpdate{}, itComponents.second);
+				itScripts.second->Update();
 				GeneralTimer->EndUpdateTimer();
 			}
 		}
@@ -54,9 +62,9 @@ namespace ScriptEngine
 	{
 		for (const auto& itObjects : Hierarchy::SceneObjects)
 		{
-			for (auto& itComponents : itObjects.second->m_Components)
+			for (auto& itScripts : itObjects.second->scripts)
 			{
-				std::visit(callFixedUpdate{}, itComponents.second);
+				itScripts.second->FixedUpdate();
 			}
 		}
 	}
@@ -64,9 +72,9 @@ namespace ScriptEngine
 	{
 		for (const auto& itObjects : Hierarchy::SceneObjects)
 		{
-			for (auto& itComponents : itObjects.second->m_Components)
+			for (auto& itScripts : itObjects.second->scripts)
 			{
-				std::visit(callLastUpdate{}, itComponents.second);
+				itScripts.second->LastUpdate();
 			}
 		}
 	}

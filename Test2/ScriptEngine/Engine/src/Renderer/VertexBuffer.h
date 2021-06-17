@@ -15,7 +15,7 @@ namespace RenderEngine
 		VertexBuffer& operator=(VertexBuffer&& vertexBuffer) noexcept;
 		VertexBuffer(VertexBuffer&& vertexBuffer) noexcept;
 
-		void init(const void* data, const unsigned int size);
+		void init(const void* data, const unsigned int size, const int RenderMode = GL_DYNAMIC_DRAW);
 		void update(const void* data, const unsigned int size) const;
 		void bind() const;
 		void unbind() const;

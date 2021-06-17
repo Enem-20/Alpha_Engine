@@ -24,11 +24,11 @@ namespace RenderEngine
 		vertexBuffer.m_id = 0;
 	}
 
-	void VertexBuffer::init(const void* data, const unsigned int size)
+	void VertexBuffer::init(const void* data, const unsigned int size, const int RenderMode)
 	{
 		glGenBuffers(1, &m_id);
 		glBindBuffer(GL_ARRAY_BUFFER, m_id);
-		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, size, data, RenderMode);
 	}
 	void VertexBuffer::update(const void* data, const unsigned int size) const
 	{

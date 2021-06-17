@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Resources/ResourceManager.h"
-#include "GameTypes/Game.h"
-#include "GameTypes/GameObject.h"
-#include "GameTypes/Desk.h"
-//#include <memory>
+#include<queue>
+#include<memory>
+#include<vector>
+
+class GameObject;
 
 namespace Engine
 {
@@ -14,5 +14,7 @@ namespace Engine
 		static void Init(char** argv);
 	private:
 		static void FirstFrame();
+		static void render();
+		static void ScriptUpdates();
 	};
 }
