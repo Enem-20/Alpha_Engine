@@ -28,15 +28,44 @@ namespace UI
 		{
 			Character(FT_Face face);
 
-			std::shared_ptr<RenderEngine::Texture2D> texture2D; // ID текстуры глифа
+			//std::shared_ptr<RenderEngine::Texture2D> texture2D; // ID текстуры глифа
+			std::shared_ptr<RenderEngine::Sprite> sprite;	
 			glm::ivec2 Size; // размер глифа
 			glm::ivec2 Bearing; // смещение от линии шрифта до верхнего/левого угла глифа
 			unsigned int Advance; // смещение до следующего глифа
 		};
 
-		void render() override
+		void render(glm::mat4 model) override
 		{
+			float scale = 5;
+			float x = 0;
+			float y = 20;
+			std::string::const_iterator c;
+			for (c = strText.begin(); c != strText.end(); c++)
+			{
+				Character ch = Characters.find(*c)->second;
 
+				GLfloat xpos = x + ch.Bearing.x * scale;
+				GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+
+				GLfloat w = ch.Size.x * scale;
+				GLfloat h = ch.Size.y * scale;
+				// Update VBO for each character
+				GLfloat vertices[6][4] = {
+					{ xpos, ypos + h, 0.0, 0.0 },
+					{ xpos, ypos, 0.0, 1.0 },
+					{ xpos + w, ypos, 1.0, 1.0 },
+					{ xpos, ypos + h, 0.0, 0.0 },
+					{ xpos + w, ypos, 1.0, 1.0 },
+					{ xpos + w, ypos + h, 1.0, 0.0 }
+				};
+
+				auto chara = Characters.find(*c);
+
+				chara->second.sprite->render(model);
+
+				x += (ch.Advance >> 6) * scale;
+			}
 		}
 		void Update() override
 		{
@@ -44,23 +73,14 @@ namespace UI
 		}
 		void loadCharacters();
 
+		std::string GetStr();
+		void SetStr(std::string newStrText);
 		Text(std::string path);
 		~Text();
 	private:
+		std::string strText;
 		std::unordered_map<char, Character> Characters;
 		FT_Library ft;
 		FT_Face face;
-
-		std::shared_ptr<RenderEngine::ShaderProgram> m_shaderProgram;
-		glm::vec2 m_position;
-		glm::vec3 m_rotation;
-		glm::vec2 m_size;
-		glm::mat4 model;
-
-		RenderEngine::VertexArray m_vertexArray;
-		RenderEngine::VertexBuffer m_vertexCoordsBuffer;
-		RenderEngine::VertexBuffer m_textureCoordsBuffer;
-		RenderEngine::IndexBuffer m_IndexBuffer;
-		int RenderMode;
 	};
 }

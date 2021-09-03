@@ -15,8 +15,8 @@ end
 
 function TranslatePerTime()
     delta = timer:GetTimeSec() - timer:GetStart()
-    if(delta >= 1) then
-        Engine.Hierarchy.getObject("object1"):Translate(Engine.vec3.new(5,5,0))
+    if(delta >= 0) then
+        Engine.Hierarchy.getObject("object1"):Translate(Engine.vec3.new(10,10,0))
         timer:EndTimer()
     end
 end

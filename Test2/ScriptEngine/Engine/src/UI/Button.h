@@ -15,7 +15,7 @@ namespace UI
 
 		enum class States { Idle, Down, Stay, Up };
 
-		void render()override
+		void render(glm::mat4 model)override
 		{
 
 		}

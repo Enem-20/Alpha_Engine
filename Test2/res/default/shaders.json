@@ -9,6 +9,11 @@
 		"name" : "DefaultShader",
 		"filePath_v" : "res/shaders/vertex.txt",
 		"filePath_f" : "res/shaders/fragment.txt"
+	},
+	{
+		"name" : "TextShader",
+		"filePath_v" : "res/shaders/vertex_text.txt",
+		"filePath_f" : "res/shaders/fragment_text.txt"
 	}
 ]
 

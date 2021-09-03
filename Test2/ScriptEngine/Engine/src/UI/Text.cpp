@@ -8,6 +8,9 @@ namespace UI
 {
 	Text::Text(std::string path)
 	{
+		strText = "same";
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		for (GLubyte c = 0; c < 128; c++)
 		{
@@ -38,7 +41,8 @@ namespace UI
 
 	Text::Character::Character(FT_Face face)
 	{
-		texture2D = std::make_shared<RenderEngine::Texture2D>(face->glyph->bitmap.width, face->glyph->bitmap.rows, face->glyph->bitmap.buffer, 1, GL_NEAREST, GL_CLAMP_TO_EDGE);
+		sprite = std::make_shared<RenderEngine::Sprite>(std::make_shared<RenderEngine::Texture2D>(face->glyph->bitmap.width, face->glyph->bitmap.rows, face->glyph->bitmap.buffer, 1, GL_NEAREST, GL_CLAMP_TO_EDGE),
+			"", ResourceManager::getShaderProgram("TextShader"));
 
 		Size = glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows);
 		Bearing = glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top);
@@ -56,5 +60,14 @@ namespace UI
 	{
 		FT_Done_Face(face);
 		FT_Done_FreeType(ft);
+	}
+
+	std::string Text::GetStr()
+	{
+		return strText;
+	}
+	void Text::SetStr(std::string newStrText)
+	{
+		strText = newStrText;
 	}
 }

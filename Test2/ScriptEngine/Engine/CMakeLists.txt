@@ -4,45 +4,24 @@ set(PROJECT_NAME Engine)
 
 project(${PROJECT_NAME})
 
-# set(UI
-	# src/UI/WindowManager.h
-	# src/UI/WindowManager.cpp
-	# src/UI/Window.h
-	# src/UI/Window.cpp
-	# src/UI/UIelement.h
-	# src/UI/UIelement.cpp
-	# src/UI/Button.h
-	# src/UI/Button.cpp
-	# src/UI/Canvas.h
-	# src/UI/Canvas.cpp
-	# src/UI/ColorBuffer.h
-	# src/UI/ColorBuffer.cpp
-	# src/UI/Text.h
-	# src/UI/Text.cpp)
+set(UI
+src/UI/WindowManager.h
+src/UI/WindowManager.cpp
+src/UI/Window.h
+src/UI/Window.cpp
+src/UI/UIelement.h
+src/UI/UIelement.cpp
+src/UI/Button.h
+src/UI/Button.cpp
+src/UI/Canvas.h
+src/UI/Canvas.cpp
+src/UI/ColorBuffer.h
+src/UI/ColorBuffer.cpp
+src/UI/Text.h
+src/UI/Text.cpp
+)
 
-# source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}\src" PREFIX "UI" FILES ${UI})
-
-add_library(${PROJECT_NAME} STATIC
-	src/EngineMain.h
-	src/EngineMain.cpp
-	src/Timer.h
-	src/Timer.cpp
-	
-	src/UI/WindowManager.h
-	src/UI/WindowManager.cpp
-	src/UI/Window.h
-	src/UI/Window.cpp
-	src/UI/UIelement.h
-	src/UI/UIelement.cpp
-	src/UI/Button.h
-	src/UI/Button.cpp
-	src/UI/Canvas.h
-	src/UI/Canvas.cpp
-	src/UI/ColorBuffer.h
-	src/UI/ColorBuffer.cpp
-	src/UI/Text.h
-	src/UI/Text.cpp
-	
+set(Renderer
 	src/Renderer/ShaderProgram.h
 	src/Renderer/ShaderProgram.cpp
 	src/Renderer/Texture2D.cpp
@@ -61,62 +40,88 @@ add_library(${PROJECT_NAME} STATIC
 	src/Renderer/VertexBufferLayout.cpp
 	src/Renderer/Renderer.h
 	src/Renderer/Renderer.cpp
-	
+)
+
+set(Components
+	src/Components/Component.h
+	src/Components/Component.cpp
+	src/Components/Components.h
+	src/Components/LuaScript.h
+	src/Components/LuaScript.cpp
+	src/Components/Transform.h
+	src/Components/Transform.cpp
+	src/Components/Vision.h
+	src/Components/Vision.cpp
+)
+
+set(Resources
 	src/Resources/ResourceManager.h
 	src/Resources/ResourceManager.cpp
 	src/Resources/stb_image.h
 	src/Resources/Serializer.h
 	src/Resources/Serializer.cpp
 	src/Resources/Resources.h
-	
+)
+
+set(Other
+	src/EngineMain.h
+	src/EngineMain.cpp
+	src/Timer.h
+	src/Timer.cpp
+)
+
+set(Scene
 	src/Scene/Scene.h
 	src/Scene/Scene.cpp
 	src/Scene/Hierarchy.h
 	src/Scene/Hierarchy.cpp
 	src/Scene/Camera.h
 	src/Scene/Camera.cpp
-	
+)
+set(GameTypes
 	src/GameTypes/GameObject.h
 	src/GameTypes/GameObject.cpp
 	src/GameTypes/GameTypes.h
-	
+)
+set(Physycs
 	src/Physics/Raycast2D.h
 	src/Physics/Raycast2D.cpp
 	src/Physics/Collider.h
 	src/Physics/Collider.cpp
-	
-#	src/Game/AI.h
-#	src/Game/AI.cpp
-	
-#	src/Algorithms/Node.h
-#	src/Algorithms/Node.cpp
-#	src/Algorithms/Move.h
-#	src/Algorithms/Move.cpp
-#	src/Algorithms/hash_table.h
-#	src/Algorithms/hash_table.cpp
-#	src/Algorithms/FindPaths.h
-#	src/Algorithms/FindPaths.cpp
-#	src/Algorithms/StandartDebut.h
-#	src/Algorithms/StandartDebut.cpp
-	
+)
+set(Input
 	src/Input/Input.h
 	src/Input/Input.cpp
-	
+)
+set(GLPref
 	src/GLPref/GLPref.h
 	src/GLPref/GLPref.cpp
-	
-	src/Components/Component.h
-	src/Components/Component.cpp
-	src/Components/Components.h
-#	src/Components/Physics/Collider.h
-#	src/Components/Physics/Collider.cpp
-	src/Components/LuaScript.h
-	src/Components/LuaScript.cpp
-	src/Components/Transform.h
-	src/Components/Transform.cpp
-	)
+)
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+add_library(${PROJECT_NAME} STATIC
+	${Other}
+	${UI}
+	${Renderer}
+	${Resources}
+	${Scene}
+	${GameTypes}
+	${Physycs}
+	${Input}	
+	${Components}
+	${GLPref}
+	)
+source_group("Other" 	  	FILES ${Other})
+source_group("UI" 		  	FILES ${UI})
+source_group("Renderer"   	FILES ${Renderer})
+source_group("Resources" 	FILES ${Resources})
+source_group("Scene" 		FILES ${Scene})
+source_group("GameTypes" 	FILES ${GameTypes})
+source_group("Physycs" 		FILES ${Physycs})
+source_group("Input" 	  	FILES ${Input})
+source_group("Components" 	FILES ${Components})
+source_group("GLPref" 		FILES ${GLPref})
+
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -126,11 +131,40 @@ set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 add_subdirectory(external/glfw)
 add_subdirectory(external/glad)
 add_subdirectory(external/Lua)
-add_subdirectory(external/freetype)
 
 target_include_directories(${PROJECT_NAME} PUBLIC external/glm)
 target_include_directories(${PROJECT_NAME} PUBLIC external/sol2/include)
 target_include_directories(${PROJECT_NAME} PUBLIC external/rapidjson/include)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC lua_static)
-target_link_libraries(${PROJECT_NAME} PUBLIC glad glfw freetype)
+target_link_libraries(${PROJECT_NAME} PUBLIC glad glfw)
+
+
+
+set(IMGUI_INCLUDES
+	external/imgui/imgui.h
+	external/imgui/backends/imgui_impl_glfw.h
+	external/imgui/backends/imgui_impl_opengl3.h
+)
+
+set(IMGUI_SOURCES
+	external/imgui/imgui.cpp
+	external/imgui/backends/imgui_impl_glfw.cpp
+	external/imgui/backends/imgui_impl_opengl3.cpp
+	external/imgui/imgui_demo.cpp
+	external/imgui/imgui_draw.cpp
+	external/imgui/imgui_widgets.cpp
+	external/imgui/imgui_tables.cpp
+	external/imgui/imgui_draw.cpp
+)
+
+
+add_library(ImGUI STATIC
+	${IMGUI_INCLUDES}
+	${IMGUI_SOURCES}
+)
+
+target_include_directories(${PROJECT_NAME} PUBLIC external)
+target_include_directories(${PROJECT_NAME} PUBLIC external/imgui)
+target_link_libraries(ImGUI PRIVATE glad glfw)
+target_link_libraries(${PROJECT_NAME} PRIVATE ImGUI)

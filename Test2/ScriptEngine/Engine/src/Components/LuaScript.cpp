@@ -3,7 +3,7 @@
 
 namespace Components
 {
-	LuaScript::LuaScript(sol::function& Awake, sol::function& Start, sol::function& Update, sol::function& FixedUpdate, sol::function& LastUpdate)
+	LuaScript::LuaScript(sol::protected_function& Awake, sol::protected_function& Start, sol::protected_function& Update, sol::protected_function& FixedUpdate, sol::protected_function& LastUpdate)
 		: m_Awake(Awake)
 		, m_Start(Start)
 		, m_Update(Update)
@@ -17,27 +17,27 @@ namespace Components
 		LoadScript();
 	}
 
-	void LuaScript::AddAwake(sol::function& Awake)
+	void LuaScript::SetAwake(sol::protected_function& Awake)
 	{
 		m_Awake = Awake;
 	}
 
-	void LuaScript::AddStart(sol::function& Start)
+	void LuaScript::SetStart(sol::protected_function& Start)
 	{
 		m_Start = Start;
 	}
 
-	void LuaScript::AddUpdate(sol::function& Update)
+	void LuaScript::SetUpdate(sol::protected_function& Update)
 	{
 		m_Update = Update;
 	}
 
-	void LuaScript::AddFixedUpdate(sol::function& FixedUpdate)
+	void LuaScript::SetFixedUpdate(sol::protected_function& FixedUpdate)
 	{
 		m_FixedUpdate = FixedUpdate;
 	}
 
-	void LuaScript::AddLastUpdate(sol::function& LastUpdate)
+	void LuaScript::SetLastUpdate(sol::protected_function& LastUpdate)
 	{
 		m_LastUpdate = m_LastUpdate;
 	}

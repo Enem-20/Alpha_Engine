@@ -27,7 +27,7 @@ namespace UI
 		//virtual void OnExecute() = 0;
 
 		virtual void Update() = 0;
-		virtual void render() = 0;
+		virtual void render(glm::mat4 model) = 0;
 
 		std::shared_ptr<Physics::Collider> collider;
 	protected:		

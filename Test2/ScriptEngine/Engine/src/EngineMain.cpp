@@ -8,9 +8,13 @@
 #include "GameTypes/GameTypes.h"
 #include "Input/Input.h"
 
+#include <iostream>
 #include <filesystem>
 #include <fstream>
 #include <thread>
+#include <chrono>
+
+//#include <ppl.h>
 
 namespace Engine
 {
@@ -18,6 +22,8 @@ namespace Engine
 	void EngineMain::FirstFrame()
 	{
 		GLPref::PollEvents();
+
+		ResourceManager::loadJSONText("");
 
 		RenderEngine::Renderer::clear();
 
@@ -34,6 +40,7 @@ namespace Engine
 	{
 		ScriptEngine::ScriptProcessor::Update();
 		ScriptEngine::ScriptProcessor::FixedUpdate();
+		//std::cout << "scriptFixedUpdated" << std::endl;
 		ScriptEngine::ScriptProcessor::LastUpdate();
 	}
 
@@ -61,12 +68,15 @@ namespace Engine
 			ResourceManager::SetExecutablePath(argv[0]);
 
 			ResourceManager::loadJSONScene("res/default/main.json");
-
+			size_t countFrames = 0;
 			FirstFrame();
-
-
+			++countFrames;
+			
 			while (!GLPref::isNeedClose())
 			{
+#ifndef NDEBUG
+				//auto start = std::chrono::high_resolution_clock::now();
+#endif
 				GLPref::PollEvents();
 
 				
@@ -81,6 +91,15 @@ namespace Engine
 				th.join();
 
 				GLPref::SwapBuffers();
+#ifndef NDEBUG
+				//auto end = std::chrono::high_resolution_clock::now();
+
+				//std::cout << std::chrono::duration<float>(end-start).count() << std::endl;
+#endif
+
+				++countFrames;
+				if(countFrames > 1000)
+					break;
 			}
 		}
 

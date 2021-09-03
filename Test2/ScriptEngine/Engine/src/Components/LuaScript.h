@@ -12,13 +12,13 @@ namespace Components
 	class LuaScript : public Component
 	{
 	public:
-		LuaScript(sol::function& Awake, sol::function& Start, sol::function& Update, sol::function& FixedUpdate, sol::function& LastUpdate);
+		LuaScript(sol::protected_function& Awake, sol::protected_function& Start, sol::protected_function& Update, sol::protected_function& FixedUpdate, sol::protected_function& LastUpdate);
 		LuaScript(std::string name, std::string path, std::shared_ptr<GameObject> gameObject = nullptr);
-		void AddAwake(sol::function& Awake);
-		void AddStart(sol::function& Start);
-		void AddUpdate(sol::function& Update);
-		void AddFixedUpdate(sol::function& FixedUpdate);
-		void AddLastUpdate(sol::function& LastUpdate);
+		void SetAwake(sol::protected_function& Awake);
+		void SetStart(sol::protected_function& Start);
+		void SetUpdate(sol::protected_function& Update);
+		void SetFixedUpdate(sol::protected_function& FixedUpdate);
+		void SetLastUpdate(sol::protected_function& LastUpdate);
 
 		void LoadScript();
 
@@ -30,10 +30,10 @@ namespace Components
 
 		std::string m_path;
 	private:
-		sol::function m_Awake;
-		sol::function m_Start;
-		sol::function m_Update;
-		sol::function m_FixedUpdate;
-		sol::function m_LastUpdate;
+		sol::protected_function m_Awake;
+		sol::protected_function m_Start;
+		sol::protected_function m_Update;
+		sol::protected_function m_FixedUpdate;
+		sol::protected_function m_LastUpdate;
 	};
 }

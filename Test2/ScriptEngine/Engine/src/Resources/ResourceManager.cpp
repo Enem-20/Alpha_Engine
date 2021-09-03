@@ -292,7 +292,7 @@ bool ResourceManager::loadJSONScene(const std::string& relativePath)
 	loadJSONTextures(d.FindMember("textures")->value.GetString());
 	loadJSONSprites(d.FindMember("sprites")->value.GetString());
 	loadJSONGameOjects(d.FindMember("GameObjects")->value.GetString());
-	loadJSONText("");
+	//loadJSONText("");
 
 	return true;
 }
@@ -444,7 +444,15 @@ bool ResourceManager::loadJSONText(const std::string& relativePath)
 {
 	UI::Text text(m_path + "\\res\\fonts\\arial.ttf");
 
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+	glm::mat4 same = glm::mat4(1.f);
+
+	same = glm::rotate(same, glm::radians(0.f), glm::vec3(1.f));
+	same = glm::translate(same, glm::vec3(0.f));
+	same = glm::scale(same, glm::vec3(100.f));
+
+	text.render(same);
+
+	//glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 	return true;
 }
 
