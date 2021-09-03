@@ -17,11 +17,11 @@ namespace ScriptEngine
 		static void SetFunctions();
 		static void SetExexcutablePath(const std::string new_path);
 	private:
-		static sol::function m_Update;
-		static sol::function m_Awake;
-		static sol::function m_FixedUpdate;
-		static sol::function m_Start;
-		static sol::function m_LastUpdate;
+		static sol::protected_function m_Update;
+		static sol::protected_function m_Awake;
+		static sol::protected_function m_FixedUpdate;
+		static sol::protected_function m_Start;
+		static sol::protected_function m_LastUpdate;
 
 		static std::string m_path;
 	};

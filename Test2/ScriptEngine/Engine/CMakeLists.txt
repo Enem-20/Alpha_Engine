@@ -164,7 +164,7 @@ add_library(ImGUI STATIC
 	${IMGUI_SOURCES}
 )
 
-target_include_directories(${PROJECT_NAME} PUBLIC external)
-target_include_directories(${PROJECT_NAME} PUBLIC external/imgui)
+target_include_directories(ImGUI PUBLIC external/)
+target_include_directories(ImGUI PUBLIC external/imgui/)
 target_link_libraries(ImGUI PRIVATE glad glfw)
 target_link_libraries(${PROJECT_NAME} PRIVATE ImGUI)

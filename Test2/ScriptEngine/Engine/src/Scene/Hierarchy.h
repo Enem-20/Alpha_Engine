@@ -24,7 +24,7 @@ public:
 
 		return hierarchy;
 	}
-	static void addObject(std::shared_ptr<GameObject>& obj);
+	static void addObject(const std::shared_ptr<GameObject>& obj);
 	static std::shared_ptr<GameObject> getObject(std::string name);
 	inline static std::map<std::string, std::shared_ptr<GameObject>> SceneObjects;
 	inline static std::shared_ptr<GameObject> background;

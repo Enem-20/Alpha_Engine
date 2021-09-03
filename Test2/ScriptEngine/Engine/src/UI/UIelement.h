@@ -20,7 +20,7 @@ namespace UI
 
 		UIelement();
 
-		void AddListener(sol::function& func);
+		void AddListener(const sol::protected_function& func);
 
 		void executeOnClicks();
 		void setParamCollider();
@@ -31,7 +31,7 @@ namespace UI
 
 		std::shared_ptr<Physics::Collider> collider;
 	protected:		
-		std::list<sol::function> elements;
+		std::list<sol::protected_function> elements;
 		static size_t ID;
 	};
 }

@@ -6,7 +6,7 @@
 namespace UI
 {
 	size_t UIelement::ID = 0;
-	void UIelement::AddListener(sol::function& func)
+	void UIelement::AddListener(const sol::protected_function& func)
 	{
 		elements.push_back(func);
 	}

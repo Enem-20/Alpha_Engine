@@ -442,15 +442,15 @@ bool ResourceManager::loadJSONTextureAtlasses(const std::string& relativePath)
 
 bool ResourceManager::loadJSONText(const std::string& relativePath)
 {
-	UI::Text text(m_path + "\\res\\fonts\\arial.ttf");
+	//UI::Text text(m_path + "\\res\\fonts\\arial.ttf");
 
-	glm::mat4 same = glm::mat4(1.f);
+	//glm::mat4 same = glm::mat4(1.f);
 
-	same = glm::rotate(same, glm::radians(0.f), glm::vec3(1.f));
-	same = glm::translate(same, glm::vec3(0.f));
-	same = glm::scale(same, glm::vec3(100.f));
+	//same = glm::rotate(same, glm::radians(0.f), glm::vec3(1.f));
+	//same = glm::translate(same, glm::vec3(0.f));
+	//same = glm::scale(same, glm::vec3(100.f));
 
-	text.render(same);
+	//text.render(same);
 
 	//glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 	return true;

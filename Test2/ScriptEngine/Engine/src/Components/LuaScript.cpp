@@ -17,27 +17,27 @@ namespace Components
 		LoadScript();
 	}
 
-	void LuaScript::SetAwake(sol::protected_function& Awake)
+	void LuaScript::SetAwake(const sol::protected_function& Awake)
 	{
 		m_Awake = Awake;
 	}
 
-	void LuaScript::SetStart(sol::protected_function& Start)
+	void LuaScript::SetStart(const sol::protected_function& Start)
 	{
 		m_Start = Start;
 	}
 
-	void LuaScript::SetUpdate(sol::protected_function& Update)
+	void LuaScript::SetUpdate(const sol::protected_function& Update)
 	{
 		m_Update = Update;
 	}
 
-	void LuaScript::SetFixedUpdate(sol::protected_function& FixedUpdate)
+	void LuaScript::SetFixedUpdate(const sol::protected_function& FixedUpdate)
 	{
 		m_FixedUpdate = FixedUpdate;
 	}
 
-	void LuaScript::SetLastUpdate(sol::protected_function& LastUpdate)
+	void LuaScript::SetLastUpdate(const sol::protected_function& LastUpdate)
 	{
 		m_LastUpdate = m_LastUpdate;
 	}
