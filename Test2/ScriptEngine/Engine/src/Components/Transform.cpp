@@ -1,5 +1,7 @@
 #include "Transform.h"
 
+#include "Component.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Components

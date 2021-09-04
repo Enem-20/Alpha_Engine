@@ -1,4 +1,4 @@
-#include "Component.h"
+#pragma once
 
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
@@ -9,6 +9,8 @@
 
 namespace Components
 {
+	class Component;
+
 	class Transform : public Component
 	{
 	public:

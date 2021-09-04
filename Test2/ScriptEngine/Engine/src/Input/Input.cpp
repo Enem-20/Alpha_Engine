@@ -3,6 +3,7 @@
 #include "../UI/WindowManager.h"
 #include "../Renderer/Renderer.h"
 #include "../Resources/ResourceManager.h"
+#include "../UI/Window.h"
 
 #include <coroutine>
 #include <iostream>

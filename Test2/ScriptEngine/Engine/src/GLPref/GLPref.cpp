@@ -1,7 +1,15 @@
 #include "GLPref.h"
 #include "../Resources/ResourceManager.h"
 #include "../Renderer/Renderer.h"
+#include "../Input/Input.h"
 #include "../UI/WindowManager.h"
+#include "../UI/Window.h"
+
+#include <iostream>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include "glm/vec2.hpp"
 
 void GLPref::glfwError(int id, const char* description)
 {
@@ -21,25 +29,15 @@ int GLPref::init()
 		return -1;
 	}
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
 #ifdef MAC
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-
-	WindowManager::AddWindow("MainWindow", 1080, 1080);
-
-	if (!gladLoadGL())
-	{
-		std::cout << "Error. glad is not initialized" << std::endl;
-		glfwTerminate();
-		system("pause");
-		return -1;
-	}
-
+	WindowManager::AddWindow("MainWindow");
 	RenderEngine::Renderer::setViewport(1080,1080,0,0);
 
 	RenderEngine::Renderer::setClearColor(0.f, 0.f, 0.f, 1.f);
@@ -49,12 +47,12 @@ int GLPref::init()
 
 void GLPref::PollEvents()
 {
-	glfwPollEvents();
+	//glfwPollEvents();
 }
 
 void GLPref::SwapBuffers()
 {
-	glfwSwapBuffers(WindowManager::CurrentWindow->window);
+	//glfwSwapBuffers(WindowManager::CurrentWindow->window);
 }
 
 bool GLPref::isNeedClose()

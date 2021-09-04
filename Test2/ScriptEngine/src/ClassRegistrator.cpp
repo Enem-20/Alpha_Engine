@@ -1,10 +1,13 @@
+#include "../Engine/src/Components/Components.pch"
+#include "../Engine/src/GameTypes/GameTypes.pch"
+
 #include "ClassRegistrator.h"
-#include "../Engine/src/GameTypes/GameTypes.h"
+
 #include "../Engine/src/Scene/Hierarchy.h"
 #include "../Engine/src/Timer.h"
 #include "../Engine/src/UI/Button.h"
 #include "../Engine/src/Input/Input.h"
-#include "../Engine/src/Components/Components.h"
+
 
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>

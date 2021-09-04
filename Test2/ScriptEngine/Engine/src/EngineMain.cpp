@@ -1,3 +1,4 @@
+#include "GameTypes/GameTypes.pch"
 #include "EngineMain.h"
 #include "GLPref/GLPref.h"
 #include "Renderer/Renderer.h"
@@ -5,8 +6,12 @@
 #include "../../src/ScriptEngine.h"
 #include "UI/WindowManager.h"
 #include "Resources/ResourceManager.h"
-#include "GameTypes/GameTypes.h"
+
 #include "Input/Input.h"
+
+#include <imgui/imgui.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
+#include <GLFW/glfw3.h>
 
 #include <iostream>
 #include <filesystem>
@@ -21,11 +26,11 @@ namespace Engine
 #ifdef OGL
 	void EngineMain::FirstFrame()
 	{
-		GLPref::PollEvents();
+		//GLPref::PollEvents();
 
-		ResourceManager::loadJSONText("");
+		//ResourceManager::loadJSONText("");
 
-		RenderEngine::Renderer::clear();
+		//RenderEngine::Renderer::clear();
 
 		ScriptEngine::ScriptProcessor::Start();
 
@@ -33,7 +38,10 @@ namespace Engine
 
 		Input::Update();
 
-		GLPref::SwapBuffers();
+		WindowManager::Update();
+		
+
+		//GLPref::SwapBuffers();
 	}
 
 	void EngineMain::ScriptUpdates()
@@ -77,20 +85,26 @@ namespace Engine
 #ifndef NDEBUG
 				//auto start = std::chrono::high_resolution_clock::now();
 #endif
-				GLPref::PollEvents();
+				//GLPref::PollEvents();
+				glfwPollEvents();
+				glClear(GL_COLOR_BUFFER_BIT);
+				//RenderEngine::Renderer::clear();
 
 				
-				RenderEngine::Renderer::clear();
-
-				render();
 				
 				std::thread th(Input::Update);
 				
 				ScriptUpdates();
-				
+
+				render();
+
 				th.join();
 
-				GLPref::SwapBuffers();
+				
+
+				WindowManager::Update();
+				
+				//GLPref::SwapBuffers();
 #ifndef NDEBUG
 				//auto end = std::chrono::high_resolution_clock::now();
 

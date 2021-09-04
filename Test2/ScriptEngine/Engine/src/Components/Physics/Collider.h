@@ -6,7 +6,7 @@
 
 #include<glm/vec2.hpp>
 
-#include "../../Game/GObject.h"
+//#include "../../Game/GObject.h"
 #include "../Component.h"
 
 class Figure;

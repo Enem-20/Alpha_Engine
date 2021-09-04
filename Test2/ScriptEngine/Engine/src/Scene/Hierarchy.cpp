@@ -1,7 +1,7 @@
 #include "Hierarchy.h"
 
-#include "../GameTypes/GameTypes.h"
-#include "../Resources/Resources.h"
+#include "../GameTypes/GameTypes.pch"
+#include "../Resources/Resources.pch"
 
 void Hierarchy::addObject(const std::shared_ptr<GameObject>& obj)
 {

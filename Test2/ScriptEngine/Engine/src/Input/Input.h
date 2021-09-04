@@ -2,11 +2,10 @@
 
 #define OGL
 
+#include "../GameTypes/GameTypes.pch"
 #include <list>
 #include <memory>
 #include <map>
-
-#include "../GameTypes/GameTypes.h"
 
 class GLFWwindow;
 

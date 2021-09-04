@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.16.0 FATAL_ERROR)
 
 set(PROJECT_NAME Engine)
 
@@ -45,7 +45,6 @@ set(Renderer
 set(Components
 	src/Components/Component.h
 	src/Components/Component.cpp
-	src/Components/Components.h
 	src/Components/LuaScript.h
 	src/Components/LuaScript.cpp
 	src/Components/Transform.h
@@ -60,7 +59,6 @@ set(Resources
 	src/Resources/stb_image.h
 	src/Resources/Serializer.h
 	src/Resources/Serializer.cpp
-	src/Resources/Resources.h
 )
 
 set(Other
@@ -81,7 +79,6 @@ set(Scene
 set(GameTypes
 	src/GameTypes/GameObject.h
 	src/GameTypes/GameObject.cpp
-	src/GameTypes/GameTypes.h
 )
 set(Physycs
 	src/Physics/Raycast2D.h
@@ -122,6 +119,13 @@ source_group("Components" 	FILES ${Components})
 source_group("GLPref" 		FILES ${GLPref})
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
+target_precompile_headers(${PROJECT_NAME} PUBLIC 
+	src/Components/Components.pch
+	src/GameTypes/GameTypes.pch
+	src/Renderer/RendererObjects.pch
+	src/Resources/Resources.pch
+	src/Scene/SceneClasses.pch
+	src/UI/UI.pch)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -155,7 +159,6 @@ set(IMGUI_SOURCES
 	external/imgui/imgui_draw.cpp
 	external/imgui/imgui_widgets.cpp
 	external/imgui/imgui_tables.cpp
-	external/imgui/imgui_draw.cpp
 )
 
 

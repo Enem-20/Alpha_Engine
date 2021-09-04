@@ -1,9 +1,10 @@
 #pragma once
 
+#include "../Components/Components.pch"
 #include "../Renderer/Sprite.h"
 #include "../Renderer/ShaderProgram.h"
 #include "../UI/Button.h"
-#include "../Components/Components.h"
+
 
 #include <vector>
 #include <iostream>
