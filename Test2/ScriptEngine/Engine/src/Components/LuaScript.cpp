@@ -17,6 +17,23 @@ namespace Components
 		LoadScript();
 	}
 
+	LuaScript::LuaScript(LuaScript&& script) noexcept
+		: m_path(std::move(script.m_path))
+		, m_Awake(std::move(script.m_Awake))
+		, m_Start(std::move(script.m_Start))
+		, m_Update(std::move(script.m_Update))
+		, m_FixedUpdate(std::move(script.m_FixedUpdate))
+		, m_LastUpdate(std::move(script.m_LastUpdate))
+	{}
+	LuaScript::LuaScript(const LuaScript& script)
+		: m_path(script.m_path)
+		, m_Awake(script.m_Awake)
+		, m_Start(script.m_Start)
+		, m_Update(script.m_Update)
+		, m_FixedUpdate(script.m_FixedUpdate)
+		, m_LastUpdate(script.m_LastUpdate)
+	{}
+
 	void LuaScript::SetAwake(const sol::protected_function& Awake)
 	{
 		m_Awake = Awake;

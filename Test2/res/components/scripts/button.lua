@@ -1,12 +1,14 @@
 function Start()
     button = Engine.Hierarchy.getObject("Button")
-    element = Engine.Input.GetUI("someUI1"):AddListener(OnClick)
+    button2 = Engine.Hierarchy.getObject("Button2")
+    Engine.WindowManager:GetCurrentWindow():GetUI("Button"):AddListener(Remove)
     print("gettedUIelement")
     
     print("awaked button")
 end
 
-function OnClick()
-    print("execute OnClick for someUI1")
-    button:Translate(Engine.vec3:new(0,10,0))
+function Remove()
+    Engine.Hierarchy.removeObject("Button")
+    button = nil
+    print("Removed")
 end

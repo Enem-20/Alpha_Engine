@@ -7,7 +7,9 @@
 
 #include <memory>
 #include <string>
-#include <map>
+#include <unordered_map>
+#include <queue>
+#include <functional>
 
 class GameObject;
 
@@ -24,12 +26,18 @@ public:
 
 		return hierarchy;
 	}
-	static void addObject(const std::shared_ptr<GameObject>& obj);
+	static void removeObjectReal(const std::string& name);
+	static void addObject(const GameObject& obj);
+	static void removeObject(const std::string& name);
 	static std::shared_ptr<GameObject> getObject(std::string name);
-	inline static std::map<std::string, std::shared_ptr<GameObject>> SceneObjects;
+	static void ExecuteEvent();
+
+	inline static std::unordered_map<std::string, std::shared_ptr<GameObject>> SceneObjects;
 	inline static std::shared_ptr<GameObject> background;
 private:
+	//union AddRemove { std::function<void(const GameObject&) ; };
 	inline static Hierarchy* hierarchy;
+	static std::queue<std::pair<std::string, std::function<void(const std::string&)>>> qEventObjectsControl;
 	Hierarchy() = default;
 };
 

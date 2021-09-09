@@ -223,16 +223,22 @@ namespace ScriptEngine
 			, "GetEnd", &Timer::GetEnd);
 	}
 
-	void ClassRegistrator::Reg_Input(sol::table* Lnamespace)
+	void ClassRegistrator::Reg_Window(sol::table* Lnamespace)
 	{
-		Lnamespace->new_usertype<Input>("Input"
-			, "GetUI", &Input::GetUI);
+		Lnamespace->new_usertype<Window>("Window"
+			, "GetUI", &Window::GetUI);
+	}
+	void ClassRegistrator::Reg_WindowManager(sol::table* Lnamespace)
+	{
+		Lnamespace->new_usertype<WindowManager>("WindowManager"
+			, "GetCurrentWindow", &WindowManager::GetCurrentWindow);
 	}
 
 	void ClassRegistrator::Reg_Hierarchy(sol::table* hierarchy)
 	{
 		hierarchy->new_usertype<Hierarchy>("Hierarchy"
-			, "getObject", &Hierarchy::getObject);
+			, "getObject", &Hierarchy::getObject
+			, "removeObject", &Hierarchy::removeObject);
 	}
 
 	int ClassRegistrator::Registration(sol::table* Lnamespace)
@@ -253,7 +259,9 @@ namespace ScriptEngine
 			Reg_Hierarchy(Lnamespace);
 			Reg_Timer(Lnamespace);
 			Reg_UIelement(Lnamespace);
-			Reg_Input(Lnamespace);
+			Reg_Window(Lnamespace);
+			Reg_WindowManager(Lnamespace);
+			//Reg_Input(Lnamespace);
 			Reg_Transform(Lnamespace);
 
 			return 0;

@@ -38,9 +38,9 @@ namespace Engine
 
 		Input::Update();
 
-		WindowManager::Update();
+		WindowManager::Start();
 		
-
+		Hierarchy::ExecuteEvent();
 		//GLPref::SwapBuffers();
 	}
 
@@ -103,6 +103,8 @@ namespace Engine
 				
 
 				WindowManager::Update();
+
+				Hierarchy::ExecuteEvent();
 				
 				//GLPref::SwapBuffers();
 #ifndef NDEBUG

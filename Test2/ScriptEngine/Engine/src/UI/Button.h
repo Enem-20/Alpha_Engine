@@ -9,33 +9,18 @@ namespace UI
 	class Button : public UIelement
 	{
 	public:
-		Button();
+		~Button();
 
-		Button(std::string name = "");
+		Button(std::string name = "", std::shared_ptr<GameObject> gameObject = nullptr);
 
 		enum class States { Idle, Down, Stay, Up };
 
-		void render(glm::mat4 model)override
-		{
+		void Awake() override;
+		void Start() override;
+		void Update() override;
+		void FixedUpdate() override;
 
-		}
-
-		void Update() override
-		{
-			switch (state)
-			{
-			case States::Idle:
-				break;
-			case States::Down:
-				executeOnClicks();
-				state = States::Idle;
-				break;
-			case States::Stay:
-				break;
-			case States::Up:
-				break;
-			}
-		}
+		void translate(const glm::vec2& newPos) override;
 
 	protected:
 		States state;

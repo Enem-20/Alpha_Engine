@@ -54,20 +54,27 @@ namespace RenderEngine
 
 	Texture2D::Texture2D(Texture2D& texture2d)
 	{
+		//glDeleteTextures(1, &m_ID);
 		m_ID = texture2d.m_ID;
 		texture2d.m_ID = 0;
 		m_mode = texture2d.m_mode;
 		m_width = texture2d.m_width;
 		m_height = texture2d.m_height;
+		m_subTextures = texture2d.m_subTextures;
 	}
 
 	Texture2D::Texture2D(Texture2D&& texture2d) noexcept
+		: m_ID(std::move(texture2d.m_ID))
+		, m_mode(std::move(texture2d.m_mode))
+		, m_width(std::move(texture2d.m_width))
+		, m_height(std::move(texture2d.m_height))
+		, m_subTextures(std::move(texture2d.m_subTextures))
 	{
-		m_ID = texture2d.m_ID;
+		//m_ID = texture2d.m_ID;
 		texture2d.m_ID = 0;
-		m_mode = texture2d.m_mode;
-		m_width = texture2d.m_width;
-		m_height = texture2d.m_height;
+		//m_mode = texture2d.m_mode;
+		//m_width = texture2d.m_width;
+		//m_height = texture2d.m_height;
 	}
 	Texture2D::~Texture2D()
 	{

@@ -22,6 +22,13 @@ namespace Components
 			, Component(name, gameObject)
 		{}	
 #ifdef OGL
+		Transform(Transform&& transform) noexcept
+			: position(std::move(transform.position))
+			, rotation(std::move(transform.rotation))
+			, scale(std::move(transform.scale))
+			, model(std::move(transform.model))
+			//, Component(std::move(transform.name), std::move(*transform.gameObject))
+		{}
 		Transform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, std::string name = "", std::shared_ptr<GameObject> gameObject = nullptr)
 			: position(position)
 			, rotation(rotation)

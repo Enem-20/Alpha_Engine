@@ -75,8 +75,8 @@
    {
       "name":"Button",
       "position":[
-         0.0,
-         0.0,
+         540.0,
+         540.0,
          0.0
       ],
       "rotation":[
@@ -92,12 +92,43 @@
       "Components":[
          {
             "type":"Button",
-            "name":"Button1"
+            "name":"Button"
          },
 		 {
 			 "type":"LuaScript",
             "path":"res/components/scripts/button.lua",
             "name":"button"
+		 }
+      ],
+	  "sprite":"sprite_Button",
+	  "render_priority":2
+   },
+      {
+      "name":"Button2",
+      "position":[
+         540.0,
+         440.0,
+         0.0
+      ],
+      "rotation":[
+         0.0,
+         0.0,
+         0.0
+      ],
+      "scale":[
+         0.0,
+         0.0,
+         0.0
+      ],
+      "Components":[
+         {
+            "type":"Button",
+            "name":"Button2"
+         },
+		 {
+			 "type":"LuaScript",
+            "path":"res/components/scripts/button2.lua",
+            "name":"button2"
 		 }
       ],
 	  "sprite":"sprite_Button",

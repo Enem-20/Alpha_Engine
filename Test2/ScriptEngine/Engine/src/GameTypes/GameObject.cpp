@@ -30,7 +30,7 @@ GameObject::GameObject(std::string name,
 
 	this->render_priority = render_priority;
 
-	Hierarchy::addObject(std::make_shared<GameObject>(*this));		
+	Hierarchy::addObject(*this);		
 	for (auto itScripts : scripts)
 	{
 		itScripts.second->gameObject = Hierarchy::getObject(name);
@@ -39,7 +39,7 @@ GameObject::GameObject(std::string name,
 	for (auto button : buttons)
 	{
 		button.second->gameObject = Hierarchy::getObject(name);
-		button.second->setParamCollider();
+		//button.second.setParamCollider();
 	}
 }
 
@@ -107,7 +107,7 @@ void GameObject::Update()
 {
 	for (auto it : buttons)
 	{
-		it.second->setParamCollider();
+		//it.second->setParamCollider();
 	}
 }
 

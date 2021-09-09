@@ -30,6 +30,10 @@ int main(int argc, char** argv)
 #ifdef WNS
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
 #endif
+#else
+#ifdef WNS
+	ShowWindow(GetConsoleWindow(), SW_SHOW);
+#endif
 #endif
 	ScriptEngine::ScriptProcessor::init();
 	sol::table Lobject = ScriptEngine::ScriptProcessor::L["Engine"].get_or_create<sol::table>();

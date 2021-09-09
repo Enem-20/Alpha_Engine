@@ -126,18 +126,28 @@ namespace RenderEngine
 	}
 
 	Sprite::Sprite(Sprite&& sprite) noexcept
+		: m_Texture(std::move(sprite.m_Texture))
+		, m_shaderProgram(std::move(sprite.m_shaderProgram))
+		, m_position(std::move(sprite.m_position))
+		, m_size(std::move(sprite.m_size))
+		, m_rotation(std::move(sprite.m_rotation))
+		, m_vertexArray(std::move(sprite.m_vertexArray))
+		, m_vertexCoordsBuffer(std::move(sprite.m_vertexCoordsBuffer))
+		, m_textureCoordsBuffer(std::move(sprite.m_textureCoordsBuffer))
+		, m_IndexBuffer(std::move(sprite.m_IndexBuffer))
+		, RenderMode(std::move(sprite.RenderMode))
 	{
-		m_Texture = std::make_shared<RenderEngine::Texture2D>(std::move(*sprite.m_Texture));
-		m_shaderProgram = std::make_shared<RenderEngine::ShaderProgram>(std::move(*sprite.m_shaderProgram));
-		m_position = std::move(sprite.m_position);
-		m_size = std::move(sprite.m_size);
-		m_rotation = std::move(sprite.m_rotation);
+		//m_Texture = std::make_shared<RenderEngine::Texture2D>(std::move(*sprite.m_Texture));
+		//m_shaderProgram = std::make_shared<RenderEngine::ShaderProgram>(std::move(*sprite.m_shaderProgram));
+		//m_position = std::move(sprite.m_position);
+		//m_size = std::move(sprite.m_size);
+		//m_rotation = std::move(sprite.m_rotation);
 
-		m_vertexArray = std::move(sprite.m_vertexArray);
-		m_vertexCoordsBuffer = std::move(sprite.m_vertexCoordsBuffer);
-		m_textureCoordsBuffer = std::move(sprite.m_textureCoordsBuffer);
-		m_IndexBuffer = std::move(sprite.m_IndexBuffer);
-		RenderMode = sprite.RenderMode;
+		//m_vertexArray = std::move(sprite.m_vertexArray);
+		//m_vertexCoordsBuffer = std::move(sprite.m_vertexCoordsBuffer);
+		//m_textureCoordsBuffer = std::move(sprite.m_textureCoordsBuffer);
+		//m_IndexBuffer = std::move(sprite.m_IndexBuffer);
+		//RenderMode = sprite.RenderMode;
 	}
 
 	void Sprite::Translate(glm::vec3 position)

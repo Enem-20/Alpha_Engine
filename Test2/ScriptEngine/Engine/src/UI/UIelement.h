@@ -5,6 +5,7 @@
 #include "../Components/Component.h"
 
 #include <sol/sol.hpp>
+#include <glm/vec2.hpp>
 
 #include <list>
 #include<memory>
@@ -18,19 +19,28 @@ namespace UI
 	public:
 		glm::mat4 model;
 
-		UIelement();
+		//UIelement(UIelement&& ui) noexcept;
+		UIelement(std::string name, std::shared_ptr<GameObject> gameObject)
+			: Components::Component(name, gameObject)
+		{}
 
-		void AddListener(const sol::protected_function& func);
+		virtual void AddListener(const sol::protected_function& func);
 
 		void executeOnClicks();
-		void setParamCollider();
+		//void setParamCollider();
 		//virtual void OnExecute() = 0;
 
-		virtual void Update() = 0;
-		virtual void render(glm::mat4 model) = 0;
+		virtual void Awake() = 0;
+		virtual void Start() = 0;
+		virtual void Update() = 0;  
+		virtual void FixedUpdate() = 0;
 
-		std::shared_ptr<Physics::Collider> collider;
+		virtual void translate(const glm::vec2& newPos) = 0;
+		//virtual void render(glm::mat4 model) = 0;
+
+		//std::shared_ptr<Physics::Collider> collider;
 	protected:		
+
 		std::list<sol::protected_function> elements;
 		static size_t ID;
 	};

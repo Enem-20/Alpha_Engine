@@ -39,4 +39,6 @@ namespace Components
 		model = glm::translate(model, position);
 		model = glm::scale(model, scale);	
 	}
+
+
 }

@@ -19,31 +19,32 @@ namespace UI
 		}
 	}
 
-	void UIelement::setParamCollider()
-	{
-		glm::vec2 leftBottom = glm::vec2(0.f), rightTop = glm::vec2(0.f);
-		if (gameObject)
-		{
-			leftBottom.x = gameObject->transform->position.x;
-			leftBottom.y = gameObject->transform->position.y;
-			rightTop.x = gameObject->transform->position.x + gameObject->GetSprite()->getSize().x;
-			rightTop.y = gameObject->transform->position.y + gameObject->GetSprite()->getSize().y;
-		}
-		collider->Update(leftBottom, rightTop);
-	}
 
-	UIelement::UIelement()
-	{
-		glm::vec2 leftBottom, rightTop = glm::vec2(0.f);
-		if (gameObject)
-		{
-			leftBottom.x = gameObject->transform->position.x - gameObject->GetSprite()->getSize().x / 2;
-			leftBottom.y = gameObject->transform->position.y - gameObject->GetSprite()->getSize().y / 2;
-			rightTop.x = gameObject->transform->position.x + gameObject->GetSprite()->getSize().x / 2;
-			rightTop.y = gameObject->transform->position.y + gameObject->GetSprite()->getSize().y / 2;
-		}
-		collider = std::make_shared<Physics::Collider>(leftBottom, rightTop);
-		name = "";
-		model = glm::mat4(1.f);
-	}
+	//void UIelement::setParamCollider()
+	//{
+	//	glm::vec2 leftBottom = glm::vec2(0.f), rightTop = glm::vec2(0.f);
+	//	if (gameObject)
+	//	{
+	//		leftBottom.x = gameObject->transform->position.x;
+	//		leftBottom.y = gameObject->transform->position.y;
+	//		rightTop.x = gameObject->transform->position.x + gameObject->GetSprite()->getSize().x;
+	//		rightTop.y = gameObject->transform->position.y + gameObject->GetSprite()->getSize().y;
+	//	}
+	//	collider->Update(leftBottom, rightTop);
+	//}
+
+	//UIelement::UIelement()
+	//{
+	//	glm::vec2 leftBottom, rightTop = glm::vec2(0.f);
+	//	if (gameObject)
+	//	{
+	//		leftBottom.x = gameObject->transform->position.x - gameObject->GetSprite()->getSize().x / 2;
+	//		leftBottom.y = gameObject->transform->position.y - gameObject->GetSprite()->getSize().y / 2;
+	//		rightTop.x = gameObject->transform->position.x + gameObject->GetSprite()->getSize().x / 2;
+	//		rightTop.y = gameObject->transform->position.y + gameObject->GetSprite()->getSize().y / 2;
+	//	}
+	//	collider = std::make_shared<Physics::Collider>(leftBottom, rightTop);
+	//	name = "";
+	//	model = glm::mat4(1.f);
+	//}
 }

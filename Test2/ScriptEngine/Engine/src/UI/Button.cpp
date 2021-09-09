@@ -1,21 +1,80 @@
 #include "Button.h"
 
+#include <imgui/imgui.h>
+
+#include "../Components/Component.h"
 #include "../Input/Input.h"
+#include "WindowManager.h"
 
 namespace UI
 {
-	Button::Button() : UIelement()
+	Button::Button(std::string name, std::shared_ptr<GameObject> gameObject) 
+		: UIelement(name, gameObject)
 	{
 		state = States::Idle;
-		++ID;
-		Input::AddUI("someUI" + std::to_string(ID), std::make_shared<UI::Button>(*this));
+		if(name == ""){++ID;this->name = "someUI" + std::to_string(ID);}
+			
+		//ImGui::Begin(name.c_str());
+		//if (ImGui::Button(name.c_str()))
+		//	executeOnClicks();
+		//ImGui::End();
+		
+		WindowManager::CurrentWindow->AddUI(std::move(*this));
 	}
 
-	Button::Button(std::string name) : UIelement()
+	void Button::Awake()
 	{
-		state = States::Idle;
-		this->name = name;
-		++ID;
-		Input::AddUI("someUI" + std::to_string(ID), std::make_shared<UI::Button>(*this));
+
+	}
+
+	void Button::Start()
+	{
+		ImGui::Begin(name.c_str());
+		ImGui::Button(name.c_str());
+		ImGui::SetWindowPos({ GetGameObject().transform->position.x, (GetGameObject().transform->position.y - WindowManager::CurrentWindow->size.y) * -1 });
+		ImGui::End();
+	}
+
+	void Button::Update()
+	{
+		
+		if(ImGui::Begin(name.c_str()))
+			if (ImGui::Button(name.c_str()))
+				executeOnClicks();
+		//ImGui::SetWindowPos(name.c_str(), {0, 0});
+		//switch (state)
+		//{
+		//case States::Idle:
+		//	break;
+		//case States::Down:
+		//	executeOnClicks();
+		//	state = States::Idle;
+		//	break;
+		//case States::Stay:
+		//	break;
+		//case States::Up:
+		//	break;
+		//}
+		ImGui::End();
+	}
+
+	void Button::FixedUpdate()
+	{
+
+	}
+
+	Button::~Button()
+	{
+		//bool f = false;
+		//if(ImGui::Begin(name.c_str(), &f))
+		//	ImGui::End();
+	}
+
+	void Button::translate(const glm::vec2& newPos)
+	{
+		ImGui::Begin(name.c_str());
+		ImGui::Button(name.c_str());
+		ImGui::SetWindowPos({ GetGameObject().transform->position.x, (GetGameObject().transform->position.y - WindowManager::CurrentWindow->size.y) * -1});
+		ImGui::End();
 	}
 }

@@ -171,42 +171,42 @@ void Input::OnClick(const glm::dvec2& mousePos)
 	{
 		ConvertmousePos.y *= -1;
 	}
-	auto element = CheckShotUI(std::move(ConvertmousePos));
+	/*auto element = CheckShotUI(std::move(ConvertmousePos));
 	if (element != nullptr)
 	{
 		element->executeOnClicks();
-	}
+	}*/
 }
 
-std::shared_ptr<UI::UIelement> Input::CheckShotUI(const glm::dvec2& mousePos)
-{
-	for (auto element : UIElements)
-	{
-		if (element.second->collider->CheckIntersect(std::move(mousePos)))
-		{
-			return element.second;
-		}
-	}
+//std::shared_ptr<UI::UIelement> Input::CheckShotUI(const glm::dvec2& mousePos)
+//{
+//	for (auto element : UIElements)
+//	{
+//		if (element.second->collider->CheckIntersect(std::move(mousePos)))
+//		{
+//			return element.second;
+//		}
+//	}
+//
+//	return nullptr;
+//}
 
-	return nullptr;
-}
+//void Input::AddUI(std::string name, std::shared_ptr<UI::UIelement> UIElement)
+//{
+//	UIElements.emplace(name, UIElement);
+//}
 
-void Input::AddUI(std::string name, std::shared_ptr<UI::UIelement> UIElement)
-{
-	UIElements.emplace(name, UIElement);
-}
-
-std::shared_ptr<UI::UIelement> Input::GetUI(std::string name)
-{
-	auto element = UIElements.find(name);
-
-	if (element != UIElements.end())
-	{
-		return element->second;
-	}
-
-	return nullptr;
-}
+//std::shared_ptr<UI::UIelement> Input::GetUI(std::string name)
+//{
+//	auto element = UIElements.find(name);
+//
+//	if (element != UIElements.end())
+//	{
+//		return element->second;
+//	}
+//
+//	return nullptr;
+//}
 
 bool Input::GetKeyDown(Keys KeyCode)
 {
@@ -228,11 +228,6 @@ void Input::Update()
 	for (size_t i = 0; i < 71; ++i)
 	{
 		KeyStatesPrev[i] = KeyStates[i];
-	}
-
-	for (auto it : UIElements)
-	{
-		it.second->Update();
 	}
 
 	for (size_t i = 0; i < 71; ++i)

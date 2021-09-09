@@ -7,7 +7,7 @@
 #include <memory>
 #include <map>
 
-class GLFWwindow;
+struct GLFWwindow;
 
 class Input
 {
@@ -94,8 +94,8 @@ public:
 	static bool GetKeyUp(Keys KeyCode);
 	static bool GetKeyStay(Keys KeyCode);
 
-	static void AddUI(std::string name, std::shared_ptr<UI::UIelement> UIElement);
-	static std::shared_ptr<UI::UIelement> GetUI(std::string name);
+	//static void AddUI(std::string name, std::shared_ptr<UI::UIelement> UIElement);
+	//static std::shared_ptr<UI::UIelement> GetUI(std::string name);
 private:	
 	static std::map<std::string, std::shared_ptr<UI::UIelement>> UIElements;
 	typedef std::map<std::string, std::shared_ptr<UI::UIelement>> UIs;
@@ -108,7 +108,7 @@ public:
 	static void glfwWindowSizeCallBack(GLFWwindow* window, int width, int height);
 	static void glfwKeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mode);
 	static void OnClick(const glm::dvec2& mousePos);
-	static std::shared_ptr<UI::UIelement> CheckShotUI(const glm::dvec2& mousePos);
+	//static std::shared_ptr<UI::UIelement> CheckShotUI(const glm::dvec2& mousePos);
 private:
 	static std::map<Keys, int> GlEqKeys;
 #endif

@@ -21,6 +21,16 @@ namespace RenderEngine
 			glm::vec2 leftBottomUV;
 			glm::vec2 rightTopUV;
 
+			SubTexture2D(const SubTexture2D& sub)
+				: leftBottomUV(sub.leftBottomUV)
+				, rightTopUV(sub.rightTopUV)
+			{}
+
+			SubTexture2D(SubTexture2D&& sub) noexcept
+				:	leftBottomUV(sub.leftBottomUV)
+				,	rightTopUV(sub.rightTopUV)
+			{}
+
 			SubTexture2D(const glm::vec2 _leftBottomUV, const glm::vec2 _rightTopUV)
 				: leftBottomUV(_leftBottomUV)
 				, rightTopUV(_rightTopUV)

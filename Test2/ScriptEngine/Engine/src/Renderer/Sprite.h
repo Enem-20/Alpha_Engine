@@ -53,6 +53,7 @@ namespace RenderEngine
 		void setRotation(const glm::vec3& rotation);
 		int GetRenderMode() const;
 		void SetRenderMode(int RenderMode);
+		
 	protected:
 		std::shared_ptr<Texture2D> m_Texture;
 		std::shared_ptr<ShaderProgram> m_shaderProgram;
