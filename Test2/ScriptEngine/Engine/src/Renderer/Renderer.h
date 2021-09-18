@@ -22,5 +22,6 @@ namespace RenderEngine
 		static const std::string getVersionStr();
 
 		static glm::dvec2 ViewportSize;
+		static glm::ivec2 ViewportOffset;
 	};
 }

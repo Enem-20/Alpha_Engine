@@ -18,14 +18,20 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
 
+#include "../GLPref/GLPref.h"
 #include "stb_image.h"
+#include <glfw/glfw3.h>
+
+#include <imgui/backends/imgui_impl_opengl3.h>
+#include <imgui/backends/imgui_impl_glfw.h>
 
 
 ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
 ResourceManager::TexturesMap ResourceManager::m_textures;
 ResourceManager::SpritesMap ResourceManager::m_sprites;
 ResourceManager::AnimatedSpritesMap ResourceManager::m_AnimatedSprites;
-ResourceManager::LuaScriptsUMap ResourceManager::m_LuaScripts;
+std::shared_ptr<std::pair<const std::string, std::function<void(const std::string)>>> ResourceManager::loader;
+//ResourceManager::LuaScriptsUMap ResourceManager::m_LuaScripts;
 std::string ResourceManager::m_path;
 
 void ResourceManager::SetExecutablePath(const std::string& executablePath)
@@ -39,27 +45,34 @@ void ResourceManager::SetExecutablePath(const std::string& executablePath)
 
 void ResourceManager::UnloadAllResources()
 {
-	std::ofstream f(m_path + "/res/scene.json");
-
-	f << Serializer::Serialize(Scene::GetInstance());
-	f.close();
+	Serializer::Serialize(m_path + "/res/scene.json");
 	m_shaderPrograms.clear();
 	m_textures.clear();
 	m_sprites.clear();
 	m_AnimatedSprites.clear();
+	Hierarchy::Clear();
 }
 
 std::string ResourceManager::getFileString(const std::string& relativeFilePath)
 {
 	std::ifstream f;
-	f.open(m_path + "/" + relativeFilePath.c_str(), std::ios::in | std::ios::binary);
+
+	f.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	try
+	{
+		f.open(m_path + "/" + relativeFilePath.c_str(), std::ios::in | std::ios::binary);
+
+	}
+	catch (std::exception exp)
+	{
+		std::cerr << exp.what() << std::endl;
+	}
 
 	if (!f.is_open())
 	{
 		system("pause");
 		return std::string();
 	}
-
 	std::stringstream buffer;
 	buffer << f.rdbuf();
 	f.close();
@@ -285,6 +298,7 @@ rapidjson::Document ResourceManager::documentParse(const std::string& relativePa
 
 bool ResourceManager::loadJSONScene(const std::string& relativePath)
 {
+	UnloadAllResources();
 	rapidjson::Document d = documentParse(std::move(relativePath));
 
 	loadJSONShaders(d.FindMember("shaders")->value.GetString());
@@ -297,9 +311,43 @@ bool ResourceManager::loadJSONScene(const std::string& relativePath)
 	return true;
 }
 
+bool ResourceManager::loadSave(const std::string relativePath)
+{
+	loader = std::make_shared<std::pair<const std::string, std::function<void(const std::string)>>>(relativePath, loadSaveReal);
+	return true;
+}
+
+void ResourceManager::loadSaveReal(const std::string& relativePath)
+{
+	UnloadAllResources();
+	ScriptEngine::ScriptProcessor::L.collect_garbage();
+	//WindowManager::ShutDown();
+	//glfwTerminate();
+	//ImGui_ImplGlfw_Shutdown();
+	//ImGui_ImplOpenGL3_Shutdown();
+	//ImGui::DestroyContext();
+	//GLPref::init();
+
+	rapidjson::Document d = documentParse("res/default/main.json");
+
+	loadJSONShaders(d.FindMember("shaders")->value.GetString());
+	loadJSONTextureAtlasses(d.FindMember("textureAtlasses")->value.GetString());
+	loadJSONTextures(d.FindMember("textures")->value.GetString());
+	loadJSONSprites(d.FindMember("sprites")->value.GetString());
+	loadJSONGameOjects(/*m_path + '/' +*/relativePath);
+	//loadJSONText("");
+	loader = nullptr;
+}
+
+void ResourceManager::loadExecute()
+{
+	if (loader)
+		loader->second(loader->first);
+}
+
 bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 {
-	rapidjson::Document d = documentParse(std::move(relativePath));
+	rapidjson::Document d = documentParse(relativePath);
 
 	if (d.IsObject())
 	{
@@ -363,7 +411,7 @@ ResourceManager::m_Components ResourceManager::loadJSONComponents(const rapidjso
 			{
 				components.scripts.emplace(itComponents.FindMember("name")->value.GetString(), std::make_shared<Components::LuaScript>(itComponents.FindMember("name")->value.GetString(), itComponents.FindMember("path")->value.GetString()));
 			}
-			else if(type == "Button")
+			else if (type == "Button")
 			{
 				components.buttons.emplace(itComponents.FindMember("name")->value.GetString(), std::make_shared<UI::Button>(itComponents.FindMember("name")->value.GetString()));
 			}

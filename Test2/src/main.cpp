@@ -43,6 +43,8 @@ int main(int argc, char** argv)
 	
 #ifdef OGL
 	Engine::EngineMain::Init(argv);
+	ScriptEngine::ScriptProcessor::L.collect_garbage();
 #endif
+	
 	return 0;
 }

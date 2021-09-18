@@ -3,6 +3,7 @@
 namespace RenderEngine
 {
 	glm::dvec2 Renderer::ViewportSize;
+	glm::ivec2 Renderer::ViewportOffset;
 
 	void Renderer::draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shader)
 	{
@@ -26,6 +27,7 @@ namespace RenderEngine
 	void Renderer::setViewport(unsigned int width, unsigned int height, unsigned int leftOffset = 0, unsigned int bottomOffset = 0)
 	{
 		ViewportSize = glm::dvec2(width, height);
+		ViewportOffset = glm::ivec2(leftOffset, bottomOffset);
 		glViewport(leftOffset, bottomOffset, width, height);
 	}
 

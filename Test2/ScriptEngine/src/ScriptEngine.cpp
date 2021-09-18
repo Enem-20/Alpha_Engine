@@ -2,6 +2,7 @@
 #include "../Engine/src/Scene/Hierarchy.h"
 #include "../Engine/src/GameTypes/GameObject.h"
 
+#include <ppl.h>
 
 //struct callStart final
 //{
@@ -50,6 +51,12 @@ namespace ScriptEngine
 	{
 		for (const auto& itObjects : Hierarchy::SceneObjects)
 		{
+			//concurrency::parallel_for_each(itObjects.second->scripts.begin(), itObjects.second->scripts.end(), [](auto& itScripts)
+			//	{
+			//		GeneralTimer->StartUpdateTimer();
+			//		itScripts.second->Update();
+			//		GeneralTimer->EndUpdateTimer();
+			//	});
 			for (auto& itScripts : itObjects.second->scripts)
 			{
 				GeneralTimer->StartUpdateTimer();

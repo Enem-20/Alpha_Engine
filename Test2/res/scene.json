@@ -1,0 +1,725 @@
+[
+    {
+        "name": "pawn_white1",
+        "position": [
+            0.0,
+            135.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_white",
+        "render_priority": 1
+    },
+    {
+        "name": "Desk",
+        "position": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            1080.0,
+            1080.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_Desk",
+        "render_priority": 0
+    },
+    {
+        "name": "pawn_black7",
+        "position": [
+            810.0,
+            810.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_black",
+        "render_priority": 1
+    },
+    {
+        "name": "pawn_white2",
+        "position": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_white",
+        "render_priority": 1
+    },
+    {
+        "name": "pawn_white3",
+        "position": [
+            270.0,
+            135.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_white",
+        "render_priority": 1
+    },
+    {
+        "name": "pawn_white4",
+        "position": [
+            405.0,
+            135.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_white",
+        "render_priority": 1
+    },
+    {
+        "name": "castle_white2",
+        "position": [
+            945.0,
+            0.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_castle_white",
+        "render_priority": 1
+    },
+    {
+        "name": "pawn_white5",
+        "position": [
+            540.0,
+            135.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_white",
+        "render_priority": 1
+    },
+    {
+        "name": "king_white",
+        "position": [
+            540.0,
+            0.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_king_white",
+        "render_priority": 1
+    },
+    {
+        "name": "castle_black1",
+        "position": [
+            0.0,
+            945.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_castle_black",
+        "render_priority": 1
+    },
+    {
+        "name": "pawn_white6",
+        "position": [
+            675.0,
+            135.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_white",
+        "render_priority": 1
+    },
+    {
+        "name": "castle_black2",
+        "position": [
+            945.0,
+            945.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_castle_black",
+        "render_priority": 1
+    },
+    {
+        "name": "pawn_white7",
+        "position": [
+            810.0,
+            135.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_white",
+        "render_priority": 1
+    },
+    {
+        "name": "castle_white1",
+        "position": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_castle_white",
+        "render_priority": 1
+    },
+    {
+        "name": "pawn_white8",
+        "position": [
+            945.0,
+            135.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_white",
+        "render_priority": 1
+    },
+    {
+        "name": "pawn_black1",
+        "position": [
+            0.0,
+            810.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_black",
+        "render_priority": 1
+    },
+    {
+        "name": "pawn_black2",
+        "position": [
+            135.0,
+            810.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_black",
+        "render_priority": 1
+    },
+    {
+        "name": "pawn_black3",
+        "position": [
+            270.0,
+            810.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_black",
+        "render_priority": 1
+    },
+    {
+        "name": "pawn_black4",
+        "position": [
+            405.0,
+            810.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_black",
+        "render_priority": 1
+    },
+    {
+        "name": "pawn_black5",
+        "position": [
+            540.0,
+            810.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_black",
+        "render_priority": 1
+    },
+    {
+        "name": "pawn_black6",
+        "position": [
+            675.0,
+            810.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_black",
+        "render_priority": 1
+    },
+    {
+        "name": "pawn_black8",
+        "position": [
+            945.0,
+            810.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_pawn_black",
+        "render_priority": 1
+    },
+    {
+        "name": "queen_black",
+        "position": [
+            405.0,
+            945.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_queen_black",
+        "render_priority": 1
+    },
+    {
+        "name": "queen_white",
+        "position": [
+            405.0,
+            0.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_queen_white",
+        "render_priority": 1
+    },
+    {
+        "name": "king_black",
+        "position": [
+            540.0,
+            945.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_king_black",
+        "render_priority": 1
+    },
+    {
+        "name": "bishop_black1",
+        "position": [
+            270.0,
+            945.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_bishop_black",
+        "render_priority": 1
+    },
+    {
+        "name": "bishop_black2",
+        "position": [
+            675.0,
+            945.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_bishop_black",
+        "render_priority": 1
+    },
+    {
+        "name": "bishop_white1",
+        "position": [
+            270.0,
+            0.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_bishop_white",
+        "render_priority": 1
+    },
+    {
+        "name": "bishop_white2",
+        "position": [
+            675.0,
+            0.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_bishop_white",
+        "render_priority": 1
+    },
+    {
+        "name": "knight_white1",
+        "position": [
+            135.0,
+            0.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_knight_white",
+        "render_priority": 1
+    },
+    {
+        "name": "knight_white2",
+        "position": [
+            810.0,
+            0.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_knight_white",
+        "render_priority": 1
+    },
+    {
+        "name": "knight_black1",
+        "position": [
+            135.0,
+            945.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_knight_black",
+        "render_priority": 1
+    },
+    {
+        "name": "knight_black2",
+        "position": [
+            810.0,
+            945.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            135.0,
+            135.0,
+            0.0
+        ],
+        "Components": [],
+        "sprite": "sprite_knight_black",
+        "render_priority": 1
+    },
+    {
+        "name": "NewGame",
+        "position": [
+            540.0,
+            540.0,
+            0.0
+        ],
+        "rotation": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "scale": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "Components": [
+            {
+                "type": "LuaScript",
+                "path": "res/components/scripts/NewGame.lua",
+                "name": "NewGame"
+            },
+            {
+                "type": "Button",
+                "name": "NewGame"
+            }
+        ],
+        "render_priority": 2
+    }
+]

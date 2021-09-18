@@ -3,11 +3,49 @@
 #define OGL
 
 #include "../GameTypes/GameTypes.pch"
+
 #include <list>
 #include <memory>
 #include <map>
+#include <functional>
+//#include <coroutine>
+//#include <future>
+
+#include <sol/sol.hpp>
+#include "glm/vec2.hpp"
 
 struct GLFWwindow;
+
+template<typename PromiseType>
+struct Getpromise
+{
+	PromiseType* p_;
+	bool await_ready() const noexcept { return false; }
+	void await_suspend(std::coroutine_handle<PromiseType> h)
+	{
+		
+		p_ = &h.promise();
+	}
+	PromiseType* await_resume() const noexcept { return p_; }
+};
+
+struct Task {
+	struct promise_type {
+		glm::vec2 position;
+		
+		Task get_return_object() 
+		{ return Task{ .h_ = std::coroutine_handle<promise_type>::from_promise(*this) }; }
+		std::suspend_never initial_suspend() 
+		{
+			return {};
+		}
+		std::suspend_never final_suspend() noexcept { return {}; }
+		void return_void() {}
+		void unhandled_exception() {}
+	};
+	std::coroutine_handle<promise_type> h_;
+	operator std::coroutine_handle<promise_type>() const { return h_; }
+};
 
 class Input
 {
@@ -97,8 +135,8 @@ public:
 	//static void AddUI(std::string name, std::shared_ptr<UI::UIelement> UIElement);
 	//static std::shared_ptr<UI::UIelement> GetUI(std::string name);
 private:	
-	static std::map<std::string, std::shared_ptr<UI::UIelement>> UIElements;
-	typedef std::map<std::string, std::shared_ptr<UI::UIelement>> UIs;
+	//static std::map<std::string, std::shared_ptr<UI::UIelement>> UIElements;
+	//typedef std::map<std::string, std::shared_ptr<UI::UIelement>> UIs;
 #ifdef OGL
 public:
 	static void Update();
@@ -107,9 +145,18 @@ public:
 	static void glfwMouseCallBack(GLFWwindow* window, int button, int action, int mods);
 	static void glfwWindowSizeCallBack(GLFWwindow* window, int width, int height);
 	static void glfwKeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mode);
-	static void OnClick(const glm::dvec2& mousePos);
+	//static Task OnClick();
+	static void OnClick();
+	//static glm::ivec2 GetCellFromCursor();
+	static glm::ivec2 GetCellReal();
+	static glm::ivec2 GetCell(glm::vec2 objPos);
+	static std::list<sol::protected_function> OnClicks;
+	static void AddListener(const sol::protected_function& func);
+	//static std::unordered_map<std::string, std::coroutine_handle<Task::promise_type>> Events;
 	//static std::shared_ptr<UI::UIelement> CheckShotUI(const glm::dvec2& mousePos);
 private:
-	static std::map<Keys, int> GlEqKeys;
+	//static std::map<Keys, int> GlEqKeys;
 #endif
+	
+	//static std::queue<std::coroutine_handle<Task::promise_type>> qEvents;
 };

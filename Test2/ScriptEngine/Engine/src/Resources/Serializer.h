@@ -73,8 +73,8 @@ public:
 		std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons;
 	};
 
-	static const rapidjson::StringBuffer Serialize(std::shared_ptr<GameObject> object, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
-	static const std::string Serialize(Scene* scene, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
+	static void Serialize(std::unordered_map<std::string, std::shared_ptr<GameObject>>& objects, prettywriter* writer);
+	static void Serialize(const std::string& path);
 	static const rapidjson::StringBuffer Serialize(std::shared_ptr<components> _components, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
 
 	static void Init()

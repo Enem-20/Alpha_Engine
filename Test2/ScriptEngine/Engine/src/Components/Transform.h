@@ -37,7 +37,7 @@ namespace Components
 		{
 			Translate(glm::vec3(0.f));
 			Rotate(glm::vec3(0.f));
-			Scale(glm::vec3(0.f));
+			Scale(scale);
 		}
 
 		Transform(const Transform& _transform)

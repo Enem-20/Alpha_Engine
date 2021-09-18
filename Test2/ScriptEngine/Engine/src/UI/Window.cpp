@@ -31,6 +31,7 @@ Window::Window()
 Window::~Window()
 {
 	glfwDestroyWindow(window);
+	window = nullptr;
 	//glfwTerminate();
 }
 
@@ -93,7 +94,6 @@ void Window::Update()
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	//ImGui::ShowDemoWindow();
 	for (auto& it : UIs)
 	{
 		it.second->Update();

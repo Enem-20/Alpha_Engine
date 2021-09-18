@@ -42,6 +42,11 @@ int WindowManager::init(std::string name, int width, int height)
 	return 0;
 }
 
+void WindowManager::ShutDown()
+{
+	windows.clear();
+}
+
 std::shared_ptr<Window> WindowManager::AddWindow(std::string name, int width, int height)
 {
 	if (CurrentWindow != nullptr)

@@ -6,6 +6,7 @@
 #include <map>
 #include <vector>
 #include <variant>
+#include <functional>
 
 #include <rapidjson/rapidjson.h>
 #include <rapidjson/document.h>
@@ -79,6 +80,9 @@ public:
 	static rapidjson::Document documentParse(const std::string& relativePath);
 
 	static bool loadJSONScene(const std::string& relativePath);
+	static bool loadSave(const std::string relativePath);
+	static void loadSaveReal(const std::string& relativePath);
+	static void loadExecute();
 	static bool loadJSONGameOjects(const std::string& relativePath);
 	static bool loadJSONSprites(const std::string& relativePath);
 	static bool loadJSONTextureAtlasses(const std::string& relativePath);
@@ -104,7 +108,13 @@ private:
 	static AnimatedSpritesMap m_AnimatedSprites;
 
 	static std::string m_path;
+	static std::string relative_sprites;
+	static std::string relative_textures;
+	static std::string relative_textureAtlasses;
+	static std::string relative_shaders;
+	static std::string relative_main;
+	static std::shared_ptr<std::pair<const std::string, std::function<void(const std::string)>>> loader;
 
-	typedef std::unordered_map<std::string, std::string> LuaScriptsUMap;
-	static LuaScriptsUMap m_LuaScripts;
+	/*typedef std::unordered_map<std::string, std::string> LuaScriptsUMap;
+	static LuaScriptsUMap m_LuaScripts;*/
 };

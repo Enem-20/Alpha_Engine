@@ -2,11 +2,13 @@
 
 #include "Headers.h"
 #include "../Engine/src/Timer.h"
+#include <coroutine>
 
 namespace Components
 {
 	class LuaScript;
 }
+
 
 namespace ScriptEngine
 {

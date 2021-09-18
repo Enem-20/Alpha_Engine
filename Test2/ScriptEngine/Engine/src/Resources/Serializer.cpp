@@ -30,78 +30,57 @@ Serializer::Write::~Write()
 		file << sb->GetString();
 		file.close();
 	}
+	delete sb;
 }
 
-const rapidjson::StringBuffer Serializer::Serialize(std::shared_ptr<GameObject> object, prettywriter* writer, std::string name, std::string path)
+void Serializer::Serialize(std::unordered_map<std::string, std::shared_ptr<GameObject>>& objects, prettywriter* writer)
 {
-	rapidjson::StringBuffer sb;
-	if (!object) { return sb; }
-	if (writer && name != "")
-	{
-		writer->Key(name.c_str());
-	}
-	else
-	{
-		writer = new prettywriter(sb);
-	}
-	Write write(path, &sb);
+	//rapidjson::StringBuffer sb;
+	//if (!objects.empty()) { return sb; }
 
-	writer->StartObject();
-
-
-	writer->Key("name");
-	writer->String(object->name.c_str());
-
-	Serialize(object->transform->position, writer, "position");
-	Serialize(object->transform->rotation, writer, "rotation");
-	Serialize(object->transform->scale, writer, "scale");
-
-	Serialize(std::make_shared<components>(object->scripts, object->buttons), writer, "Components");
-
-	writer->Key("sprite");
-	writer->String(object->sprite->name.c_str());
-	
-
-
-	writer->Key("render_priority");
-	writer->Int(object->render_priority);
-
-	writer->EndObject();
-
-	return sb;
-}
-const std::string Serializer::Serialize(Scene* scene, prettywriter* writer, std::string name, std::string path)
-{
-	std::string ret = "";
-	rapidjson::StringBuffer sb;
-	if (!scene) { return ""; }
-
-	if (writer && name != "")
-	{
-		writer->Key(name.c_str());
-	}
-	else
-	{
-		writer = new prettywriter(sb);
-	}
-
-	Write write(path, &sb);
-
-	ret += "[\n";
+	//Write write(path, &sb);
 
 	writer->StartArray();
-	for (const auto& it : Hierarchy::SceneObjects)
+
+	for (const auto& object : objects)
 	{
-		rapidjson::StringBuffer buf = Serialize(it.second, writer);
-		ret += buf.GetString();
-		ret += '\n';
-		buf.Flush();
+		writer->StartObject();
+
+
+		writer->Key("name");
+		writer->String(object.second->name.c_str());
+
+		Serialize(object.second->transform->position, writer, "position");
+		Serialize(object.second->transform->rotation, writer, "rotation");
+		Serialize(object.second->transform->scale, writer, "scale");
+
+		Serialize(std::make_shared<components>(object.second->scripts, object.second->buttons), writer, "Components");
+
+		if (object.second->sprite)
+		{
+			writer->Key("sprite");
+			writer->String(object.second->sprite->name.c_str());
+		}
+
+
+		writer->Key("render_priority");
+		writer->Int(object.second->render_priority);
+
+		writer->EndObject();
 	}
+
 	writer->EndArray();
+}
+void Serializer::Serialize(const std::string& path)
+{
+	std::ofstream f(path);
+	rapidjson::StringBuffer sb;
 
-	ret += ']';
+	prettywriter writer(sb);
 
-	return ret;
+	Serialize(Hierarchy::SceneObjects, &writer); 
+	f << sb.GetString();
+	f.close();
 }
 
 const rapidjson::StringBuffer Serializer::Serialize(std::shared_ptr<components> _components, prettywriter* writer, std::string name, std::string path)

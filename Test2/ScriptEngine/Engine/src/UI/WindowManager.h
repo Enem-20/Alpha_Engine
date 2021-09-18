@@ -9,6 +9,8 @@ class WindowManager
 {
 public:
 	static int init(std::string name, int width = 1080, int height = 1080);
+	static void ShutDown();
+
 	static std::shared_ptr<Window> GetWindow(std::string name);
 	static std::shared_ptr<Window> AddWindow(std::string name, int width = 1080, int height = 1080);
 	static Window& GetCurrentWindow()

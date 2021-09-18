@@ -4,6 +4,7 @@
 #include "../Resources/Resources.pch"
 
 std::queue<std::pair<std::string, std::function<void(const std::string&)>>>Hierarchy::qEventObjectsControl;
+std::unordered_map<glm::ivec2, std::shared_ptr<GameObject>, IVector2Hash> Hierarchy::GridObjectsPos;
 
 void Hierarchy::addObject(const GameObject& obj)
 {
@@ -27,6 +28,16 @@ void Hierarchy::removeObject(const std::string& name)
 	qEventObjectsControl.push({name, removeObjectReal});
 }
 
+void Hierarchy::Clear()
+{
+	for (auto& it : SceneObjects)
+	{
+		it.second->buttons.clear();
+		WindowManager::CurrentWindow->RemoveUI(it.second->name);
+	}
+	SceneObjects.clear();
+}
+
 std::shared_ptr<GameObject> Hierarchy::getObject(std::string name)
 {
 	auto objpair = SceneObjects.find(name);
@@ -43,4 +54,25 @@ void Hierarchy::ExecuteEvent()
 		qEventObjectsControl.front().second(qEventObjectsControl.front().first);
 		qEventObjectsControl.pop();
 	}
+}
+
+void Hierarchy::addGridObject(const GameObject& obj)
+{
+	GridObjectsPos.emplace(Input::GetCell(obj.transform->position), std::make_shared<GameObject>(obj));
+}
+
+void Hierarchy::removeGridObject(const glm::ivec2& cell)
+{
+	GridObjectsPos.erase(cell);
+}
+
+std::shared_ptr<GameObject> Hierarchy::getGridObject(const glm::ivec2& cell)
+{
+	auto obj = GridObjectsPos.find(cell);
+	if (obj != GridObjectsPos.end())
+	{
+		return obj->second;
+	}
+
+	return nullptr;
 }

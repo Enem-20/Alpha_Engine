@@ -54,7 +54,7 @@ public:
 
 	std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts;
 	std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons;
-	
+
 	std::vector<std::shared_ptr<GameObject>> children;
 
 	std::string name;

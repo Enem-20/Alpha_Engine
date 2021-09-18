@@ -238,7 +238,20 @@ namespace ScriptEngine
 	{
 		hierarchy->new_usertype<Hierarchy>("Hierarchy"
 			, "getObject", &Hierarchy::getObject
-			, "removeObject", &Hierarchy::removeObject);
+			, "removeObject", &Hierarchy::removeObject
+			, "getGridObject", &Hierarchy::getGridObject);
+	}
+
+	void ClassRegistrator::Reg_ResourceManager(sol::table* Lnamespace)
+	{
+		Lnamespace->new_usertype<ResourceManager>("ResourceManager"
+			, "loadScene", &ResourceManager::loadSave);
+	}
+	void ClassRegistrator::Reg_Input(sol::table* Lnamespace)
+	{
+		Lnamespace->new_usertype<Input>("Input"
+			, "GetCell", &Input::GetCellReal
+			, "AddListener", &Input::AddListener);
 	}
 
 	int ClassRegistrator::Registration(sol::table* Lnamespace)
@@ -261,8 +274,9 @@ namespace ScriptEngine
 			Reg_UIelement(Lnamespace);
 			Reg_Window(Lnamespace);
 			Reg_WindowManager(Lnamespace);
-			//Reg_Input(Lnamespace);
+			Reg_Input(Lnamespace);
 			Reg_Transform(Lnamespace);
+			Reg_ResourceManager(Lnamespace);
 
 			return 0;
 		}

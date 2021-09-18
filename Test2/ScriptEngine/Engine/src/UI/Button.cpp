@@ -41,20 +41,7 @@ namespace UI
 		if(ImGui::Begin(name.c_str()))
 			if (ImGui::Button(name.c_str()))
 				executeOnClicks();
-		//ImGui::SetWindowPos(name.c_str(), {0, 0});
-		//switch (state)
-		//{
-		//case States::Idle:
-		//	break;
-		//case States::Down:
-		//	executeOnClicks();
-		//	state = States::Idle;
-		//	break;
-		//case States::Stay:
-		//	break;
-		//case States::Up:
-		//	break;
-		//}
+
 		ImGui::End();
 	}
 

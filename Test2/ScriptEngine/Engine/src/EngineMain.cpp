@@ -26,22 +26,15 @@ namespace Engine
 #ifdef OGL
 	void EngineMain::FirstFrame()
 	{
-		//GLPref::PollEvents();
-
-		//ResourceManager::loadJSONText("");
-
-		//RenderEngine::Renderer::clear();
-
 		ScriptEngine::ScriptProcessor::Start();
 
 		render();
 
-		Input::Update();
+		//Input::Update();
 
 		WindowManager::Start();
 		
 		Hierarchy::ExecuteEvent();
-		//GLPref::SwapBuffers();
 	}
 
 	void EngineMain::ScriptUpdates()
@@ -85,41 +78,29 @@ namespace Engine
 #ifndef NDEBUG
 				//auto start = std::chrono::high_resolution_clock::now();
 #endif
-				//GLPref::PollEvents();
 				glfwPollEvents();
 				glClear(GL_COLOR_BUFFER_BIT);
-				//RenderEngine::Renderer::clear();
 
+				ResourceManager::loadExecute();
 				
-				
-				std::thread th(Input::Update);
 				
 				ScriptUpdates();
 
-				render();
-
-				th.join();
-
-				
+				render();				
 
 				WindowManager::Update();
 
 				Hierarchy::ExecuteEvent();
-				
-				//GLPref::SwapBuffers();
 #ifndef NDEBUG
 				//auto end = std::chrono::high_resolution_clock::now();
 
 				//std::cout << std::chrono::duration<float>(end-start).count() << std::endl;
 #endif
-
-				++countFrames;
-				if(countFrames > 1000)
-					break;
+				
 			}
 		}
-
 		std::thread th(ResourceManager::UnloadAllResources);
+		WindowManager::ShutDown();
 		glfwTerminate();
 		th.join();
 	}

@@ -24,13 +24,14 @@ GameObject::GameObject(std::string name,
 	, buttons(buttons)
 	, render_priority(render_priority)
 {
-	transform->Translate(glm::vec3(0.f));
-	transform->Rotate(glm::vec3(0.f));
-	transform->Scale(glm::vec3(sprite->getSize(), 0.f));
-
+	//transform->Translate(glm::vec3(0.f));
+	//transform->Rotate(glm::vec3(0.f));
+	if (sprite) {transform->scale = glm::vec3(sprite->getSize(), 0.f);}
+	transform->Scale(glm::vec3(0.f));
 	this->render_priority = render_priority;
 
-	Hierarchy::addObject(*this);		
+	Hierarchy::addObject(*this);
+	Hierarchy::addGridObject(*this);
 	for (auto itScripts : scripts)
 	{
 		itScripts.second->gameObject = Hierarchy::getObject(name);
@@ -55,6 +56,11 @@ GameObject::GameObject(const GameObject& gameObject)
 
 GameObject::~GameObject()
 {
+	scripts.clear();
+	buttons.clear();
+	sprite.reset();
+	transform.reset();
+	children.clear();
 }
 
 void GameObject::render()
@@ -72,12 +78,13 @@ void GameObject::render()
 
 void GameObject::Translate(glm::vec3 position)
 {
+	Hierarchy::removeGridObject(Input::GetCell(transform->position));
 	transform->Translate(position);
 	for (auto it : children)
 	{
 		it->Translate(position);
 	}
-
+	Hierarchy::addObject(*this);
 	Update();
 }
 
@@ -88,7 +95,7 @@ void GameObject::Rotate(glm::vec3 rotation)
 	{
 		it->Rotate(rotation);
 	}
-
+	
 	Update();
 }
 
@@ -105,8 +112,9 @@ void GameObject::Scale(glm::vec3 scale)
 
 void GameObject::Update()
 {
-	for (auto it : buttons)
+	for (auto& it : buttons)
 	{
+		it.second->translate(transform->position);
 		//it.second->setParamCollider();
 	}
 }
