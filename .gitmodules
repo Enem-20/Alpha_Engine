@@ -6,6 +6,5 @@
 	url = https://github.com/ThePhD/sol2.git
 [submodule "pugixml"]
 	path = external/pugixml
-	path = Test2/external/pugixml
 	path = Test2/ScriptEngine/external/pugixml
 	url = https://github.com/zeux/pugixml.git
