@@ -4,12 +4,21 @@
 #include "../Resources/Resources.pch"
 
 std::queue<std::pair<std::string, std::function<void(const std::string&)>>>Hierarchy::qEventObjectsControl;
-std::unordered_map<glm::ivec2, std::shared_ptr<GameObject>, IVector2Hash> Hierarchy::GridObjectsPos;
+std::unordered_map<glm::ivec2, std::string, IVector2Hash> Hierarchy::GridObjectsPos;
+std::unordered_map<std::string, std::shared_ptr<GameObject>> Hierarchy::uPool;
 
 void Hierarchy::addObject(const GameObject& obj)
 {
-	//std::pair<std::string, std::shared_ptr<GameObject>>* _pair = new std::pair<std::string, std::shared_ptr<GameObject>>(obj->name, obj);
-	SceneObjects.emplace(obj.name, std::make_shared<GameObject>(obj));
+	std::shared_ptr<GameObject> newObj = std::make_shared<GameObject>(obj);
+	SceneObjects.emplace(newObj->name, std::move(newObj));
+}
+
+GameObject& Hierarchy::addFromScriptObject(const GameObject& obj)
+{
+	std::shared_ptr<GameObject> newObj = std::make_shared<GameObject>(obj);
+	std::string name = newObj->name;
+	SceneObjects.emplace(newObj->name, std::move(newObj));
+	return *getObject(std::move(name));
 }
 
 void Hierarchy::removeObjectReal(const std::string& name)
@@ -19,7 +28,11 @@ void Hierarchy::removeObjectReal(const std::string& name)
 	{
 		obj->second->buttons.clear();
 		WindowManager::CurrentWindow->RemoveUI(name);
+		auto cellObj = GridObjectsPos.find(Input::GetCell(obj->second->transform->position));
+		if((cellObj != GridObjectsPos.end()) && (cellObj->second == name))
+			GridObjectsPos.erase(Input::GetCell(obj->second->transform->position));
 		SceneObjects.erase(name);
+		
 	}
 }
 
@@ -36,14 +49,26 @@ void Hierarchy::Clear()
 		WindowManager::CurrentWindow->RemoveUI(it.second->name);
 	}
 	SceneObjects.clear();
+	GridObjectsPos.clear();
 }
 
-std::shared_ptr<GameObject> Hierarchy::getObject(std::string name)
+std::shared_ptr<GameObject> Hierarchy::getObject(const std::string& name)
 {
 	auto objpair = SceneObjects.find(name);
 	if (objpair != SceneObjects.end())
 	{
 		return objpair->second;
+	}
+
+	return nullptr;
+}
+
+GameObject& Hierarchy::getOriginalObject(std::string name)
+{
+	auto objpair = SceneObjects.find(name);
+	if (objpair != SceneObjects.end())
+	{
+		return *objpair->second;
 	}
 }
 
@@ -56,9 +81,12 @@ void Hierarchy::ExecuteEvent()
 	}
 }
 
-void Hierarchy::addGridObject(const GameObject& obj)
+void Hierarchy::addGridObject(const std::string& objName)
 {
-	GridObjectsPos.emplace(Input::GetCell(obj.transform->position), std::make_shared<GameObject>(obj));
+	auto obj = getObject(objName);
+	glm::ivec2 cell = Input::GetCell(obj->transform->position);
+	//GridObjectsPos.erase(cell);
+	GridObjectsPos[cell] = objName;
 }
 
 void Hierarchy::removeGridObject(const glm::ivec2& cell)
@@ -69,10 +97,29 @@ void Hierarchy::removeGridObject(const glm::ivec2& cell)
 std::shared_ptr<GameObject> Hierarchy::getGridObject(const glm::ivec2& cell)
 {
 	auto obj = GridObjectsPos.find(cell);
-	if (obj != GridObjectsPos.end())
+	if(obj != GridObjectsPos.end())
+		return getObject(obj->second);
+	return nullptr;
+}
+
+void Hierarchy::addPoolObject(std::shared_ptr<GameObject> obj)
+{
+	uPool.emplace(obj->name, obj);
+}
+
+std::shared_ptr<GameObject> Hierarchy::getPoolObject(const std::string& name)
+{
+	auto obj_it = uPool.find(name);
+
+	if (obj_it != uPool.end())
 	{
-		return obj->second;
+		return obj_it->second;
 	}
 
 	return nullptr;
+}
+
+void Hierarchy::removePoolObject(const std::string& name)
+{
+	uPool.erase(name);
 }

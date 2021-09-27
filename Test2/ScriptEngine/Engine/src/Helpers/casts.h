@@ -6,6 +6,7 @@
 
 #include "vector3.h"
 #include "mat3.h"
+#include "../Renderer/Renderer.h"
 
 namespace Helpers
 {
@@ -37,3 +38,30 @@ namespace Helpers
 		}
 	}
 }
+
+class Casts
+{
+public:
+	static glm::vec3 CellToScreen(const glm::ivec2& ivec2)
+	{
+		glm::vec3 res(0.f);
+
+		float scaleX = (RenderEngine::Renderer::ViewportSize.x - RenderEngine::Renderer::ViewportSize.x / 8) / 7;
+		res.x = ivec2.x * scaleX;
+
+		float scaleY = (RenderEngine::Renderer::ViewportSize.y - RenderEngine::Renderer::ViewportSize.y / 8) / 7;
+		res.y = ivec2.y * scaleY;
+		//float board_pos_x = ivec2.x - RenderEngine::Renderer::ViewportOffset.x;
+		//float board_pos_y = ivec2.y - RenderEngine::Renderer::ViewportOffset.y;
+
+		//if (board_pos_x >= 0 && board_pos_x <= RenderEngine::Renderer::ViewportSize.x && board_pos_y >= 0 && board_pos_y <= RenderEngine::Renderer::ViewportSize.x)
+		//{
+		//	unsigned int cellSize = ((unsigned int)RenderEngine::Renderer::ViewportSize.x << 3);
+		//	res.x = board_pos_x / cellSize;
+		//	res.y = board_pos_y / cellSize;
+		//	//std::cout << "cell (" << cell_x << ", " << cell_y << ")" << std::endl;
+		//}
+
+		return res;
+	}
+};

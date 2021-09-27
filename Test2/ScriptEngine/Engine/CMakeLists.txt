@@ -95,6 +95,12 @@ set(GLPref
 	src/GLPref/GLPref.cpp
 )
 
+set(Helpers
+	src/Helpers/StringFuncs.h
+	src/Helpers/casts.h
+	src/Helpers/casts.cpp
+)
+
 add_library(${PROJECT_NAME} STATIC
 	${Other}
 	${UI}
@@ -106,6 +112,7 @@ add_library(${PROJECT_NAME} STATIC
 	${Input}	
 	${Components}
 	${GLPref}
+	${Helpers}
 	)
 source_group("Other" 	  	FILES ${Other})
 source_group("UI" 		  	FILES ${UI})
@@ -117,6 +124,7 @@ source_group("Physycs" 		FILES ${Physycs})
 source_group("Input" 	  	FILES ${Input})
 source_group("Components" 	FILES ${Components})
 source_group("GLPref" 		FILES ${GLPref})
+source_group("Helpers" FILES ${Helpers})
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 target_precompile_headers(${PROJECT_NAME} PUBLIC 

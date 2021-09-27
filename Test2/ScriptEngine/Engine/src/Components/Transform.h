@@ -48,6 +48,7 @@ namespace Components
 			, Component(_transform.name, _transform.gameObject)
 		{}
 
+		void Teleport(const glm::vec3& position);
 		void Translate(const glm::vec3& position);
 		void Rotate(const glm::vec3& rotation);
 		void Scale(const glm::vec3& scale);
@@ -56,6 +57,8 @@ namespace Components
 		{
 			return model;
 		}
+
+		glm::vec2 GetVec2Position() { return position; }
 	public:
 		glm::vec3 position;
 		glm::vec3 rotation;

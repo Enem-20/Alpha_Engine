@@ -7,6 +7,8 @@
 #include "../Engine/src/Timer.h"
 #include "../Engine/src/UI/Button.h"
 #include "../Engine/src/Input/Input.h"
+#include "../Engine/src/Helpers/StringFuncs.h"
+#include "../Engine/src/Helpers/casts.h"
 
 
 #include <glm/vec2.hpp>
@@ -28,7 +30,7 @@ namespace ScriptEngine
 	void ClassRegistrator::Reg_GLMvec2(sol::table* Lnamespace)
 	{
 		Lnamespace->new_usertype<glm::vec2>("vec2"
-			, sol::constructors<glm::vec2(), glm::vec2(float, float), glm::vec2(glm::vec2)>()
+			, sol::constructors<glm::vec2(), glm::vec2(float, float), glm::vec2(const glm::vec2&)>()
 
 			, sol::meta_function::addition, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(glm::operator+)
 			, sol::meta_function::subtraction, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(glm::operator-)
@@ -43,8 +45,8 @@ namespace ScriptEngine
 
 	void ClassRegistrator::Reg_GLMivec2(sol::table* Lnamespace)
 	{
-		Lnamespace->new_usertype<glm::ivec2>("vec2"
-			, sol::constructors<glm::ivec2(), glm::ivec2(float, float), glm::ivec2(glm::ivec2)>()
+		Lnamespace->new_usertype<glm::ivec2>("ivec2"
+			, sol::constructors<glm::ivec2(), glm::ivec2(int, int), glm::ivec2(const glm::ivec2&)>()
 
 			, sol::meta_function::addition, sol::resolve<glm::ivec2(const glm::ivec2&, const glm::ivec2&)>(glm::operator+)
 			, sol::meta_function::subtraction, sol::resolve<glm::ivec2(const glm::ivec2&, const glm::ivec2&)>(glm::operator-)
@@ -191,23 +193,29 @@ namespace ScriptEngine
 	void ClassRegistrator::Reg_Transform(sol::table* Lnamespace)
 	{
 		Lnamespace->new_usertype<Components::Transform>("Transform"
-			, sol::constructors<Components::Transform(std::string, std::shared_ptr<GameObject>), Components::Transform(const Components::Transform&)>()
+			, sol::constructors<Components::Transform(), Components::Transform(std::string, std::shared_ptr<GameObject>), Components::Transform(const Components::Transform&)>()
 			, "position", &Components::Transform::position
 			, "rotation", &Components::Transform::rotation
-			, "scale", &Components::Transform::scale);
+			, "scale", &Components::Transform::scale
+			, "GetPosition", &Components::Transform::GetVec2Position);
 	}
 
 	void ClassRegistrator::Reg_GameObject(sol::table* object)
 	{
 		object->new_usertype<GameObject>("GameObject"
-			, sol::constructors<GameObject(std::string), GameObject(const GameObject&)>()
+			, sol::constructors<GameObject(std::string), GameObject(std::string, std::shared_ptr<Components::Transform>, std::shared_ptr<RenderEngine::Sprite>), GameObject(const GameObject&)>()
 
 			, "Translate", &GameObject::Translate
+			, "Teleport" , &GameObject::Teleport
 			, "Rotate",   &GameObject::Rotate
 			, "AddChild", &GameObject::AddChild
 			, "GetChild", &GameObject::GetChild
+			, "GetTransform", &GameObject::GetTransform
+			, "SetOnGrid", &GameObject::SetOnGrid
 
 			, "name", &GameObject::name
+			, "transform", &GameObject::transform
+			, "onGrid", &GameObject::onGrid
 			);
 	}
 
@@ -237,9 +245,15 @@ namespace ScriptEngine
 	void ClassRegistrator::Reg_Hierarchy(sol::table* hierarchy)
 	{
 		hierarchy->new_usertype<Hierarchy>("Hierarchy"
-			, "getObject", &Hierarchy::getObject
+			, "getObject", &Hierarchy::getOriginalObject
+
 			, "removeObject", &Hierarchy::removeObject
-			, "getGridObject", &Hierarchy::getGridObject);
+			, "getGridObject", &Hierarchy::getGridObject
+			, "addPoolObject", &Hierarchy::addPoolObject
+			, "getPoolObject", &Hierarchy::getPoolObject
+			, "removePoolObject", &Hierarchy::removePoolObject
+			, "addObject", &Hierarchy::addFromScriptObject
+			, "addGridObject", &Hierarchy::addGridObject);
 	}
 
 	void ClassRegistrator::Reg_ResourceManager(sol::table* Lnamespace)
@@ -251,7 +265,21 @@ namespace ScriptEngine
 	{
 		Lnamespace->new_usertype<Input>("Input"
 			, "GetCell", &Input::GetCellReal
+			, "GetVectorCell", &Input::GetCell
 			, "AddListener", &Input::AddListener);
+	}
+
+	void ClassRegistrator::Reg_StringFuncs(sol::table* Lnamespace)
+	{
+		Lnamespace->new_usertype<StringFuncs>("StringFuncs"
+			, "Match", &StringFuncs::Match
+			, "Find", &StringFuncs::Find);
+	}
+
+	void ClassRegistrator::Reg_Casts(sol::table* Lnamespace)
+	{
+		Lnamespace->new_usertype<Casts>("Casts"
+				, "CellToScreen", &Casts::CellToScreen);
 	}
 
 	int ClassRegistrator::Registration(sol::table* Lnamespace)
@@ -275,8 +303,10 @@ namespace ScriptEngine
 			Reg_Window(Lnamespace);
 			Reg_WindowManager(Lnamespace);
 			Reg_Input(Lnamespace);
+			Reg_StringFuncs(Lnamespace);
 			Reg_Transform(Lnamespace);
 			Reg_ResourceManager(Lnamespace);
+			Reg_Casts(Lnamespace);
 
 			return 0;
 		}

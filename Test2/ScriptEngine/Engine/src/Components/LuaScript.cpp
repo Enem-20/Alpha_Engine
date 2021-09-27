@@ -68,5 +68,10 @@ namespace Components
 		m_Update = ScriptEngine::ScriptProcessor::L["Update"];
 		m_FixedUpdate = ScriptEngine::ScriptProcessor::L["FixedUpdate"];
 		m_LastUpdate = ScriptEngine::ScriptProcessor::L["LastUpdate"];
+		ScriptEngine::ScriptProcessor::L["Awake"] = nullptr;
+		ScriptEngine::ScriptProcessor::L["Start"] = nullptr;
+		ScriptEngine::ScriptProcessor::L["Update"] = nullptr;
+		ScriptEngine::ScriptProcessor::L["FixedUpdate"] = nullptr;
+		ScriptEngine::ScriptProcessor::L["LastUpdate"] = nullptr;
 	}
 }

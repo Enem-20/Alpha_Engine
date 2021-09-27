@@ -67,7 +67,7 @@ namespace Engine
 		GLPref::init();
 		{
 			ResourceManager::SetExecutablePath(argv[0]);
-
+			ScriptEngine::ScriptProcessor::L.require_file("dequeue", ResourceManager::GetPath() + "/res/components/scripts/dequeue.lua");
 			ResourceManager::loadJSONScene("res/default/main.json");
 			size_t countFrames = 0;
 			FirstFrame();

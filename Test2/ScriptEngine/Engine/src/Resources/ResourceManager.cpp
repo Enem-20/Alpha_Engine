@@ -6,6 +6,8 @@
 #include "Serializer.h"
 #include "../UI/Button.h"
 #include "../UI/Text.h"
+#include "../../src/ClassRegistrator.h"
+#include "../EngineMain.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -321,6 +323,12 @@ void ResourceManager::loadSaveReal(const std::string& relativePath)
 {
 	UnloadAllResources();
 	ScriptEngine::ScriptProcessor::L.collect_garbage();
+	//ScriptEngine::ScriptProcessor::L = sol::state();
+	//ScriptEngine::ScriptProcessor::init();
+	//sol::table Lobject = ScriptEngine::ScriptProcessor::L["Engine"].get_or_create<sol::table>();
+	//ScriptEngine::ClassRegistrator::Registration(&Lobject);
+	//Engine::EngineMain::FirstFrame();
+	
 	//WindowManager::ShutDown();
 	//glfwTerminate();
 	//ImGui_ImplGlfw_Shutdown();

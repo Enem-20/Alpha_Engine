@@ -149,9 +149,9 @@ public:
 	static void OnClick();
 	//static glm::ivec2 GetCellFromCursor();
 	static glm::ivec2 GetCellReal();
-	static glm::ivec2 GetCell(glm::vec2 objPos);
-	static std::list<sol::protected_function> OnClicks;
-	static void AddListener(const sol::protected_function& func);
+	static glm::ivec2 GetCell(const glm::vec2& objPos);
+	static std::list<sol::function> OnClicks;
+	static void AddListener(const sol::function& func);
 	//static std::unordered_map<std::string, std::coroutine_handle<Task::promise_type>> Events;
 	//static std::shared_ptr<UI::UIelement> CheckShotUI(const glm::dvec2& mousePos);
 private:

@@ -44,6 +44,9 @@ namespace ScriptEngine
 		static void Reg_Hierarchy(sol::table* hierarchy);
 		static void Reg_ResourceManager(sol::table* Lnamespace);
 		static void Reg_Input(sol::table* Lnamespace);
+		static void Reg_StringFuncs(sol::table* Lnamespace);
+		static void Reg_Casts(sol::table* Lnamespace);
+		
 
 		inline static bool IsReg = false;
 	};

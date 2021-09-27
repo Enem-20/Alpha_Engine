@@ -777,12 +777,35 @@
       "Components":[
          {
             "type" : "LuaScript",
-            "path" : "res/components/scripts/some.lua",
+            "path" : "res/components/scripts/MoveManager.lua",
             "name" : "MoveManager"
          }
       ],
 	  "sprite":"",
 	  "render_priority":0
+   },
+   {
+      "name":"Allowed_cell",
+      "position":[
+         -500.0,
+         -500.0,
+         0.0
+      ],
+      "rotation":[
+         0.0,
+         0.0,
+         0.0
+      ],
+      "scale":[
+         0.0,
+         0.0,
+         0.0
+      ],
+      
+      "Components":[
+      ],
+	  "sprite":"sprite_Allowed_cell",
+	  "render_priority":99
    },
    {
       "name":"NewGame",

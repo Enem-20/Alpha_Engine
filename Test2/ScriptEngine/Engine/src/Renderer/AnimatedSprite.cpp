@@ -22,7 +22,7 @@ namespace RenderEngine
 	}
 	
 
-	void AnimatedSprite::render(glm::mat4 model) const
+	void AnimatedSprite::render(const glm::mat4& model) const
 	{
 		if (m_dirty)
 		{

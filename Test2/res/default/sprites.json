@@ -127,5 +127,14 @@
 		"spriteHeight" : 1080,
 		"subTextureName" : "",
 		"RenderMode" : 1
+	},
+	{
+		"spriteName" : "sprite_Allowed_cell",
+		"textureName" : "Allowed_cell",
+		"shaderName" : "SpriteShader",
+		"spriteWidth" : 135,
+		"spriteHeight" : 135,
+		"subTextureName" : "",
+		"RenderMode" : 0
 	}
 ]

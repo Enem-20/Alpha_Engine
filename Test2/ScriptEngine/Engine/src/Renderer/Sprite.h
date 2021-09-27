@@ -44,7 +44,7 @@ namespace RenderEngine
 		void Translate(glm::vec3 position);
 		void Rotate(glm::vec3 rotation);
 		void Scale(glm::vec3 scale);
-		virtual void render(glm::mat4 model) const;
+		virtual void render(const glm::mat4& model) const;
 		virtual void InstanceRender(glm::mat4 model) const;
 		void setPosition(const glm::vec2& position);
 		glm::vec2 getSize() const;
@@ -52,7 +52,6 @@ namespace RenderEngine
 		void setSize(const glm::vec2& size);
 		void setRotation(const glm::vec3& rotation);
 		int GetRenderMode() const;
-		void SetRenderMode(int RenderMode);
 		
 	protected:
 		std::shared_ptr<Texture2D> m_Texture;

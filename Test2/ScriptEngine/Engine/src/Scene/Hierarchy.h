@@ -37,23 +37,30 @@ public:
 	}
 	static void removeObjectReal(const std::string& name);
 	static void addObject(const GameObject& obj);
-	static void addObj(const std::string& name);
+	//static void addObj(const std::string& name);
 	static void removeObject(const std::string& name);
-	static std::shared_ptr<GameObject> getObject(std::string name);
+	static std::shared_ptr<GameObject> getObject(const std::string& name);
+	static GameObject& getOriginalObject(std::string name);
 	static void ExecuteEvent();
 	static void Clear();
 
-	static void addGridObject(const GameObject& obj);
+	static void addGridObject(const std::string& objName);
 	static void removeGridObject(const glm::ivec2& cell);
 	static std::shared_ptr<GameObject> getGridObject(const glm::ivec2& cell);
+	static void addPoolObject(std::shared_ptr<GameObject> obj);
+	static std::shared_ptr<GameObject> getPoolObject(const std::string& name);
+	static void removePoolObject(const std::string& name);
+	static GameObject& addFromScriptObject(const GameObject& obj);
+	
 
 	inline static std::unordered_map<std::string, std::shared_ptr<GameObject>> SceneObjects;
-	static std::unordered_map<glm::ivec2, std::shared_ptr<GameObject>, IVector2Hash> GridObjectsPos;
+	static std::unordered_map<glm::ivec2, std::string, IVector2Hash> GridObjectsPos;
 	inline static std::shared_ptr<GameObject> background;
 private:
 	//union AddRemove { std::function<void(const GameObject&) ; };
 	inline static Hierarchy* hierarchy;
 	static std::queue<std::pair<std::string, std::function<void(const std::string&)>>> qEventObjectsControl;
+	static std::unordered_map<std::string, std::shared_ptr<GameObject>> uPool;
 	Hierarchy() = default;
 };
 

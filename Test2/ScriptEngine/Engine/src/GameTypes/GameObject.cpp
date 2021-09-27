@@ -11,46 +11,87 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+size_t GameObject::counter = 0;
+
 GameObject::GameObject(std::string name,
 	std::shared_ptr<Components::Transform> transform,
 	std::shared_ptr<RenderEngine::Sprite> sprite,
 	std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts,
 	std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons,
 	int render_priority)
-	: name(name)
-	, transform(transform)
+	: transform(transform)
 	, sprite(sprite)
 	, scripts(scripts)
 	, buttons(buttons)
 	, render_priority(render_priority)
 {
+	onGrid = false;
+	if (Hierarchy::getObject(name))
+	{
+		ID = counter ? ++counter : counter;
+		this->name = name + std::to_string(ID);
+	}
+	else
+	{
+		ID = 0;
+		this->name = name;
+	}
 	//transform->Translate(glm::vec3(0.f));
 	//transform->Rotate(glm::vec3(0.f));
-	if (sprite) {transform->scale = glm::vec3(sprite->getSize(), 0.f);}
-	transform->Scale(glm::vec3(0.f));
+	if (this->transform != nullptr)
+	{
+		if (sprite) { this->transform->scale = glm::vec3(sprite->getSize(), 0.f); }
+		this->transform->Scale(glm::vec3(0.f));
+	}
+	else
+	{
+		this->transform = std::make_shared<Components::Transform>(this->name);
+		this->transform->Scale(glm::vec3(0.f));
+	}
 	this->render_priority = render_priority;
 
+
+
 	Hierarchy::addObject(*this);
-	Hierarchy::addGridObject(*this);
+	if(onGrid)//Костыль
+		Hierarchy::addGridObject(this->name);
 	for (auto itScripts : scripts)
 	{
-		itScripts.second->gameObject = Hierarchy::getObject(name);
+		itScripts.second->gameObject = Hierarchy::getObject(this->name);
 		itScripts.second->Awake();
 	}
 	for (auto button : buttons)
 	{
-		button.second->gameObject = Hierarchy::getObject(name);
+		button.second->gameObject = Hierarchy::getObject(this->name);
 		//button.second.setParamCollider();
 	}
 }
 
 GameObject::GameObject(const GameObject& gameObject)
-	: transform(gameObject.transform)
-	, scripts(gameObject.scripts)
+	: scripts(gameObject.scripts)
 	, buttons(gameObject.buttons)
+	, onGrid(gameObject.onGrid)
 {
-	this->name = gameObject.name;
 	this->sprite = gameObject.sprite;
+	this->transform = std::make_shared<Components::Transform>(gameObject.transform->position, gameObject.transform->rotation, glm::vec3(0.f));
+	if(sprite)
+		this->transform->scale = glm::vec3(sprite->getSize(), 0.f);
+	this->transform->Scale(glm::vec3(0.f));
+
+	ID = 0;
+	if (Hierarchy::getObject(gameObject.name))
+	{
+		while (Hierarchy::getObject(gameObject.name + std::to_string(ID)))
+		{
+			++ID;
+		}
+		this->name = gameObject.name + std::to_string(ID);
+	}
+	else
+	{
+		this->name = gameObject.name;
+	}
+
 	this->render_priority = gameObject.render_priority;
 }
 
@@ -76,15 +117,31 @@ void GameObject::render()
 	}
 }
 
-void GameObject::Translate(glm::vec3 position)
+void GameObject::Translate(const glm::vec3& position)
 {
-	Hierarchy::removeGridObject(Input::GetCell(transform->position));
+	if(onGrid)	//Костыль
+		Hierarchy::removeGridObject(Input::GetCell(transform->position));
 	transform->Translate(position);
 	for (auto it : children)
 	{
 		it->Translate(position);
 	}
-	Hierarchy::addObject(*this);
+	if(onGrid)//Костыль
+		Hierarchy::addGridObject(this->name);
+	Update();
+}
+
+void GameObject::Teleport(const glm::vec3& position)
+{
+	if(onGrid)//Костыль
+		Hierarchy::removeGridObject(Input::GetCell(transform->position));
+	transform->Teleport(position);
+	for (auto& it : children)
+	{
+		it->Teleport(position);
+	}
+	if(onGrid)//Костыль
+		Hierarchy::addGridObject(this->name);
 	Update();
 }
 
@@ -95,7 +152,7 @@ void GameObject::Rotate(glm::vec3 rotation)
 	{
 		it->Rotate(rotation);
 	}
-	
+
 	Update();
 }
 
@@ -141,11 +198,11 @@ std::shared_ptr<RenderEngine::Sprite> GameObject::GetSprite() const
 //	}
 //}
 
-void GameObject::AddChild(std::shared_ptr<GameObject> gameObject)
+void GameObject::AddChild(const GameObject& gameObject)
 {
-	children.push_back(gameObject);
+	children.push_back(std::make_shared<GameObject>(gameObject));
 }
-std::shared_ptr<GameObject> GameObject::GetChild(int i) const
+GameObject& GameObject::GetChild(int i) const
 {
-	return children[i];
+	return *children[i];
 }

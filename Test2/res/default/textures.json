@@ -1,7 +1,7 @@
 [
    "Desk",
    "res/textures/Desk.png",
-   "allowed_cell",
+   "Allowed_cell",
    "res/textures/green_quad.png",
    "Button",
    "res/textures/Button.png"

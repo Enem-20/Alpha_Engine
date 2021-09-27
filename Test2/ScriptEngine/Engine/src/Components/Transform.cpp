@@ -6,6 +6,13 @@
 
 namespace Components
 {
+	void Transform::Teleport(const glm::vec3& position)
+	{
+		this->position = position;
+
+		transform();
+	}
+
 	void Transform::Translate(const glm::vec3& position)
 	{
 		this->position += position;

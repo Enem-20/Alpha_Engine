@@ -29,11 +29,14 @@ public:
 		int render_priority = 0);
 	GameObject(GameObject&&) = delete;
 	virtual ~GameObject();
-	void Translate(glm::vec3 position);
+	void Translate(const glm::vec3& position);
+	void Teleport(const glm::vec3& position);
 	void Rotate(glm::vec3 rotation);
 	void Scale(glm::vec3 scale);
 	void Update();
 
+	Components::Transform& GetTransform() { return *transform; }
+	void SetOnGrid(const bool& onGridNew) { onGrid = onGridNew; }
 	virtual void render();
 
 	/*virtual void SetSprite(const std::string& spriteName,
@@ -45,10 +48,11 @@ public:
 
 	std::shared_ptr<GameObject> testShared(GameObject gameObject) { return std::make_shared<GameObject>(gameObject); }
 
-	void AddChild(std::shared_ptr<GameObject> gameObject);
-	std::shared_ptr<GameObject> GetChild(int i) const;
+	void AddChild(const GameObject& gameObject);
+	GameObject& GetChild(int i) const;
 
 	virtual std::shared_ptr<RenderEngine::Sprite> GetSprite() const;
+	size_t ID;
 public:
 	std::shared_ptr<Components::Transform> transform;
 
@@ -59,6 +63,8 @@ public:
 
 	std::string name;
 	int render_priority;
+	bool onGrid;
 protected:
+	static size_t counter;
 	std::shared_ptr<RenderEngine::Sprite> sprite;
 };

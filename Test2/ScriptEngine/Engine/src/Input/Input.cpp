@@ -106,7 +106,7 @@
 //std::unordered_map<std::string, std::coroutine_handle<Task::promise_type>> Input::Events;
 
 //Input::UIs Input::UIElements;
-std::list<sol::protected_function> Input::OnClicks;
+std::list<sol::function> Input::OnClicks;
 
 bool Input::KeyStates[71] = { false };
 bool Input::KeyStatesPrev[71] = { false };
@@ -186,9 +186,10 @@ void Input::OnClick()
 	}
 }
 
-void Input::AddListener(const sol::protected_function& func)
+void Input::AddListener(const sol::function& func)
 {
 	OnClicks.push_back(func);
+	//OnClicks.back()();
 }
 
 //bool Input::GetKeyDown(Keys KeyCode)
@@ -254,7 +255,7 @@ glm::ivec2 Input::GetCellReal()
 	int board_pos_x = cursorPos_OnClick.x - RenderEngine::Renderer::ViewportOffset.x;
 	int board_pos_y = RenderEngine::Renderer::ViewportSize.y - cursorPos_OnClick.y + RenderEngine::Renderer::ViewportOffset.y;
 
-	glm::ivec2 res(0);
+	glm::ivec2 res(-9,-9);
 	if (board_pos_x >= 0 && board_pos_x < RenderEngine::Renderer::ViewportSize.x && board_pos_y >= 0 && board_pos_y < RenderEngine::Renderer::ViewportSize.x)
 	{
 		unsigned int cellSize = ((unsigned int)RenderEngine::Renderer::ViewportSize.x >> 3);
@@ -265,10 +266,10 @@ glm::ivec2 Input::GetCellReal()
 	return res;
 }
 
-glm::ivec2 Input::GetCell(glm::vec2 objPos)
+glm::ivec2 Input::GetCell(const glm::vec2& objPos)
 {
 	int board_pos_x = objPos.x - RenderEngine::Renderer::ViewportOffset.x;
-	int board_pos_y = RenderEngine::Renderer::ViewportSize.y - objPos.y + RenderEngine::Renderer::ViewportOffset.y;
+	int board_pos_y = objPos.y - RenderEngine::Renderer::ViewportOffset.y;
 
 	glm::ivec2 res(0);
 	if (board_pos_x >= 0 && board_pos_x < RenderEngine::Renderer::ViewportSize.x && board_pos_y >= 0 && board_pos_y < RenderEngine::Renderer::ViewportSize.x)

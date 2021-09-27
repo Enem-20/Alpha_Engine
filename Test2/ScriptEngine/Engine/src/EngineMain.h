@@ -12,8 +12,8 @@ namespace Engine
 	{
 	public:
 		static void Init(char** argv);
-	private:
 		static void FirstFrame();
+	private:
 		static void render();
 		static void ScriptUpdates();
 	};

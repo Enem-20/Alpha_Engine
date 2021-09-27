@@ -177,7 +177,7 @@ namespace RenderEngine
 		
 	}
 
-	void Sprite::render(glm::mat4 model) const
+	void Sprite::render(const glm::mat4& model) const
 	{
 		m_shaderProgram->use();
 
@@ -235,16 +235,5 @@ namespace RenderEngine
 		default:
 			return -1;
 		}
-	}
-
-	void Sprite::SetRenderMode(int RenderMode)
-	{
-		switch (RenderMode)
-		{
-		default:
-			std::cerr << "error while set render mode in sprite " + name;
-			return;
-		}
-		this->RenderMode = RenderMode;
 	}
 }
