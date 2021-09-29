@@ -1,23 +1,15 @@
 #include "GameTypes/GameTypes.pch"
 #include "EngineMain.h"
 #include "GLPref/GLPref.h"
-#include "Renderer/Renderer.h"
-#include "Scene/Scene.h"
+
 #include "../../src/ScriptEngine.h"
 #include "UI/WindowManager.h"
 #include "Resources/ResourceManager.h"
 
-#include "Input/Input.h"
-
-#include <imgui/imgui.h>
-#include <imgui/backends/imgui_impl_opengl3.h>
 #include <GLFW/glfw3.h>
 
-#include <iostream>
 #include <filesystem>
-#include <fstream>
 #include <thread>
-#include <chrono>
 
 //#include <ppl.h>
 
@@ -29,8 +21,6 @@ namespace Engine
 		ScriptEngine::ScriptProcessor::Start();
 
 		render();
-
-		//Input::Update();
 
 		WindowManager::Start();
 		

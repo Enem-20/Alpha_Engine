@@ -1,14 +1,13 @@
 #pragma once
 
-#include "Headers.h"
-#include "../Engine/src/Timer.h"
-#include <coroutine>
+#include <sol/sol.hpp>
 
 namespace Components
 {
 	class LuaScript;
 }
 
+class Timer;
 
 namespace ScriptEngine
 {

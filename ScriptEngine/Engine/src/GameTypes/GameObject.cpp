@@ -1,10 +1,8 @@
 #include "GameObject.h"
 
+#include "../Renderer/Sprite.h"
 #include "../Scene/Hierarchy.h"
-#include "../Resources/ResourceManager.h"
 #include "../UI/Button.h"
-
-#include <typeinfo>
 
 #include <../glm/glm/vec2.hpp>
 #include <../glm/glm/vec3.hpp>

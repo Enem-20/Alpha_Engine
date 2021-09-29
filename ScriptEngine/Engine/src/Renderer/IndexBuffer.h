@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glad/glad.h>
+typedef unsigned int GLuint;
 
 namespace RenderEngine
 {

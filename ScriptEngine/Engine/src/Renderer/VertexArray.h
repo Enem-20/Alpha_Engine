@@ -1,12 +1,12 @@
 #pragma once
 
-#include "VertexBuffer.h"
-#include "VertexBufferLayout.h"
-
 #include <glad/glad.h>
 
 namespace RenderEngine
 {
+	class VertexBuffer;
+	class VertexBufferLayout;
+
 	class VertexArray
 	{
 	public:

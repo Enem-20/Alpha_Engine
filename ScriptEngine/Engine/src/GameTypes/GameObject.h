@@ -1,17 +1,16 @@
 #pragma once
 
 #include "../Components/Components.pch"
-#include "../Renderer/Sprite.h"
-#include "../Renderer/ShaderProgram.h"
 #include "../UI/Button.h"
 
 
 #include <vector>
-#include <iostream>
-#include <functional>
-#include <stack>
-#include <variant>
 #include <unordered_map>
+
+namespace RenderEngine
+{
+	class Sprite;
+}
 
 class GameObject
 {
@@ -38,13 +37,6 @@ public:
 	Components::Transform& GetTransform() { return *transform; }
 	void SetOnGrid(const bool& onGridNew) { onGrid = onGridNew; }
 	virtual void render();
-
-	/*virtual void SetSprite(const std::string& spriteName,
-		const std::string& textureName,
-		const std::string& shaderName,
-		const unsigned int spriteWidth,
-		const unsigned int spriteHeight,
-		const std::string& subTextureName = "default");*/
 
 	std::shared_ptr<GameObject> testShared(GameObject gameObject) { return std::make_shared<GameObject>(gameObject); }
 

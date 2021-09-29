@@ -2,8 +2,6 @@
 
 #include "UIelement.h"
 
-#include <glm/mat4x4.hpp>
-
 namespace UI
 {
 	class Button : public UIelement

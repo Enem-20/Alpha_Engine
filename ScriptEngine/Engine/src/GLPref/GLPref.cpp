@@ -1,7 +1,5 @@
 #include "GLPref.h"
-#include "../Resources/ResourceManager.h"
 #include "../Renderer/Renderer.h"
-#include "../Input/Input.h"
 #include "../UI/WindowManager.h"
 #include "../UI/Window.h"
 

@@ -1,10 +1,5 @@
 #pragma once
 
-//#include <map>
-//#include <string>
-//#include "../GameTypes/GameTypes.h"
-//#include "../Resources/Resources.h"
-
 #include <memory>
 #include <string>
 #include <unordered_map>

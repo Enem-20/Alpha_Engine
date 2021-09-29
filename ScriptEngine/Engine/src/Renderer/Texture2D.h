@@ -1,11 +1,10 @@
 #pragma once
 
-#include <glad/glad.h>
-#include "glm/vec2.hpp"
-
+#include <unordered_map>
 #include <string>
-#include <iostream>
-#include <map>
+
+#include "glad/glad.h"
+#include "glm/vec2.hpp"
 
 class Serializer;
 
@@ -40,6 +39,7 @@ namespace RenderEngine
 				, rightTopUV(1.f)
 			{}
 
+			const SubTexture2D& operator=(const SubTexture2D& second) { leftBottomUV = second.leftBottomUV; rightTopUV = second.rightTopUV; return *this; }
 		};
 		Texture2D() = delete;
 		Texture2D(const GLuint width, const GLuint height,
@@ -67,6 +67,6 @@ namespace RenderEngine
 		unsigned int m_width;
 		unsigned int m_height;
 
-		std::map<std::string, SubTexture2D> m_subTextures;
+		std::unordered_map<std::string, SubTexture2D> m_subTextures;
 	};
 }

@@ -1,5 +1,8 @@
 #include "VertexArray.h"
 
+#include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
+
 namespace RenderEngine 
 {
 	VertexArray::VertexArray()

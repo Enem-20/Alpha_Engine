@@ -1,33 +1,7 @@
 #include "ScriptEngine.h"
+
 #include "../Engine/src/Scene/Hierarchy.h"
-#include "../Engine/src/GameTypes/GameObject.h"
-
-#include <ppl.h>
-
-//struct callStart final
-//{
-//	void operator()(Components::LuaScript& l) { l.Start(); }
-//	void operator()(UI::Button& button) {}
-//	void operator()(RenderEngine::Sprite& sprite){}
-//};
-//struct callUpdate final
-//{
-//	void operator()(Components::LuaScript& l) { l.Update(); }
-//	void operator()(UI::Button& button){}
-//	void operator()(RenderEngine::Sprite& sprite) {}
-//};
-//struct callFixedUpdate final
-//{
-//	void operator()(Components::LuaScript& l) { l.FixedUpdate(); }
-//	void operator()(UI::Button& button) {}
-//	void operator()(RenderEngine::Sprite& sprite) {}
-//};
-//struct callLastUpdate final
-//{
-//	void operator()(Components::LuaScript& l) { l.LastUpdate(); }
-//	void operator()(UI::Button& button) {}
-//	void operator()(RenderEngine::Sprite& sprite) {}
-//};
+#include "../Engine/src/Timer.h"
 
 namespace ScriptEngine
 {
@@ -51,12 +25,6 @@ namespace ScriptEngine
 	{
 		for (const auto& itObjects : Hierarchy::SceneObjects)
 		{
-			//concurrency::parallel_for_each(itObjects.second->scripts.begin(), itObjects.second->scripts.end(), [](auto& itScripts)
-			//	{
-			//		GeneralTimer->StartUpdateTimer();
-			//		itScripts.second->Update();
-			//		GeneralTimer->EndUpdateTimer();
-			//	});
 			for (auto& itScripts : itObjects.second->scripts)
 			{
 				GeneralTimer->StartUpdateTimer();

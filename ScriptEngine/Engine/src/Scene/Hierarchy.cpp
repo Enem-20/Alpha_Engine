@@ -1,7 +1,6 @@
 #include "Hierarchy.h"
 
 #include "../GameTypes/GameTypes.pch"
-#include "../Resources/Resources.pch"
 
 std::queue<std::pair<std::string, std::function<void(const std::string&)>>>Hierarchy::qEventObjectsControl;
 std::unordered_map<glm::ivec2, std::string, IVector2Hash> Hierarchy::GridObjectsPos;

@@ -2,5 +2,4 @@
 
 //#include "../Engine/src/GameTypes/GameTypes.h"
 
-#include "../src/lua.hpp"
-#include <sol/sol.hpp>
+#include "C:/Users/дом/Desktop/Engine/Test2/Test2/ScriptEngine/external/sol2/include/sol/sol.hpp"

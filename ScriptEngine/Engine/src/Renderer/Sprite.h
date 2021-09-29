@@ -4,16 +4,15 @@
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 
-
-#include <glad/glad.h>
-#include <glm/vec2.hpp>
-#include <glm/mat4x4.hpp>
-
 #include <memory>
 #include <string>
+#include <glad/glad.h>
+#include <glm/mat4x4.hpp>
+#include <glm/vec2.hpp>
 
 class Serializer;
 class DeserializerSprite;
+
 
 namespace RenderEngine
 {
@@ -26,7 +25,6 @@ namespace RenderEngine
 		friend DeserializerSprite;
 	public:
 		std::string name;
-		//Sprite() = default;
 		Sprite(std::shared_ptr<Texture2D> Texture,
 			   std::string initialSubTexture,
 			   std::shared_ptr<ShaderProgram> shaderProgram, 

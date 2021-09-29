@@ -1,9 +1,11 @@
 #pragma once
 
-#include <glad/glad.h>
 #include <glm/mat4x4.hpp>
 
 #include <string>
+
+typedef unsigned int GLuint;
+typedef unsigned int GLenum;
 
 namespace RenderEngine
 {

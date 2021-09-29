@@ -1,44 +1,12 @@
 #include "Serializer.h"
 
-#include <sstream>
-#include <rapidjson/document.h>
+#include <fstream>
 
 #include "../Scene/Hierarchy.h"
-#include "../Resources/ResourceManager.h"
-
-Serializer::Write::Write(const std::string path, rapidjson::StringBuffer* sb)
-{
-	this->sb = nullptr;
-	if (path != "")
-	{
-		this->sb = sb;
-		try
-		{
-			file.open((ResourceManager::GetPath() + path));
-		}
-		catch (std::exception exp)
-		{
-			std::cerr << exp.what() << std::endl;
-		}
-	}
-}
-
-Serializer::Write::~Write()
-{
-	if (file.is_open())
-	{
-		file << sb->GetString();
-		file.close();
-	}
-	delete sb;
-}
 
 void Serializer::Serialize(std::unordered_map<std::string, std::shared_ptr<GameObject>>& objects, prettywriter* writer)
 {
-	//rapidjson::StringBuffer sb;
-	//if (!objects.empty()) { return sb; }
 
-	//Write write(path, &sb);
 
 	writer->StartArray();
 
@@ -95,7 +63,7 @@ const rapidjson::StringBuffer Serializer::Serialize(std::shared_ptr<components> 
 	{
 		writer = new prettywriter(sb);
 	}
-	Write write(path, &sb);
+	//Write write(path, &sb);
 
 	writer->StartArray();
 
@@ -144,7 +112,7 @@ const rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<RenderEngin
 		writer = new prettywriter(sb);
 	}
 
-	Write write(path, &sb);
+	//Write write(path, &sb);
 
 	writer->StartObject();
 	Serialize(sprite->m_Texture, writer, "m_Texture");
@@ -170,7 +138,7 @@ const rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<RenderEngin
 		writer = new prettywriter(sb);
 	}
 
-	Write write(path, &sb);
+	//Write write(path, &sb);
 
 	writer->StartObject();
 
@@ -208,7 +176,7 @@ const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec2 _ivec2, prettywr
 		writer = new prettywriter(sb);
 	}
 
-	Write write(path, &sb);
+	//Write write(path, &sb);
 
 	writer->StartArray();
 
@@ -233,7 +201,7 @@ const rapidjson::StringBuffer  Serializer::Serialize(glm::vec2   _vec2, prettywr
 	{
 		writer = new prettywriter(sb);
 	}
-	Write write(path, &sb);
+	//Write write(path, &sb);
 
 	writer->StartArray();
 
@@ -258,7 +226,7 @@ const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec3 _ivec3, prettywr
 	{
 		writer = new prettywriter(sb);
 	}
-	Write write(path, &sb);
+	//Write write(path, &sb);
 
 	writer->StartArray();
 
@@ -283,7 +251,7 @@ const rapidjson::StringBuffer  Serializer::Serialize(glm::vec3   _vec3, prettywr
 	{
 		writer = new prettywriter(sb);
 	}
-	Write write(path, &sb);
+	//Write write(path, &sb);
 
 	writer->StartArray();
 
@@ -308,7 +276,7 @@ const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec4 _ivec4, prettywr
 	{
 		writer = new prettywriter(sb);
 	}
-	Write write(path, &sb);
+	//Write write(path, &sb);
 
 	writer->StartArray();
 
@@ -333,7 +301,7 @@ const rapidjson::StringBuffer  Serializer::Serialize(glm::vec4   _vec4, prettywr
 	{
 		writer = new prettywriter(sb);
 	}
-	Write write(path, &sb);
+	//Write write(path, &sb);
 
 	writer->StartArray();
 
@@ -358,7 +326,7 @@ const rapidjson::StringBuffer  Serializer::Serialize(glm::mat3   _mat3, prettywr
 	{
 		writer = new prettywriter(sb);
 	}
-	Write write(path, &sb);
+	//Write write(path, &sb);
 
 	writer->StartArray();
 	for (size_t i = 0; i < 3; ++i)
@@ -381,7 +349,7 @@ const rapidjson::StringBuffer  Serializer::Serialize(glm::mat4   _mat4, prettywr
 	{
 		writer = new prettywriter(sb);
 	}
-	Write write(path, &sb);
+	//Write write(path, &sb);
 
 	writer->StartArray();
 	for (size_t i = 0; i < 4; ++i)

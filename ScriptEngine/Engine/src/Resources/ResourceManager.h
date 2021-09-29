@@ -1,14 +1,12 @@
 #pragma once
 
-#include <string>
+//#include <string>
 #include <memory>
 #include <unordered_map>
 #include <map>
-#include <vector>
-#include <variant>
+
 #include <functional>
 
-#include <rapidjson/rapidjson.h>
 #include <rapidjson/document.h>
 
 namespace RenderEngine
@@ -86,7 +84,6 @@ public:
 	static bool loadJSONGameOjects(const std::string& relativePath);
 	static bool loadJSONSprites(const std::string& relativePath);
 	static bool loadJSONTextureAtlasses(const std::string& relativePath);
-	static bool loadJSONText(const std::string& relativePath);
 	static bool loadJSONTextures(const std::string& relativePath);
 	static bool loadJSONShaders(const std::string& relativePath);
 	static m_Components loadJSONComponents(const rapidjson::Value& it);
@@ -114,7 +111,4 @@ private:
 	static std::string relative_shaders;
 	static std::string relative_main;
 	static std::shared_ptr<std::pair<const std::string, std::function<void(const std::string)>>> loader;
-
-	/*typedef std::unordered_map<std::string, std::string> LuaScriptsUMap;
-	static LuaScriptsUMap m_LuaScripts;*/
 };

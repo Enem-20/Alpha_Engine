@@ -70,11 +70,7 @@ namespace RenderEngine
 		, m_height(std::move(texture2d.m_height))
 		, m_subTextures(std::move(texture2d.m_subTextures))
 	{
-		//m_ID = texture2d.m_ID;
 		texture2d.m_ID = 0;
-		//m_mode = texture2d.m_mode;
-		//m_width = texture2d.m_width;
-		//m_height = texture2d.m_height;
 	}
 	Texture2D::~Texture2D()
 	{

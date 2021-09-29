@@ -13,12 +13,12 @@ src/UI/UIelement.h
 src/UI/UIelement.cpp
 src/UI/Button.h
 src/UI/Button.cpp
-src/UI/Canvas.h
-src/UI/Canvas.cpp
-src/UI/ColorBuffer.h
-src/UI/ColorBuffer.cpp
-src/UI/Text.h
-src/UI/Text.cpp
+# src/UI/Canvas.h
+# src/UI/Canvas.cpp
+# src/UI/ColorBuffer.h
+# src/UI/ColorBuffer.cpp
+# src/UI/Text.h
+# src/UI/Text.cpp
 )
 
 set(Renderer
@@ -49,8 +49,8 @@ set(Components
 	src/Components/LuaScript.cpp
 	src/Components/Transform.h
 	src/Components/Transform.cpp
-	src/Components/Vision.h
-	src/Components/Vision.cpp
+	# src/Components/Vision.h
+	# src/Components/Vision.cpp
 )
 
 set(Resources
@@ -65,26 +65,26 @@ set(Other
 	src/EngineMain.h
 	src/EngineMain.cpp
 	src/Timer.h
-	src/Timer.cpp
+	# src/Timer.cpp
 )
 
 set(Scene
-	src/Scene/Scene.h
-	src/Scene/Scene.cpp
+	# src/Scene/Scene.h
+	# src/Scene/Scene.cpp
 	src/Scene/Hierarchy.h
 	src/Scene/Hierarchy.cpp
-	src/Scene/Camera.h
-	src/Scene/Camera.cpp
+	# src/Scene/Camera.h
+	# src/Scene/Camera.cpp
 )
 set(GameTypes
 	src/GameTypes/GameObject.h
 	src/GameTypes/GameObject.cpp
 )
 set(Physycs
-	src/Physics/Raycast2D.h
-	src/Physics/Raycast2D.cpp
-	src/Physics/Collider.h
-	src/Physics/Collider.cpp
+	# src/Physics/Raycast2D.h
+	# src/Physics/Raycast2D.cpp
+	# src/Physics/Collider.h
+	# src/Physics/Collider.cpp
 )
 set(Input
 	src/Input/Input.h
@@ -98,7 +98,7 @@ set(GLPref
 set(Helpers
 	src/Helpers/StringFuncs.h
 	src/Helpers/casts.h
-	src/Helpers/casts.cpp
+	# src/Helpers/casts.cpp
 )
 
 add_library(${PROJECT_NAME} STATIC
@@ -143,6 +143,10 @@ set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 add_subdirectory(external/glfw)
 add_subdirectory(external/glad)
 add_subdirectory(external/Lua)
+
+if (MSVC)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC external/glm)
 target_include_directories(${PROJECT_NAME} PUBLIC external/sol2/include)

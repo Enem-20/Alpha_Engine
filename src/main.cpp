@@ -10,19 +10,17 @@
 //#define IOS
 
 
+#include <thread>
+
 #include "../ScriptEngine/Engine/src/EngineMain.h"
 #include "../ScriptEngine/src/ClassRegistrator.h"
+
+#include "sol/sol.hpp"
 
 #ifdef WNS
 #include <Windows.h>
 #endif
-#include <memory>
-#include <thread>
 
-void function_CppfromLua()
-{
-	std::cout << "C From _Lua!" << std::endl;
-}
 
 int main(int argc, char** argv)
 {

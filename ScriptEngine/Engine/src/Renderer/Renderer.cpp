@@ -1,5 +1,9 @@
 #include "Renderer.h"
 
+#include "ShaderProgram.h"
+#include "VertexArray.h"
+#include "IndexBuffer.h"
+
 namespace RenderEngine
 {
 	glm::dvec2 Renderer::ViewportSize;

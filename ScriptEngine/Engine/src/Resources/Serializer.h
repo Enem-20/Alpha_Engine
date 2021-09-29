@@ -5,13 +5,11 @@
 #include "../Renderer/Texture2D.h"
 #include "../Scene/Scene.h"
 
-#include <rapidjson/rapidjson.h>
 #include <rapidjson/prettywriter.h>
-#include <rapidjson/document.h>
 
 #include <memory>
 #include <vector>
-#include <fstream>
+//#include <fstream>
 #include <unordered_map>
 
 #include <glm/vec2.hpp>
@@ -23,45 +21,9 @@
 typedef rapidjson::PrettyWriter<rapidjson::StringBuffer> prettywriter;
 typedef rapidjson::Reader reader;
 
-class Deserializer 
-{
-public:
-	virtual void SetLevel(size_t level){ this->level = level; }
-protected:
-	virtual bool Null		()														 = 0;
-	virtual bool Bool		(bool b)												 = 0;
-	virtual bool Int		(int i)													 = 0;
-	virtual bool Uint		(unsigned u)											 = 0;
-	virtual bool Int64		(int64_t i)												 = 0;
-	virtual bool Uint64		(uint64_t u)											 = 0;
-	virtual bool Double		(double d)												 = 0;
-	virtual bool String		(const char* str, rapidjson::SizeType length, bool copy) = 0;
-	virtual bool StartObject()														 = 0;
-	virtual bool Key		(const char* str, rapidjson::SizeType length, bool copy) = 0;
-	virtual bool EndObject	(rapidjson::SizeType memberCount)						 = 0;
-	virtual bool StartArray ()														 = 0;
-	virtual bool EndArray	(rapidjson::SizeType elementCount)						 = 0;
-	virtual bool RawNumber	(const char* str, rapidjson::SizeType length, bool copy) = 0;
-	
-	size_t level = 0;
-	std::stack<std::string> Keys;
-	size_t iter1 = 0;
-	size_t iter2 = 0;
-};
-
 class Serializer
 {
 public:
-	class Write
-	{
-	public:
-		Write() = delete;
-		Write(const std::string path, rapidjson::StringBuffer* sb);
-		~Write();
-	private:
-		rapidjson::StringBuffer* sb;
-		std::ofstream file;
-	};
 	struct components
 	{
 	public:

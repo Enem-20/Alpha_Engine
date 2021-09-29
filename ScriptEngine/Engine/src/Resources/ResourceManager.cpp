@@ -5,27 +5,17 @@
 #include "../Renderer/AnimatedSprite.h"
 #include "Serializer.h"
 #include "../UI/Button.h"
-#include "../UI/Text.h"
-#include "../../src/ClassRegistrator.h"
-#include "../EngineMain.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <sstream>
 #include <fstream>
 #include <iostream>
-#include <stack>
-#include <filesystem>
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
 
-#include "../GLPref/GLPref.h"
 #include "stb_image.h"
-#include <glfw/glfw3.h>
-
-#include <imgui/backends/imgui_impl_opengl3.h>
-#include <imgui/backends/imgui_impl_glfw.h>
 
 
 ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
@@ -33,7 +23,6 @@ ResourceManager::TexturesMap ResourceManager::m_textures;
 ResourceManager::SpritesMap ResourceManager::m_sprites;
 ResourceManager::AnimatedSpritesMap ResourceManager::m_AnimatedSprites;
 std::shared_ptr<std::pair<const std::string, std::function<void(const std::string)>>> ResourceManager::loader;
-//ResourceManager::LuaScriptsUMap ResourceManager::m_LuaScripts;
 std::string ResourceManager::m_path;
 
 void ResourceManager::SetExecutablePath(const std::string& executablePath)
@@ -323,18 +312,6 @@ void ResourceManager::loadSaveReal(const std::string& relativePath)
 {
 	UnloadAllResources();
 	ScriptEngine::ScriptProcessor::L.collect_garbage();
-	//ScriptEngine::ScriptProcessor::L = sol::state();
-	//ScriptEngine::ScriptProcessor::init();
-	//sol::table Lobject = ScriptEngine::ScriptProcessor::L["Engine"].get_or_create<sol::table>();
-	//ScriptEngine::ClassRegistrator::Registration(&Lobject);
-	//Engine::EngineMain::FirstFrame();
-	
-	//WindowManager::ShutDown();
-	//glfwTerminate();
-	//ImGui_ImplGlfw_Shutdown();
-	//ImGui_ImplOpenGL3_Shutdown();
-	//ImGui::DestroyContext();
-	//GLPref::init();
 
 	rapidjson::Document d = documentParse("res/default/main.json");
 
@@ -343,7 +320,7 @@ void ResourceManager::loadSaveReal(const std::string& relativePath)
 	loadJSONTextures(d.FindMember("textures")->value.GetString());
 	loadJSONSprites(d.FindMember("sprites")->value.GetString());
 	loadJSONGameOjects(/*m_path + '/' +*/relativePath);
-	//loadJSONText("");
+
 	loader = nullptr;
 }
 
@@ -493,22 +470,6 @@ bool ResourceManager::loadJSONTextureAtlasses(const std::string& relativePath)
 		loadTextureAtlas(name, filePath, subTextures, subTextureWidth, subTextureHeight);
 	}
 
-	return true;
-}
-
-bool ResourceManager::loadJSONText(const std::string& relativePath)
-{
-	//UI::Text text(m_path + "\\res\\fonts\\arial.ttf");
-
-	//glm::mat4 same = glm::mat4(1.f);
-
-	//same = glm::rotate(same, glm::radians(0.f), glm::vec3(1.f));
-	//same = glm::translate(same, glm::vec3(0.f));
-	//same = glm::scale(same, glm::vec3(100.f));
-
-	//text.render(same);
-
-	//glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 	return true;
 }
 

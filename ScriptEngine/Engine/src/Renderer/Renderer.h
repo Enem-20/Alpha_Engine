@@ -1,15 +1,15 @@
 #pragma once
 
-#include "VertexArray.h"
-#include "IndexBuffer.h"
-#include "ShaderProgram.h"
-
 #include <glm/vec2.hpp>
 
 #include <string>
 
 namespace RenderEngine
 {
+	class IndexBuffer;
+	class VertexArray;
+	class ShaderProgram;
+
 	class Renderer
 	{
 	public:

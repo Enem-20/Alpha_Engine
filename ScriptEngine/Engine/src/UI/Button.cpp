@@ -2,8 +2,6 @@
 
 #include <imgui/imgui.h>
 
-#include "../Components/Component.h"
-#include "../Input/Input.h"
 #include "WindowManager.h"
 
 namespace UI
@@ -13,11 +11,6 @@ namespace UI
 	{
 		state = States::Idle;
 		if(name == ""){++ID;this->name = "someUI" + std::to_string(ID);}
-			
-		//ImGui::Begin(name.c_str());
-		//if (ImGui::Button(name.c_str()))
-		//	executeOnClicks();
-		//ImGui::End();
 		
 		WindowManager::CurrentWindow->AddUI(std::move(*this));
 	}
@@ -52,9 +45,6 @@ namespace UI
 
 	Button::~Button()
 	{
-		//bool f = false;
-		//if(ImGui::Begin(name.c_str(), &f))
-		//	ImGui::End();
 	}
 
 	void Button::translate(const glm::vec2& newPos)

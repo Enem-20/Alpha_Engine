@@ -1,8 +1,8 @@
-#include <glm/gtc/type_ptr.hpp>
-
 #include "ShaderProgram.h"
 
 #include <iostream>
+#include <glm/gtc/type_ptr.hpp>
+#include <glad/glad.h>
 
 namespace RenderEngine
 {

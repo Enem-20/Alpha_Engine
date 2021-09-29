@@ -1,0 +1,18 @@
+[submodule "ScriptEngine/external/sol2"]
+	path = ScriptEngine/external/sol2
+	url = https://github.com/ThePhD/sol2.git
+[submodule "ScriptEngine/Engine/external/sol2"]
+	path = ScriptEngine/Engine/external/sol2
+	url = https://github.com/ThePhD/sol2.git
+[submodule "ScriptEngine/Engine/external/rapidjson"]
+	path = ScriptEngine/Engine/external/rapidjson
+	url = https://github.com/Tencent/rapidjson.git
+[submodule "ScriptEngine/Engine/external/Lua"]
+	path = ScriptEngine/Engine/external/Lua
+	url = https://github.com/walterschell/Lua.git
+[submodule "ScriptEngine/external/Lua"]
+	path = ScriptEngine/external/Lua
+	url = https://github.com/walterschell/Lua.git
+[submodule "external/sol2"]
+	path = external/sol2
+	url = https://github.com/ThePhD/sol2.git

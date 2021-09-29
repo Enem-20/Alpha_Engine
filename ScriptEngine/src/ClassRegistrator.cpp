@@ -1,24 +1,19 @@
-#include "../Engine/src/Components/Components.pch"
-#include "../Engine/src/GameTypes/GameTypes.pch"
-
 #include "ClassRegistrator.h"
 
-#include "../Engine/src/Scene/Hierarchy.h"
-#include "../Engine/src/Timer.h"
-#include "../Engine/src/UI/Button.h"
-#include "../Engine/src/Input/Input.h"
-#include "../Engine/src/Helpers/StringFuncs.h"
-#include "../Engine/src/Helpers/casts.h"
-
-
+#include <glm/mat3x3.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
-#include <glm/mat3x3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "glad/glad.h"
-
-#include <typeinfo>
+#include "../Engine/src/Timer.h"
+#include "../Engine/src/Components/Components.pch"
+#include "../Engine/src/GameTypes/GameTypes.pch"
+#include "../Engine/src/Helpers/casts.h"
+#include "../Engine/src/Helpers/StringFuncs.h"
+#include "../Engine/src/Input/Input.h"
+#include "../Engine/src/Renderer/Texture2D.h"
+#include "../Engine/src/Scene/Hierarchy.h"
+#include "../Engine/src/UI/Button.h"
 
 namespace ScriptEngine
 {
@@ -35,7 +30,6 @@ namespace ScriptEngine
 			, sol::meta_function::addition, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(glm::operator+)
 			, sol::meta_function::subtraction, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(glm::operator-)
 			, sol::meta_function::multiplication, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(glm::operator*)
-			//, sol::meta_function::bitwise_xor, sol::resolve<glm::vec2(const glm::vec2&, const float)>(glm::operator^)
 			, sol::meta_function::division, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(glm::operator/)
 
 			, "x", &glm::vec2::x
@@ -51,7 +45,6 @@ namespace ScriptEngine
 			, sol::meta_function::addition, sol::resolve<glm::ivec2(const glm::ivec2&, const glm::ivec2&)>(glm::operator+)
 			, sol::meta_function::subtraction, sol::resolve<glm::ivec2(const glm::ivec2&, const glm::ivec2&)>(glm::operator-)
 			, sol::meta_function::multiplication, sol::resolve<glm::ivec2(const glm::ivec2&, const glm::ivec2&)>(glm::operator*)
-			//, sol::meta_function::bitwise_xor, sol::resolve<glm::vec2(const glm::vec2&, const float)>(glm::operator^)
 			, sol::meta_function::division, sol::resolve<glm::ivec2(const glm::ivec2&, const glm::ivec2&)>(glm::operator/)
 
 			, "x", &glm::ivec2::x
@@ -67,7 +60,6 @@ namespace ScriptEngine
 			, sol::meta_function::addition, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator+)
 			, sol::meta_function::subtraction, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator-)
 			, sol::meta_function::multiplication, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator*)
-			//, sol::meta_function::bitwise_xor, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator^)
 			, sol::meta_function::division, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator/)
 
 			, "x", &glm::vec3::x
@@ -106,7 +98,6 @@ namespace ScriptEngine
 			, sol::meta_function::addition, sol::resolve<glm::mat3(const glm::mat3&, const glm::mat3&)>(glm::operator+)
 			, sol::meta_function::subtraction, sol::resolve<glm::mat3(const glm::mat3&, const glm::mat3&)>(glm::operator-)
 			, sol::meta_function::multiplication, sol::resolve<glm::mat3(const glm::mat3&, const glm::mat3&)>(glm::operator*)
-			//, sol::meta_function::bitwise_xor, sol::resolve<glm::vec2(const glm::vec2&, const float)>(glm::operator^)
 			, sol::meta_function::division, sol::resolve<glm::mat3(const glm::mat3&, const glm::mat3&)>(glm::operator/)
 			);
 	}
@@ -119,7 +110,6 @@ namespace ScriptEngine
 			, sol::meta_function::addition, sol::resolve<glm::mat4(const glm::mat4&, const glm::mat4&)>(glm::operator+)
 			, sol::meta_function::subtraction, sol::resolve<glm::mat4(const glm::mat4&, const glm::mat4&)>(glm::operator-)
 			, sol::meta_function::multiplication, sol::resolve<glm::mat4(const glm::mat4&, const glm::mat4&)>(glm::operator*)
-			//, sol::meta_function::bitwise_xor, sol::resolve<glm::vec2(const glm::vec2&, const float)>(glm::operator^)
 			, sol::meta_function::division, sol::resolve<glm::mat4(const glm::mat4&, const glm::mat4&)>(glm::operator/)
 			);
 	}

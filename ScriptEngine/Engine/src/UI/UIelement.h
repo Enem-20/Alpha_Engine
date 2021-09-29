@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../Renderer/Sprite.h"
-#include "../Physics/Collider.h"
 #include "../Components/Component.h"
 
 #include <sol/sol.hpp>

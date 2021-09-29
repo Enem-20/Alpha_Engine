@@ -1,11 +1,6 @@
 #pragma once
 
-#include "ScriptEngine.h"
-#include "../Engine/src/Helpers/vector3.h"
-#include "../Engine/src/Helpers/mat3.h"
-#include "../Engine/src/Renderer/Texture2D.h"
-
-#include <memory>
+#include <sol/sol.hpp>
 
 class GameObject;
 

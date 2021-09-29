@@ -3,14 +3,19 @@ project(ScriptEngine)
 add_library(${PROJECT_NAME} STATIC
 			src/ScriptEngine.h
 			src/ScriptEngine.cpp
-			src/LuaParser.h
-			src/LuaParser.cpp
+			# src/LuaParser.h
+			# src/LuaParser.cpp
 			src/ClassRegistrator.h
 			src/ClassRegistrator.cpp
-			src/Headers.h
 			)
 
 add_subdirectory(Engine/)
 
-target_include_directories(${PROJECT_NAME} PUBLIC external/sol2/include)
+if (MSVC)
+	if(NOT NDEBUG)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+	endif()
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+endif()
+
 target_link_libraries(${PROJECT_NAME} Engine)

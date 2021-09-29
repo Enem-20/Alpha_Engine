@@ -2,9 +2,19 @@ cmake_minimum_required(VERSION 3.14.0 FATAL_ERROR)
 
 project(API)
 
-add_executable(${PROJECT_NAME} src/main.cpp src/main.h)
+add_executable(${PROJECT_NAME} src/main.cpp)
+
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT API)
+
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
 add_subdirectory(ScriptEngine)
+
+if (MSVC)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+endif()
+
+target_link_libraries(${PROJECT_NAME} ScriptEngine)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 
