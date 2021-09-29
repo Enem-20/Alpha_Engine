@@ -16,3 +16,6 @@
 [submodule "external/sol2"]
 	path = external/sol2
 	url = https://github.com/ThePhD/sol2.git
+[submodule "ScriptEngine/Engine/external/imgui"]
+	path = ScriptEngine/Engine/external/imgui
+	url = https://github.com/ocornut/imgui.git
