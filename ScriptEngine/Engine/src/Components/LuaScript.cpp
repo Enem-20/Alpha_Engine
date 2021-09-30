@@ -1,6 +1,8 @@
 #include "LuaScript.h"
 #include "../Resources/ResourceManager.h"
 
+#include "../../src/ScriptEngine.h"
+
 namespace Components
 {
 	LuaScript::LuaScript(sol::protected_function& Awake, sol::protected_function& Start, sol::protected_function& Update, sol::protected_function& FixedUpdate, sol::protected_function& LastUpdate)

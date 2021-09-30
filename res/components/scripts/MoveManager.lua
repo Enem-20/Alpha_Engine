@@ -99,7 +99,7 @@ function GetUnit()
         for i = 1, #q do
             posCellQ = Engine.Input.GetVectorCell(q[i]:GetTransform():GetPosition())
             if(cell.x == posCellQ.x) and (cell.y == posCellQ.y) then
-                selectedObject:Teleport(Engine.Casts.CellToScreen(cell))
+                selectedObject:Teleport(Engine.Casts.CellToScreen(cell, Engine.ivec2:new(8,8)))
                 print("allowed_cell detected")
                 isAllowedBreak = true
                 break
@@ -112,7 +112,7 @@ function GetUnit()
                 if(cell.x == posCellQ.x) and (cell.y == posCellQ.y) then
                     Engine.Hierarchy.removeObject(enemies[i][2].name)
                     Engine.Hierarchy.removeObject(enemies[i][1].name)
-                    selectedObject:Teleport(Engine.Casts.CellToScreen(cell))
+                    selectedObject:Teleport(Engine.Casts.CellToScreen(cell, Engine.ivec2:new(8,8)))
                     print("enemies detected")
                     enemies[i] = nil
                     isAllowedBreak = true
@@ -226,17 +226,17 @@ function pawn(cell)
         print("it is white pawn!")
         if(GameObjects[selectedObject.name][2] ~= 0) then
             q[1] = Engine.Hierarchy.addObject(Allowed_cell)
-            q[1]:Teleport(Engine.Casts.CellToScreen(check))
+            q[1]:Teleport(Engine.Casts.CellToScreen(check, Engine.ivec2:new(8,8)))
             print("added allowed_cell")
             Engine.Hierarchy.addGridObject(q[1].name)
         else
             q[1] = Engine.Hierarchy.addObject(Allowed_cell)
-            q[1]:Teleport(Engine.Casts.CellToScreen(check))
+            q[1]:Teleport(Engine.Casts.CellToScreen(check, Engine.ivec2:new(8,8)))
             Engine.Hierarchy.addGridObject(q[1].name)
             print("added allowed_cell")
             if Engine.Hierarchy.getGridObject(check2) == nil then
                 q[2] = Engine.Hierarchy.addObject(Allowed_cell)
-                q[2]:Teleport(Engine.Casts.CellToScreen(check2))
+                q[2]:Teleport(Engine.Casts.CellToScreen(check2, Engine.ivec2:new(8,8)))
                 Engine.Hierarchy.addGridObject(q[2].name)
                 print("added allowed_cell")
             end
@@ -245,13 +245,13 @@ function pawn(cell)
 
     if (fraction ~= nil) and (fraction ~= queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(attack), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(attack))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(attack, Engine.ivec2:new(8,8)))
         print("added allowed_cell")
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     if (fraction2 ~= nil) and (fraction2 ~= queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(attack2), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(attack2))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(attack2, Engine.ivec2:new(8,8)))
         print("added allowed_cell")
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
@@ -265,11 +265,11 @@ function bishop(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x + 1, cell.y + 1)
@@ -277,11 +277,11 @@ function bishop(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur), Engine.ivec2:new(8,8))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x - 1, cell.y - 1)
@@ -289,11 +289,11 @@ function bishop(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x + 1, cell.y - 1)
@@ -301,11 +301,11 @@ function bishop(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur)  and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
 
@@ -321,13 +321,13 @@ function bishop(cell)
         if(Engine.Hierarchy.getGridObject(currentQ) == nil) and checkBorders(currentQ) then
             qu:push_right(currentQ)
             q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-            q[#q]:Teleport(Engine.Casts.CellToScreen(currentQ))
+            q[#q]:Teleport(Engine.Casts.CellToScreen(currentQ, Engine.ivec2:new(8,8)))
             Engine.Hierarchy.addGridObject(q[#q].name)
             parents[currentQ] = qu:peek_left()
         elseif (Engine.Hierarchy.getGridObject(currentQ) ~= nil) and checkBorders(currentQ) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(currentQ).name, queueMove[current]) then
             print("add enemy")
             enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(currentQ), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-            enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(currentQ))
+            enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(currentQ, Engine.ivec2:new(8,8)))
             Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)   
         end
         qu:pop_left()
@@ -338,82 +338,82 @@ function knight(cell)
     local cur = Engine.ivec2:new(cell.x - 2, cell.y + 1)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif(Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x - 1, cell.y + 2)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif(Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x + 1, cell.y + 2)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif(Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x + 2, cell.y + 1)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif(Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
 
     cur = Engine.ivec2:new(cell.x + 2, cell.y - 1)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur), Engine.ivec2:new(8,8))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif(Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x + 1, cell.y - 2)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif(Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x - 1, cell.y - 2)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif(Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x - 2, cell.y - 1)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif(Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
 end
@@ -426,11 +426,11 @@ function castle(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x, cell.y + 1)
@@ -438,11 +438,11 @@ function castle(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x + 1, cell.y)
@@ -450,11 +450,11 @@ function castle(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x, cell.y - 1)
@@ -462,11 +462,11 @@ function castle(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur)  and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
 
@@ -482,13 +482,13 @@ function castle(cell)
         if(Engine.Hierarchy.getGridObject(currentQ) == nil) and checkBorders(currentQ) then
             qu:push_right(currentQ)
             q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-            q[#q]:Teleport(Engine.Casts.CellToScreen(currentQ))
+            q[#q]:Teleport(Engine.Casts.CellToScreen(currentQ, Engine.ivec2:new(8,8)))
             Engine.Hierarchy.addGridObject(q[#q].name)
             parents[currentQ] = qu:peek_left()
         elseif (Engine.Hierarchy.getGridObject(currentQ) ~= nil) and checkBorders(currentQ) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(currentQ).name, queueMove[current]) then
             print("add enemy")
             enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(currentQ), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-            enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(currentQ))
+            enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(currentQ, Engine.ivec2:new(8,8)))
             Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)   
         end
         qu:pop_left()
@@ -503,11 +503,11 @@ function queen(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x, cell.y + 1)
@@ -515,11 +515,11 @@ function queen(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x + 1, cell.y)
@@ -527,11 +527,11 @@ function queen(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x, cell.y - 1)
@@ -539,11 +539,11 @@ function queen(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur)  and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x - 1, cell.y + 1)
@@ -551,11 +551,11 @@ function queen(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x + 1, cell.y + 1)
@@ -563,11 +563,11 @@ function queen(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x - 1, cell.y - 1)
@@ -575,11 +575,11 @@ function queen(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x + 1, cell.y - 1)
@@ -587,11 +587,11 @@ function queen(cell)
         parents[cur] = cell
         qu:push_right(cur)
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur)  and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
 
@@ -607,13 +607,13 @@ function queen(cell)
         if(Engine.Hierarchy.getGridObject(currentQ) == nil) and checkBorders(currentQ) then
             qu:push_right(currentQ)
             q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-            q[#q]:Teleport(Engine.Casts.CellToScreen(currentQ))
+            q[#q]:Teleport(Engine.Casts.CellToScreen(currentQ, Engine.ivec2:new(8,8)))
             Engine.Hierarchy.addGridObject(q[#q].name)
             parents[currentQ] = qu:peek_left()
         elseif (Engine.Hierarchy.getGridObject(currentQ) ~= nil) and checkBorders(currentQ) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(currentQ).name, queueMove[current]) then
             print("add enemy")
             enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(currentQ), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-            enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(currentQ))
+            enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(currentQ, Engine.ivec2:new(8,8)))
             Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)   
         end
         qu:pop_left()
@@ -624,81 +624,81 @@ function king(cell)
     local cur = Engine.ivec2:new(cell.x - 1, cell.y)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x, cell.y + 1)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x + 1, cell.y)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x, cell.y - 1)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur)  and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x - 1, cell.y + 1)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x + 1, cell.y + 1)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x - 1, cell.y - 1)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur) and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
     cur = Engine.ivec2:new(cell.x + 1, cell.y - 1)
     if(Engine.Hierarchy.getGridObject(cur) == nil) and checkBorders(cur) then
         q[#q + 1] = Engine.Hierarchy.addObject(Allowed_cell)
-        q[#q]:Teleport(Engine.Casts.CellToScreen(cur))
+        q[#q]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(q[#q].name)
     elseif (Engine.Hierarchy.getGridObject(cur) ~= nil) and checkBorders(cur)  and not Engine.StringFuncs.Find(Engine.Hierarchy.getGridObject(cur).name, queueMove[current]) then
         enemies[#enemies + 1] = {[1] = Engine.Hierarchy.getGridObject(cur), [2] = Engine.Hierarchy.addObject(Allowed_cell)}
-        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur))
+        enemies[#enemies][2]:Teleport(Engine.Casts.CellToScreen(cur, Engine.ivec2:new(8,8)))
         Engine.Hierarchy.addGridObject(enemies[#enemies][2].name)
     end
 end

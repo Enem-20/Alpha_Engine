@@ -12,6 +12,7 @@
 
 #include <thread>
 
+#include "../ScriptEngine/src/ScriptEngine.h"
 #include "../ScriptEngine/Engine/src/EngineMain.h"
 #include "../ScriptEngine/src/ClassRegistrator.h"
 

@@ -170,31 +170,15 @@ void GameObject::Update()
 	for (auto& it : buttons)
 	{
 		it.second->translate(transform->position);
-		//it.second->setParamCollider();
 	}
+
+	//Teleport(transform->position);
 }
 
 std::shared_ptr<RenderEngine::Sprite> GameObject::GetSprite() const
 {
 	return sprite;
 }
-
-//void GameObject::SetSprite(const std::string& spriteName,
-//	const std::string& textureName,
-//	const std::string& shaderName,
-//	const unsigned int spriteWidth,
-//	const unsigned int spriteHeight,
-//	const std::string& subTextureName)
-//{
-//	if (ResourceManager::getSprite(spriteName) == nullptr)
-//	{
-//		ResourceManager::loadSprite(spriteName, textureName, shaderName, spriteWidth, spriteHeight, subTextureName);
-//	}
-//	else
-//	{
-//		sprite = ResourceManager::getSprite(spriteName);
-//	}
-//}
 
 void GameObject::AddChild(const GameObject& gameObject)
 {

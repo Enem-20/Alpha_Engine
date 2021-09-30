@@ -1,11 +1,11 @@
 #include "Input.h"
 #include "../Renderer/Renderer.h"
 #include "../UI/WindowManager.h"
+#include "../Scene/Hierarchy.h"
 
-#include "../UI/Window.h"]
+#include "../UI/Window.h"
 
 #include <GLFW/glfw3.h>
-//#include <glm/gtc/matrix_transform.hpp>
 
 std::list<sol::function> Input::OnClicks;
 

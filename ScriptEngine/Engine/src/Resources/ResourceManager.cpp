@@ -5,6 +5,7 @@
 #include "../Renderer/AnimatedSprite.h"
 #include "Serializer.h"
 #include "../UI/Button.h"
+#include "../../src/ScriptEngine.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
