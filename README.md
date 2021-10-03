@@ -1,6 +1,6 @@
 # Alpha_Engine
 
-##Build
+## Build
 
 1. Clone on hard disk from master.
 2. git submodule update --init.
