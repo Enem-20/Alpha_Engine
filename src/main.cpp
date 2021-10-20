@@ -11,6 +11,7 @@
 
 
 #include <thread>
+#include <typeinfo>
 
 #include "../ScriptEngine/src/ScriptEngine.h"
 #include "../ScriptEngine/Engine/src/EngineMain.h"
@@ -39,11 +40,11 @@ int main(int argc, char** argv)
 	std::thread th(ScriptEngine::ClassRegistrator::Registration, &Lobject);
 
 	th.join();
-	
 #ifdef OGL
 	Engine::EngineMain::Init(argv);
 	ScriptEngine::ScriptProcessor::L.collect_garbage();
 #endif
 	
+	std::cout << typeid(void).hash_code() << std::endl;
 	return 0;
 }

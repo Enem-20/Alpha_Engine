@@ -3,6 +3,7 @@
 #include "../Renderer/Sprite.h"
 #include "../Scene/Hierarchy.h"
 #include "../UI/Button.h"
+#include "../Helpers/StringFuncs.h"
 
 #include <../glm/glm/vec2.hpp>
 #include <../glm/glm/vec3.hpp>
@@ -10,6 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 size_t GameObject::counter = 0;
+GameObject GameObject::Null;
 
 GameObject::GameObject(std::string name,
 	std::shared_ptr<Components::Transform> transform,
@@ -91,6 +93,20 @@ GameObject::GameObject(const GameObject& gameObject)
 	}
 
 	this->render_priority = gameObject.render_priority;
+}
+
+void GameObject::operator=(const GameObject& gameObject)
+{
+	buttons = gameObject.buttons;
+	children = gameObject.children;
+	ID = gameObject.ID + 1;
+	this->name = StringFuncs::RemoveNumbersEnd(gameObject.name) + std::to_string(ID);
+	++counter;
+	onGrid = gameObject.onGrid;
+	render_priority = gameObject.render_priority;
+	scripts = gameObject.scripts;
+	sprite = gameObject.sprite;
+	transform = gameObject.transform;
 }
 
 GameObject::~GameObject()
@@ -187,4 +203,29 @@ void GameObject::AddChild(const GameObject& gameObject)
 GameObject& GameObject::GetChild(int i) const
 {
 	return *children[i];
+}
+
+GameObject& GameObject::toNull(GameObject& gameObject)
+{
+	gameObject.children.clear();
+	gameObject.buttons.clear();
+	gameObject.ID = -1;
+	gameObject.name = "Null";
+	gameObject.render_priority = -1;
+	gameObject.scripts.clear();
+	gameObject.sprite = nullptr;
+	gameObject.transform = nullptr;
+	
+	return gameObject;
+}
+
+GameObject::GameObject(size_t ID)
+{
+	this->ID = ID;
+}
+
+GameObject GameObject::SetNull()
+{
+	Null = GameObject(-1);
+	return Null;
 }

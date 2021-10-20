@@ -81,7 +81,7 @@ public:
 	static bool loadSave(const std::string relativePath);
 	static void loadSaveReal(const std::string& relativePath);
 	static void loadExecute();
-	static bool loadJSONGameOjects(const std::string& relativePath);
+	[[nodiscard]] static bool loadJSONGameOjects(const std::string& relativePath);
 	static bool loadJSONSprites(const std::string& relativePath);
 	static bool loadJSONTextureAtlasses(const std::string& relativePath);
 	static bool loadJSONTextures(const std::string& relativePath);

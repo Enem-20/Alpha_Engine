@@ -78,8 +78,8 @@ glm::ivec2 Input::GetCellReal()
 	glfwGetCursorPos(WindowManager::CurrentWindow->window, &cursorPos_OnClick.x, &cursorPos_OnClick.y);
 
 
-	int board_pos_x = cursorPos_OnClick.x - RenderEngine::Renderer::ViewportOffset.x;
-	int board_pos_y = RenderEngine::Renderer::ViewportSize.y - cursorPos_OnClick.y + RenderEngine::Renderer::ViewportOffset.y;
+	int board_pos_x = static_cast<int>(cursorPos_OnClick.x - RenderEngine::Renderer::ViewportOffset.x);
+	int board_pos_y = static_cast<int>(RenderEngine::Renderer::ViewportSize.y - cursorPos_OnClick.y + RenderEngine::Renderer::ViewportOffset.y);
 
 	glm::ivec2 res(-9,-9);
 	if (board_pos_x >= 0 && board_pos_x < RenderEngine::Renderer::ViewportSize.x && board_pos_y >= 0 && board_pos_y < RenderEngine::Renderer::ViewportSize.x)
@@ -94,8 +94,8 @@ glm::ivec2 Input::GetCellReal()
 
 glm::ivec2 Input::GetCell(const glm::vec2& objPos)
 {
-	int board_pos_x = objPos.x - RenderEngine::Renderer::ViewportOffset.x;
-	int board_pos_y = objPos.y - RenderEngine::Renderer::ViewportOffset.y;
+	int board_pos_x = static_cast<int>(objPos.x - RenderEngine::Renderer::ViewportOffset.x);
+	int board_pos_y = static_cast<int>(objPos.y - RenderEngine::Renderer::ViewportOffset.y);
 
 	glm::ivec2 res(0);
 	if (board_pos_x >= 0 && board_pos_x < RenderEngine::Renderer::ViewportSize.x && board_pos_y >= 0 && board_pos_y < RenderEngine::Renderer::ViewportSize.x)

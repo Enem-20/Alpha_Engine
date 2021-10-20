@@ -5,7 +5,7 @@
 class Timer
 {
 public:
-	Timer() { isStart = false; start = 0; end = 0; }
+	Timer() { UpdateEnd = 0; UpdateStart = 0; isStart = false; start = 0; end = 0; }
 	int GetTimeSec() { return clock() / CLK_TCK; }
 	int GetDeltaUpdateSec() { return (UpdateEnd - UpdateStart) / CLK_TCK; }
 	int GetDelta() { return (end - start) / CLK_TCK; }

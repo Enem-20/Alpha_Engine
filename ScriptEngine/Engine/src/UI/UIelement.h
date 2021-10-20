@@ -15,9 +15,6 @@ namespace UI
 	class UIelement : public Components::Component
 	{
 	public:
-		glm::mat4 model;
-
-		//UIelement(UIelement&& ui) noexcept;
 		UIelement(std::string name, std::shared_ptr<GameObject> gameObject)
 			: Components::Component(name, gameObject)
 		{}

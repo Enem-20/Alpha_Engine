@@ -143,6 +143,7 @@ set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 add_subdirectory(external/glfw)
 add_subdirectory(external/glad)
 add_subdirectory(external/Lua)
+add_subdirectory(external/P7)
 
 if (MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
@@ -154,6 +155,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC external/rapidjson/include)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC lua_static)
 target_link_libraries(${PROJECT_NAME} PUBLIC glad glfw)
+target_link_libraries(${PROJECT_NAME} PUBLIC p7)
 
 
 

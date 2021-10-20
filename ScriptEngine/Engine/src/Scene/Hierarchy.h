@@ -13,7 +13,7 @@ class IVector2Hash
 public:
 	std::size_t operator()(const glm::ivec2& c) const
 	{
-		return  std::hash<std::string>()(std::to_string(size_t(c.x + c.y) % 10000));
+		return  std::hash<std::string>()(std::to_string(size_t(static_cast<size_t>(c.x) + static_cast<size_t>(c.y)) % 10000));
 	}
 };
 

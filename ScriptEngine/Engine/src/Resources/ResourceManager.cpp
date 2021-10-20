@@ -290,6 +290,7 @@ rapidjson::Document ResourceManager::documentParse(const std::string& relativePa
 
 bool ResourceManager::loadJSONScene(const std::string& relativePath)
 {
+	//GameObject::SetNull();
 	UnloadAllResources();
 	rapidjson::Document d = documentParse(std::move(relativePath));
 
@@ -331,7 +332,8 @@ void ResourceManager::loadExecute()
 		loader->second(loader->first);
 }
 
-bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
+[[nodiscard]]
+bool ResourceManager::loadJSONGameOjects(const std::string& relativePath) 
 {
 	rapidjson::Document d = documentParse(relativePath);
 
@@ -348,23 +350,23 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 		int itBuf = 0;
 		for (const auto& itPosition : it.FindMember("position")->value.GetArray())
 		{
-			buf3[itBuf] = itPosition.GetDouble();
+			buf3[itBuf] = static_cast<float>(itPosition.GetDouble());
 			++itBuf;
 		}
 
 		glm::vec3 bufRotation;
-		size_t itVecRotation = 0;
+		int itVecRotation = 0;
 		for (const auto& itRotation : it.FindMember("rotation")->value.GetArray())
 		{
-			bufRotation[itVecRotation] = itRotation.GetDouble();
+			bufRotation[itVecRotation] = static_cast<float>(itRotation.GetDouble());
 			++itVecRotation;
 		}
 
 		glm::vec3 bufScale;
-		size_t itVecScale = 0;
+		int itVecScale = 0;
 		for (const auto& itScale : it.FindMember("scale")->value.GetArray())
 		{
-			bufScale[itVecScale] = itScale.GetDouble();
+			bufScale[itVecScale] = static_cast<float>(itScale.GetDouble());
 			++itVecScale;
 		}
 
@@ -440,7 +442,7 @@ bool ResourceManager::loadJSONSprites(const std::string& relativePath)
 			RenderMode = 0;
 		}
 
-		loadSprite(spriteName, textureName, shaderName, spriteSize.x, spriteSize.y, RenderMode, subTextureName)->name = spriteName;
+		loadSprite(spriteName, textureName, shaderName, static_cast<uint32_t>(spriteSize.x), static_cast<uint32_t>(spriteSize.y), RenderMode, subTextureName)->name = spriteName;
 
 		++it;
 	}

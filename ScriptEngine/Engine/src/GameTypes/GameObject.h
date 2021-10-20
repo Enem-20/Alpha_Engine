@@ -17,7 +17,10 @@ class GameObject
 	friend class Serializer;
 	friend class DeserializerObject;
 public:
-	GameObject() = delete;
+	static GameObject& toNull(GameObject& gameObject);
+	static GameObject SetNull();
+	static GameObject Null;
+public:
 	GameObject(const GameObject& gameObject);
 	//GameObject(GameObject&&) = default;
 	GameObject(std::string name = "",
@@ -26,6 +29,7 @@ public:
 		std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts = std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>>(),
 		std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons = std::unordered_map<std::string, std::shared_ptr<UI::Button>>(),
 		int render_priority = 0);
+	void operator=(const GameObject& gameObject);
 	GameObject(GameObject&&) = delete;
 	virtual ~GameObject();
 	void Translate(const glm::vec3& position);
@@ -44,7 +48,7 @@ public:
 	GameObject& GetChild(int i) const;
 
 	virtual std::shared_ptr<RenderEngine::Sprite> GetSprite() const;
-	size_t ID;
+	
 public:
 	std::shared_ptr<Components::Transform> transform;
 
@@ -53,10 +57,14 @@ public:
 
 	std::vector<std::shared_ptr<GameObject>> children;
 
+	size_t ID;
 	std::string name;
 	int render_priority;
 	bool onGrid;
 protected:
 	static size_t counter;
 	std::shared_ptr<RenderEngine::Sprite> sprite;
+private:
+	
+	GameObject(size_t ID);
 };

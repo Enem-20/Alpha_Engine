@@ -69,6 +69,8 @@ GameObject& Hierarchy::getOriginalObject(std::string name)
 	{
 		return *objpair->second;
 	}
+
+	//return GameObject::Null;
 }
 
 void Hierarchy::ExecuteEvent()
