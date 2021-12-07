@@ -4,6 +4,7 @@
 #include "../Scene/Hierarchy.h"
 #include "../UI/Button.h"
 #include "../Helpers/StringFuncs.h"
+#include "../Logging/Clerk.h"
 
 #include <../glm/glm/vec2.hpp>
 #include <../glm/glm/vec3.hpp>
@@ -25,7 +26,15 @@ GameObject::GameObject(std::string name,
 	, buttons(buttons)
 	, render_priority(render_priority)
 {
+#ifdef LOG_INFO
+	std::wstring wname(name.begin(), name.end());
+	Clerk::Knowledge(28, __FILE__, "GameObject Constructor start constructor for ", wname.c_str());
+#endif
 	onGrid = false;
+
+#ifdef LOG_INFO
+	Clerk::Knowledge(39, __FILE__, "GameObject Constructor; Choose name for ", wname.c_str());
+#endif
 	if (Hierarchy::getObject(name))
 	{
 		ID = counter ? ++counter : counter;
@@ -36,8 +45,13 @@ GameObject::GameObject(std::string name,
 		ID = 0;
 		this->name = name;
 	}
+
 	//transform->Translate(glm::vec3(0.f));
 	//transform->Rotate(glm::vec3(0.f));
+
+#ifdef LOG_INFO
+	Clerk::Knowledge(56, __FILE__, "GameObject Constructor; Create transform for ", wname.c_str());
+#endif
 	if (this->transform != nullptr)
 	{
 		if (sprite) { this->transform->scale = glm::vec3(sprite->getSize(), 0.f); }
@@ -51,20 +65,37 @@ GameObject::GameObject(std::string name,
 	this->render_priority = render_priority;
 
 
-
+#ifdef LOG_INFO
+	Clerk::Knowledge(72, __FILE__, "GameObject Constructor; Adding to Hierarchy ", wname.c_str());
+#endif
 	Hierarchy::addObject(*this);
-	if(onGrid)//Костыль
+	if (onGrid)//Костыль
+	{
+#ifdef LOG_INFO
+		Clerk::Knowledge(78, __FILE__, "GameObject Constructor; Adding to Grid ", wname.c_str());
+#endif
 		Hierarchy::addGridObject(this->name);
+	}
+#ifdef LOG_INFO
+	Clerk::Knowledge(83, __FILE__, "GameObject Constructor; Adding scripts ", wname.c_str());
+#endif
 	for (auto itScripts : scripts)
 	{
 		itScripts.second->gameObject = Hierarchy::getObject(this->name);
 		itScripts.second->Awake();
 	}
+#ifdef LOG_INFO
+	Clerk::Knowledge(91, __FILE__, "GameObject Constructor; Adding buttons ", wname.c_str());
+#endif
 	for (auto button : buttons)
 	{
 		button.second->gameObject = Hierarchy::getObject(this->name);
 		//button.second.setParamCollider();
 	}
+
+#ifdef LOG_INFO
+	Clerk::Knowledge(100, __FILE__, "GameObject end of Constructor for ", wname.c_str());
+#endif
 }
 
 GameObject::GameObject(const GameObject& gameObject)

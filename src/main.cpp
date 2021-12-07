@@ -12,6 +12,7 @@
 
 #include <thread>
 #include <typeinfo>
+#include <iostream>
 
 #include "../ScriptEngine/src/ScriptEngine.h"
 #include "../ScriptEngine/Engine/src/EngineMain.h"

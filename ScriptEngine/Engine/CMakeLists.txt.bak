@@ -102,8 +102,8 @@ set(Helpers
 )
 
 set(Logging
-	src/Logging/Clerk.cpp
-	src/Logging/Clerk.h
+	src/Logging/Logger.cpp
+	src/Logging/Logger.h
 )
 
 add_compile_definitions(LOG_INFO)

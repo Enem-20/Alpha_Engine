@@ -8,7 +8,7 @@
 #include "glm/vec2.hpp"
 
 struct GLFWwindow;
-
+//ruler or commander
 class Input
 {
 #ifdef OGL

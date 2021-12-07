@@ -23,5 +23,6 @@ namespace RenderEngine
 
 		static glm::dvec2 ViewportSize;
 		static glm::ivec2 ViewportOffset;
+	private:
 	};
 }

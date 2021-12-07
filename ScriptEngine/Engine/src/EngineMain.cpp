@@ -5,6 +5,7 @@
 #include "../../src/ScriptEngine.h"
 #include "UI/WindowManager.h"
 #include "Resources/ResourceManager.h"
+#include "Logging/Logger.h"
 
 #include <GLFW/glfw3.h>
 
