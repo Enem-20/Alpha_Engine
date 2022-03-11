@@ -17,6 +17,7 @@
 #include "../ScriptEngine/src/ScriptEngine.h"
 #include "../ScriptEngine/Engine/src/EngineMain.h"
 #include "../ScriptEngine/src/ClassRegistrator.h"
+#include "API.h"
 
 #include "sol/sol.hpp"
 
@@ -37,6 +38,7 @@ int main(int argc, char** argv)
 #endif
 #endif
 	ScriptEngine::ScriptProcessor::init();
+	API::API::Init(argv[0]);
 	sol::table Lobject = ScriptEngine::ScriptProcessor::L["Engine"].get_or_create<sol::table>();
 	std::thread th(ScriptEngine::ClassRegistrator::Registration, &Lobject);
 

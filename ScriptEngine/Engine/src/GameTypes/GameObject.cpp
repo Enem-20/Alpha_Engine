@@ -27,13 +27,13 @@ GameObject::GameObject(std::string name,
 	, render_priority(render_priority)
 {
 #ifdef LOG_INFO
-	std::wstring wname(name.begin(), name.end());
-	Clerk::Knowledge(28, __FILE__, "GameObject Constructor start constructor for ", wname.c_str());
+	std::string FuncName("GameObject::GameObject(std::string name, std::shared_ptr<Components::Transform> transform, std::shared_ptr<RenderEngine::Sprite> sprite, std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts, std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons, int render_priority)" + name);
+	Clerk::Knowledge(28, __FILE__, FuncName, L"Begin of constructor");
 #endif
 	onGrid = false;
 
 #ifdef LOG_INFO
-	Clerk::Knowledge(39, __FILE__, "GameObject Constructor; Choose name for ", wname.c_str());
+	Clerk::Knowledge(41, __FILE__, FuncName, L"Choosing name");
 #endif
 	if (Hierarchy::getObject(name))
 	{
@@ -46,11 +46,8 @@ GameObject::GameObject(std::string name,
 		this->name = name;
 	}
 
-	//transform->Translate(glm::vec3(0.f));
-	//transform->Rotate(glm::vec3(0.f));
-
 #ifdef LOG_INFO
-	Clerk::Knowledge(56, __FILE__, "GameObject Constructor; Create transform for ", wname.c_str());
+	Clerk::Knowledge(59, __FILE__, "GameObject::GameObject at " + name, L"Creating transform...");
 #endif
 	if (this->transform != nullptr)
 	{
@@ -66,18 +63,18 @@ GameObject::GameObject(std::string name,
 
 
 #ifdef LOG_INFO
-	Clerk::Knowledge(72, __FILE__, "GameObject Constructor; Adding to Hierarchy ", wname.c_str());
+	Clerk::Knowledge(68, __FILE__, "GameObject::GameObject at " + name, L"Adding object to Hierarchy...");
 #endif
 	Hierarchy::addObject(*this);
 	if (onGrid)//Костыль
 	{
 #ifdef LOG_INFO
-		Clerk::Knowledge(78, __FILE__, "GameObject Constructor; Adding to Grid ", wname.c_str());
+		Clerk::Knowledge(74, __FILE__, "GameObject::GameObject at " + name, L"Adding object to Grid...");
 #endif
 		Hierarchy::addGridObject(this->name);
 	}
 #ifdef LOG_INFO
-	Clerk::Knowledge(83, __FILE__, "GameObject Constructor; Adding scripts ", wname.c_str());
+	Clerk::Knowledge(81, __FILE__, "GameObject::GameObject at " + name, L"Adding scripts...");
 #endif
 	for (auto itScripts : scripts)
 	{
@@ -85,7 +82,7 @@ GameObject::GameObject(std::string name,
 		itScripts.second->Awake();
 	}
 #ifdef LOG_INFO
-	Clerk::Knowledge(91, __FILE__, "GameObject Constructor; Adding buttons ", wname.c_str());
+	Clerk::Knowledge(89, __FILE__, "GameObject::GameObject at " + name, L"Adding buttons...");
 #endif
 	for (auto button : buttons)
 	{
@@ -94,15 +91,18 @@ GameObject::GameObject(std::string name,
 	}
 
 #ifdef LOG_INFO
-	Clerk::Knowledge(100, __FILE__, "GameObject end of Constructor for ", wname.c_str());
+	Clerk::Knowledge(96, __FILE__, FuncName, L"End of constructor");
 #endif
-}
+} 
 
 GameObject::GameObject(const GameObject& gameObject)
 	: scripts(gameObject.scripts)
 	, buttons(gameObject.buttons)
 	, onGrid(gameObject.onGrid)
 {
+#ifdef LOG_INFO
+	Clerk::Knowledge(102, __FILE__, "GameObject copy constructor", L"Begin of constructor");
+#endif
 	this->sprite = gameObject.sprite;
 	this->transform = std::make_shared<Components::Transform>(gameObject.transform->position, gameObject.transform->rotation, glm::vec3(0.f));
 	if(sprite)
@@ -142,6 +142,9 @@ void GameObject::operator=(const GameObject& gameObject)
 
 GameObject::~GameObject()
 {
+#ifdef LOG_INFO
+	Clerk::Knowledge(148, __FILE__, "GameObject::~GameObject at " + name, L"Clear all data...");
+#endif
 	scripts.clear();
 	buttons.clear();
 	sprite.reset();
@@ -151,11 +154,17 @@ GameObject::~GameObject()
 
 void GameObject::render()
 {
+#ifdef LOG_INFO
+	Clerk::Knowledge(159, __FILE__, "GameObject::render() at " + name, L"Rendering sprites...");
+#endif
 	if (sprite)
 	{
 		sprite->render(transform->GetModel());
 	}
 
+#ifdef LOG_INFO
+	Clerk::Knowledge(167, __FILE__, "GameObject::render() at " + name, L"Rendering childs...");
+#endif
 	for (auto it : children)
 	{
 		it->render();

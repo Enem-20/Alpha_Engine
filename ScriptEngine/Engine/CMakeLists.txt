@@ -106,7 +106,7 @@ set(Logging
 	src/Logging/Clerk.h
 )
 
-add_compile_definitions(LOG_INFO)
+add_compile_definitions(LOG_INFO LOG_ERR)
 #add_compile_definitions(NLOG_FULL NLOG_NOERR NLOG_ONLYERRS NLOG_INFO NLOG_CRIT NLOG_ERR NLOG_WARN NLOG_DBG)
 
 add_library(${PROJECT_NAME} STATIC

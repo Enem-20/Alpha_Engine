@@ -2,6 +2,7 @@
 
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+#include <string>
 
 #include "../Renderer/Renderer.h"
 
@@ -22,5 +23,21 @@ public:
 		//res.y = std::max(res.y, (float)((RenderEngine::Renderer::ViewportSize.y - RenderEngine::Renderer::ViewportOffset.y) / cellSize.y));
 
 		return res;
+	}
+
+	static std::wstring CharStoWstring(const char* str, int last)
+	{
+		return std::wstring(str[0], str[last]);
+	}
+
+	static std::wstring CharStoWstring(const char* str)
+	{
+		std::string buf(str);
+		return std::wstring(buf.begin(), buf.end());
+	}
+
+	static std::wstring StringToWstring(const std::string& str)
+	{
+		return std::wstring(str.begin(), str.end());
 	}
 };

@@ -4,6 +4,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>
 
+#include "../Helpers/casts.h"
+#include "../Logging/Clerk.h"
+
 namespace RenderEngine
 {
 	ShaderProgram::ShaderProgram(const std::string& vertexShader, const std::string& fragmentShader)
@@ -11,16 +14,18 @@ namespace RenderEngine
 		GLuint vertexShaderID;
 		if (!createShader(vertexShader, GL_VERTEX_SHADER, vertexShaderID))
 		{
-			std::cerr << "VERTEX SHADER compile time error" << std::endl;
-			system("pause");
+#ifdef LOG_ERR
+			Clerk::Misstep(13, __FILE__, "ShaderProgram::ShaderProgram", L"VERTEX SHADER compile time error");
+#endif
 			return;
 		}
 
 		GLuint fragmentShaderID;
 		if (!createShader(fragmentShader, GL_FRAGMENT_SHADER, fragmentShaderID))
 		{
-			std::cerr << "VERTEX SHADER compile time error" << std::endl;
-			system("pause");
+#ifdef LOG_ERR
+			Clerk::Misstep(24, __FILE__, "ShaderProgram::ShaderProgram", L"FRAGMENT SHADER compile time error");
+#endif
 			glDeleteShader(vertexShaderID);
 			return;
 		}
@@ -37,8 +42,9 @@ namespace RenderEngine
 		{
 			GLchar infolog[1024];
 			glGetShaderInfoLog(m_ID, 1024, nullptr, infolog);
-			std::cerr << "ERROR::SHADER: Link time error:\n" << infolog << std::endl;
-			system("pause");
+#ifdef LOG_ERR
+			Clerk::Misstep(36, __FILE__, "ShaderProgram::ShaderProgram", Casts::StringToWstring(std::string("ERROR::SHADER: Link time error: ") + std::string(infolog)));
+#endif
 		}
 		else
 		{
@@ -66,6 +72,7 @@ namespace RenderEngine
 		{
 			GLchar infolog[1024];
 			glGetShaderInfoLog(shaderID, 1024, nullptr, infolog);
+			Clerk::Misstep(67, __FILE__, "ShaderProgram::ShaderProgram", Casts::StringToWstring(std::string("ERROR::SHADER: Compile time error: ") + std::string(infolog)));
 			std::cerr << "ERROR::SHADER: Compile time error:\n" << infolog << std::endl;
 			system("pause");
 			return false;
