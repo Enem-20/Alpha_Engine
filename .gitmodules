@@ -13,9 +13,6 @@
 [submodule "ScriptEngine/Engine/external/P7"]
 	path = ScriptEngine/Engine/external/P7
 	url = https://github.com/Enem-20/P7.git
-[submodule "ScriptEngine/Engine/external/imgui"]
-	path = ScriptEngine/Engine/external/imgui
-	url = https://github.com/ocornut/imgui.git
 [submodule "ScriptEngine/Engine/external/Lua"]
 	path = ScriptEngine/Engine/external/Lua
 	url = https://github.com/walterschell/Lua.git
