@@ -2,25 +2,23 @@
 
 #include "UIelement.h"
 
-namespace UI
+
+class Button : public UIelement
 {
-	class Button : public UIelement
-	{
-	public:
-		~Button();
+public:
+	~Button();
 
-		Button(std::string name = "", std::shared_ptr<GameObject> gameObject = nullptr);
+	Button(std::string name = "", std::shared_ptr<GameObject> gameObject = nullptr);
 
-		enum class States { Idle, Down, Stay, Up };
+	enum class States { Idle, Down, Stay, Up };
 
-		void Awake() override;
-		void Start() override;
-		void Update() override;
-		void FixedUpdate() override;
+	void Awake() override;
+	void Start() override;
+	void Update() override;
+	void FixedUpdate() override;
 
-		void translate(const glm::vec2& newPos) override;
+	void translate(const glm::vec2& newPos) override;
 
-	protected:
-		States state;
-	};
-}
+protected:
+	States state;
+};

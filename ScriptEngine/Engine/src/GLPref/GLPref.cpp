@@ -36,11 +36,11 @@ int GLPref::init()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 	if (WindowManager::init("MainWindow")) { return -1; }
-	RenderEngine::Renderer::setViewport(1080,1080,0,0);
+	Renderer::setViewport(1080,1080,0,0);
 
-	RenderEngine::Renderer::setClearColor(0.f, 0.f, 0.f, 1.f);
-	std::cout << "Renderer: " << RenderEngine::Renderer::getRendererStr() << std::endl;
-	std::cout << "OpenGL version: " << RenderEngine::Renderer::getVersionStr() << std::endl;
+	Renderer::setClearColor(0.f, 0.f, 0.f, 1.f);
+	std::cout << "Renderer: " << Renderer::getRendererStr() << std::endl;
+	std::cout << "OpenGL version: " << Renderer::getVersionStr() << std::endl;
 	return 0;
 }
 

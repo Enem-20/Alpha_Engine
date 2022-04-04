@@ -1,10 +1,14 @@
 #pragma once
 
+#include "../ExportPropety.h"
+
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <queue>
 #include <functional>
+
+#include <glm/vec2.hpp>
 
 class GameObject;
 
@@ -17,7 +21,7 @@ public:
 	}
 };
 
-class Hierarchy
+class DLLEXPORT Hierarchy
 {
 	//friend class SceneManager;
 public:
@@ -46,7 +50,7 @@ public:
 	static std::shared_ptr<GameObject> getPoolObject(const std::string& name);
 	static void removePoolObject(const std::string& name);
 	static GameObject& addFromScriptObject(const GameObject& obj);
-	
+	static std::unordered_map<std::string, std::shared_ptr<GameObject>> GetSceneObjects();
 
 	inline static std::unordered_map<std::string, std::shared_ptr<GameObject>> SceneObjects;
 	static std::unordered_map<glm::ivec2, std::string, IVector2Hash> GridObjectsPos;

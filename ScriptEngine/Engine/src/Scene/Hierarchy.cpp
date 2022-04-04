@@ -1,10 +1,19 @@
 #include "Hierarchy.h"
 
-#include "../GameTypes/GameTypes.pch"
+#include "../GameTypes/GameObject.h"
+#include "../UI/WindowManager.h"
+#include "../Input/Input.h"
+#include "../UI/Window.h"
+#include "../Components/Transform.h"
 
 std::queue<std::pair<std::string, std::function<void(const std::string&)>>>Hierarchy::qEventObjectsControl;
 std::unordered_map<glm::ivec2, std::string, IVector2Hash> Hierarchy::GridObjectsPos;
 std::unordered_map<std::string, std::shared_ptr<GameObject>> Hierarchy::uPool;
+
+std::unordered_map<std::string, std::shared_ptr<GameObject>> Hierarchy::GetSceneObjects()
+{
+	return SceneObjects;
+}
 
 void Hierarchy::addObject(const GameObject& obj)
 {

@@ -1,40 +1,42 @@
 #pragma once
 
+#include "../ExportPropety.h"
+
 //#include <string>
 #include <memory>
 #include <unordered_map>
 #include <map>
 
 #include <functional>
+#include <sol/sol.hpp>
 
 #include <rapidjson/document.h>
 
-namespace RenderEngine
-{
-	class ShaderProgram;
-	class Texture2D;
-	class Sprite;
-	class AnimatedSprite;
-}
 
-namespace Components
-{
-	class LuaScript;
-}
 
-namespace UI
-{
-	class Button;
-}
+class ShaderProgram;
+class Texture2D;
+class Sprite;
+class AnimatedSprite;
 
-class ResourceManager
+
+class LuaScript;
+
+
+
+class Button;
+
+
+class DLLEXPORT ResourceManager
 {
 public:
 	struct m_Components
 	{
-		std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts;
-		std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons;
+		std::unordered_map<std::string, std::shared_ptr<LuaScript>> scripts;
+		std::unordered_map<std::string, std::shared_ptr<Button>> buttons;
 	};
+
+
 	static void SetExecutablePath(const std::string& executablePath);
 	static void UnloadAllResources();
 
@@ -44,31 +46,32 @@ public:
 	ResourceManager& operator=(ResourceManager&&) = delete;
 	ResourceManager(ResourceManager&&) = delete;
 
-	static std::shared_ptr<RenderEngine::ShaderProgram> loadShaders(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
-	static std::shared_ptr<RenderEngine::ShaderProgram> getShaderProgram(const std::string& shaderName);
+	static void SetLuaState(std::shared_ptr<sol::state> newL);
+	static std::shared_ptr<ShaderProgram> loadShaders(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
+	static std::shared_ptr<ShaderProgram> getShaderProgram(const std::string& shaderName);
 	
-	static std::shared_ptr<RenderEngine::Texture2D> loadTexture(const std::string& textureName, const std::string& texturePath);
-	static std::shared_ptr<RenderEngine::Texture2D> getTexture(const std::string& textureName);
+	static std::shared_ptr<Texture2D> loadTexture(const std::string& textureName, const std::string& texturePath);
+	static std::shared_ptr<Texture2D> getTexture(const std::string& textureName);
 
-	static std::shared_ptr<RenderEngine::Sprite> loadSprite(const std::string& spriteName,
+	static std::shared_ptr<Sprite> loadSprite(const std::string& spriteName,
 												const std::string& textureName,
 												const std::string& shaderName,
 												const unsigned int spriteWidth,
 												const unsigned int spriteHeight,
 												const int RenderMode,
 												const std::string& subTextureName = "default");
-	static std::shared_ptr<RenderEngine::Sprite> getSprite(const std::string& spriteName);
+	static std::shared_ptr<Sprite> getSprite(const std::string& spriteName);
 
-	static std::shared_ptr<RenderEngine::AnimatedSprite> loadAnimatedSprite(const std::string& spriteName,
+	static std::shared_ptr<AnimatedSprite> loadAnimatedSprite(const std::string& spriteName,
 		const std::string& textureName, 
 		const std::string& shaderName,
 		const unsigned int spriteWidth,
 		const unsigned int spriteHeight,
 		const std::string& subTextureName = "default");
-	static std::shared_ptr<RenderEngine::AnimatedSprite> getAnimatedSprite(const std::string& spriteName);
+	static std::shared_ptr<AnimatedSprite> getAnimatedSprite(const std::string& spriteName);
 
 
-	static std::shared_ptr<RenderEngine::Texture2D> loadTextureAtlas(std::string textureName,
+	static std::shared_ptr<Texture2D> loadTextureAtlas(std::string textureName,
 														  std::string texturePath,
 														  std::vector<std::string> subTextures,
 														  const unsigned int subTextureWidth,
@@ -88,20 +91,21 @@ public:
 	static bool loadJSONShaders(const std::string& relativePath);
 	static m_Components loadJSONComponents(const rapidjson::Value& it);
 
-	static std::string GetPath() { return m_path; }
+	static std::string GetPath();
 private:
+	static std::shared_ptr<sol::state> L;
 	static std::string getFileString(const std::string& relativeFilePath);
 
-	typedef std::map<const std::string, std::shared_ptr<RenderEngine::ShaderProgram>> ShaderProgramsMap;
+	typedef std::map<const std::string, std::shared_ptr<ShaderProgram>> ShaderProgramsMap;
 	static ShaderProgramsMap m_shaderPrograms;
 
-	typedef std::map<const std::string, std::shared_ptr<RenderEngine::Texture2D>> TexturesMap;
+	typedef std::map<const std::string, std::shared_ptr<Texture2D>> TexturesMap;
 	static TexturesMap m_textures;
 
-	typedef std::map<const std::string, std::shared_ptr<RenderEngine::Sprite>> SpritesMap;
+	typedef std::map<const std::string, std::shared_ptr<Sprite>> SpritesMap;
 	static SpritesMap m_sprites;
 
-	typedef std::map<const std::string, std::shared_ptr<RenderEngine::AnimatedSprite>> AnimatedSpritesMap;
+	typedef std::map<const std::string, std::shared_ptr<AnimatedSprite>> AnimatedSpritesMap;
 	static AnimatedSpritesMap m_AnimatedSprites;
 
 	static std::string m_path;

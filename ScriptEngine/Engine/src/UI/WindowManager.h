@@ -1,11 +1,13 @@
 #pragma once
 
+#include "../ExportPropety.h"
+
 #include <unordered_map>
 #include <memory>
 
 class Window;
 
-class WindowManager
+class DLLEXPORT WindowManager
 {
 public:
 	static int init(std::string name, int width = 1080, int height = 1080);
@@ -13,10 +15,7 @@ public:
 
 	static std::shared_ptr<Window> GetWindow(std::string name);
 	static std::shared_ptr<Window> AddWindow(std::string name, int width = 1080, int height = 1080);
-	static Window& GetCurrentWindow()
-	{
-		return *CurrentWindow;
-	}
+	static Window& GetCurrentWindow();
 	static std::shared_ptr<Window> CurrentWindow;
 	static void Start();
 	static void Update();

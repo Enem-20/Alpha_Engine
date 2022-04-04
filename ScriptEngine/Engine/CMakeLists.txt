@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.16.0 FATAL_ERROR)
 
 set(PROJECT_NAME Engine)
 
+#set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+
 project(${PROJECT_NAME})
 
 set(UI
@@ -62,10 +65,9 @@ set(Resources
 )
 
 set(Other
-	src/EngineMain.h
-	src/EngineMain.cpp
 	src/Timer.h
-	# src/Timer.cpp
+	src/Timer.cpp
+	src/ExportPropety.h
 )
 
 set(Scene
@@ -106,10 +108,10 @@ set(Logging
 	src/Logging/Clerk.h
 )
 
-add_compile_definitions(LOG_INFO LOG_ERR)
+add_compile_definitions(LOG_INFO LOG_ERR ENGINE_EXPORTS)
 #add_compile_definitions(NLOG_FULL NLOG_NOERR NLOG_ONLYERRS NLOG_INFO NLOG_CRIT NLOG_ERR NLOG_WARN NLOG_DBG)
 
-add_library(${PROJECT_NAME} STATIC
+add_library(${PROJECT_NAME} SHARED
 	${Other}
 	${UI}
 	${Renderer}
@@ -123,27 +125,30 @@ add_library(${PROJECT_NAME} STATIC
 	${Helpers}
 	${Logging}
 	)
-source_group("Other" 	  	FILES ${Other})
-source_group("UI" 		  	FILES ${UI})
-source_group("Renderer"   	FILES ${Renderer})
-source_group("Resources" 	FILES ${Resources})
-source_group("Scene" 		FILES ${Scene})
-source_group("GameTypes" 	FILES ${GameTypes})
-source_group("Physycs" 		FILES ${Physycs})
-source_group("Input" 	  	FILES ${Input})
-source_group("Components" 	FILES ${Components})
-source_group("GLPref" 		FILES ${GLPref})
-source_group("Helpers" 		FILES ${Helpers})
-source_group("Logging" 		FILES ${Logging})
+source_group("Other" 	  		FILES ${Other})
+source_group("UI" 		  		FILES ${UI})
+source_group("Renderer"   		FILES ${Renderer})
+source_group("Resources" 		FILES ${Resources})
+source_group("Scene" 			FILES ${Scene})
+source_group("GameTypes" 		FILES ${GameTypes})
+source_group("Physycs" 			FILES ${Physycs})
+source_group("Input" 	  		FILES ${Input})
+source_group("Components" 		FILES ${Components})
+source_group("GLPref" 			FILES ${GLPref})
+source_group("Helpers" 			FILES ${Helpers})
+source_group("Logging" 			FILES ${Logging})
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
-target_precompile_headers(${PROJECT_NAME} PUBLIC 
-	src/Components/Components.pch
-	src/GameTypes/GameTypes.pch
-	src/Renderer/RendererObjects.pch
-	src/Resources/Resources.pch
-	src/Scene/SceneClasses.pch
-	src/UI/UI.pch)
+#target_precompile_headers(${PROJECT_NAME} PRIVATE 
+#	src/Components/Components.pch
+#	src/GameTypes/GameTypes.pch
+#	src/Renderer/RendererObjects.pch
+#	src/Resources/Resources.pch
+#	src/Scene/SceneClasses.pch
+#	src/UI/UI.pch
+#)
+	
+set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -154,44 +159,37 @@ add_subdirectory(external/glfw)
 add_subdirectory(external/glad)
 add_subdirectory(external/Lua)
 add_subdirectory(external/P7)
+add_subdirectory(external/imguiLibrary)
 
 if (MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
+#target_link_libraries(${PROJECT_NAME} PRIVATE ImGUI)
+target_link_libraries(${PROJECT_NAME} PUBLIC
+ p7
+ )
+ 
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+ImGui 
+lua_static
+ glad glfw
+ 
+ )
+
+ target_link_libraries(ImGui glad glfw)
+
+target_include_directories(${PROJECT_NAME} PUBLIC external)
 target_include_directories(${PROJECT_NAME} PUBLIC external/glm)
 target_include_directories(${PROJECT_NAME} PUBLIC external/sol2/include)
 target_include_directories(${PROJECT_NAME} PUBLIC external/rapidjson/include)
-
-target_link_libraries(${PROJECT_NAME} PUBLIC lua_static)
-target_link_libraries(${PROJECT_NAME} PUBLIC glad glfw)
-target_link_libraries(${PROJECT_NAME} PUBLIC p7)
+target_include_directories(${PROJECT_NAME} PRIVATE external/imguiLibrary)
 
 
 
-set(IMGUI_INCLUDES
-	external/imgui/imgui.h
-	external/imgui/backends/imgui_impl_glfw.h
-	external/imgui/backends/imgui_impl_opengl3.h
-)
 
-set(IMGUI_SOURCES
-	external/imgui/imgui.cpp
-	external/imgui/backends/imgui_impl_glfw.cpp
-	external/imgui/backends/imgui_impl_opengl3.cpp
-	external/imgui/imgui_demo.cpp
-	external/imgui/imgui_draw.cpp
-	external/imgui/imgui_widgets.cpp
-	external/imgui/imgui_tables.cpp
-)
+#set_target_properties(Engine PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
 
-add_library(ImGUI STATIC
-	${IMGUI_INCLUDES}
-	${IMGUI_SOURCES}
-)
 
-target_include_directories(ImGUI PUBLIC external/)
-target_include_directories(ImGUI PUBLIC external/imgui/)
-target_link_libraries(ImGUI PRIVATE glad glfw)
-target_link_libraries(${PROJECT_NAME} PRIVATE ImGUI)
+

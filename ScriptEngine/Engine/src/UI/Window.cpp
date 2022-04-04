@@ -1,6 +1,7 @@
 #include "Window.h"
 
 #include "UIelement.h"
+#include "Button.h"
 
 #ifdef OGL
 #include <GLFW/glfw3.h>
@@ -108,14 +109,14 @@ void Window::FixedUpdate()
 
 }
 
-std::shared_ptr<UI::Button>& Window::AddUI(const UI::Button& ui)
+std::shared_ptr<Button>& Window::AddUI(const Button& ui)
 {
-	std::shared_ptr<UI::Button> but = std::make_shared<UI::Button>(ui);
+	std::shared_ptr<Button> but = std::make_shared<Button>(ui);
 	UIs.emplace(ui.name,but);
 	return but;
 }
 
-std::shared_ptr<UI::UIelement> Window::GetUI(const std::string& name) const
+std::shared_ptr<UIelement> Window::GetUI(const std::string& name) const
 {
 	auto element = UIs.find(name);
 

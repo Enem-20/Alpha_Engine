@@ -1,4 +1,6 @@
 #include "Serializer.h"
+#include "../Components/Transform.h"
+#include "../Components/LuaScript.h"
 
 #include <fstream>
 
@@ -98,7 +100,7 @@ const rapidjson::StringBuffer Serializer::Serialize(std::shared_ptr<components> 
 	return sb;
 }
 
-const rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<RenderEngine::Sprite> sprite, prettywriter* writer, std::string name, std::string path)
+const rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<Sprite> sprite, prettywriter* writer, std::string name, std::string path)
 {
 	rapidjson::StringBuffer sb;
 	if (!sprite) { return sb; }
@@ -124,7 +126,7 @@ const rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<RenderEngin
 
 	return sb;
 }
-const rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<RenderEngine::Texture2D> tex2D, prettywriter* writer, std::string name, std::string path)
+const rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<Texture2D> tex2D, prettywriter* writer, std::string name, std::string path)
 {
 	rapidjson::StringBuffer sb;
 	if (!tex2D) { return sb; }

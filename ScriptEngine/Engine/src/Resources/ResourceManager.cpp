@@ -1,11 +1,15 @@
 #include "ResourceManager.h"
+
+#include "Serializer.h"
 #include "../Renderer/ShaderProgram.h"
 #include "../Renderer/Texture2D.h"
 #include "../Renderer/Sprite.h"
 #include "../Renderer/AnimatedSprite.h"
 #include "Serializer.h"
 #include "../UI/Button.h"
-#include "../../src/ScriptEngine.h"
+#include "../../../src/ScriptEngine.h"
+#include "../Components/LuaScript.h"
+#include "../Components/Transform.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -25,6 +29,12 @@ ResourceManager::SpritesMap ResourceManager::m_sprites;
 ResourceManager::AnimatedSpritesMap ResourceManager::m_AnimatedSprites;
 std::shared_ptr<std::pair<const std::string, std::function<void(const std::string)>>> ResourceManager::loader;
 std::string ResourceManager::m_path;
+std::shared_ptr<sol::state> ResourceManager::L;
+
+void ResourceManager::SetLuaState(std::shared_ptr<sol::state> newL)
+{
+	ResourceManager::L = newL;
+}
 
 void ResourceManager::SetExecutablePath(const std::string& executablePath)
 {
@@ -71,7 +81,7 @@ std::string ResourceManager::getFileString(const std::string& relativeFilePath)
 	return buffer.str();
 }
 
-std::shared_ptr<RenderEngine::ShaderProgram> ResourceManager::loadShaders(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath)
+std::shared_ptr<ShaderProgram> ResourceManager::loadShaders(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath)
 {
 	std::string vertexString = getFileString(vertexPath);
 	if (vertexString.empty())
@@ -88,7 +98,7 @@ std::shared_ptr<RenderEngine::ShaderProgram> ResourceManager::loadShaders(const 
 		return nullptr;
 	}
 
-	std::shared_ptr<RenderEngine::ShaderProgram>& newShader = m_shaderPrograms.emplace(shaderName, std::make_shared<RenderEngine::ShaderProgram>(vertexString, fragmentString)).first->second;
+	std::shared_ptr<ShaderProgram>& newShader = m_shaderPrograms.emplace(shaderName, std::make_shared<ShaderProgram>(vertexString, fragmentString)).first->second;
 	if (newShader->isCompiled())
 	{
 		return newShader;
@@ -98,7 +108,7 @@ std::shared_ptr<RenderEngine::ShaderProgram> ResourceManager::loadShaders(const 
 	return nullptr;
 }
 
-std::shared_ptr<RenderEngine::ShaderProgram> ResourceManager::getShaderProgram(const std::string& shaderName)
+std::shared_ptr<ShaderProgram> ResourceManager::getShaderProgram(const std::string& shaderName)
 {
 	ShaderProgramsMap::const_iterator it = m_shaderPrograms.find(shaderName);
 	if (it != m_shaderPrograms.end())
@@ -110,7 +120,7 @@ std::shared_ptr<RenderEngine::ShaderProgram> ResourceManager::getShaderProgram(c
 	return nullptr;
 }
 
-std::shared_ptr<RenderEngine::Texture2D> ResourceManager::loadTexture(const std::string& textureName, const std::string& texturePath)
+std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textureName, const std::string& texturePath)
 {
 	int channels = 0;
 	int width = 0;
@@ -127,8 +137,8 @@ std::shared_ptr<RenderEngine::Texture2D> ResourceManager::loadTexture(const std:
 		return nullptr;
 	}
 
-	std::shared_ptr<RenderEngine::Texture2D> newTexture = m_textures.emplace
-	(textureName, std::make_shared<RenderEngine::Texture2D>
+	std::shared_ptr<Texture2D> newTexture = m_textures.emplace
+	(textureName, std::make_shared<Texture2D>
 		(width, height, pixels, channels, GL_NEAREST, GL_CLAMP_TO_EDGE)).first->second;
 
 	stbi_image_free(pixels);
@@ -136,7 +146,7 @@ std::shared_ptr<RenderEngine::Texture2D> ResourceManager::loadTexture(const std:
 	return newTexture;
 }
 
-std::shared_ptr<RenderEngine::Texture2D> ResourceManager::getTexture(const std::string& textureName)
+std::shared_ptr<Texture2D> ResourceManager::getTexture(const std::string& textureName)
 {
 	TexturesMap::const_iterator it = m_textures.find(textureName);
 	if (it != m_textures.end())
@@ -148,7 +158,7 @@ std::shared_ptr<RenderEngine::Texture2D> ResourceManager::getTexture(const std::
 	return nullptr;
 }
 
-std::shared_ptr<RenderEngine::Sprite> ResourceManager::loadSprite(const std::string& spriteName,
+std::shared_ptr<Sprite> ResourceManager::loadSprite(const std::string& spriteName,
 	const std::string& textureName,
 	const std::string& shaderName,
 	const unsigned int spriteWidth,
@@ -174,14 +184,14 @@ std::shared_ptr<RenderEngine::Sprite> ResourceManager::loadSprite(const std::str
 		return nullptr;
 	}
 
-	std::shared_ptr<RenderEngine::Sprite> newSprite = m_sprites.emplace
-	(spriteName, std::make_shared<RenderEngine::Sprite>
+	std::shared_ptr<Sprite> newSprite = m_sprites.emplace
+	(spriteName, std::make_shared<Sprite>
 		(Texture, subTextureName, Shader,
 			glm::vec2(0.f, 0.f), glm::vec3(1.f), glm::vec2(spriteWidth, spriteHeight), RenderMode)).first->second;
 
 	return newSprite;
 }
-std::shared_ptr<RenderEngine::Sprite> ResourceManager::getSprite(const std::string& spriteName)
+std::shared_ptr<Sprite> ResourceManager::getSprite(const std::string& spriteName)
 {
 	SpritesMap::const_iterator it = m_sprites.find(spriteName);
 	if (it != m_sprites.end())
@@ -192,7 +202,7 @@ std::shared_ptr<RenderEngine::Sprite> ResourceManager::getSprite(const std::stri
 	return nullptr;
 }
 
-std::shared_ptr<RenderEngine::AnimatedSprite> ResourceManager::loadAnimatedSprite(const std::string& spriteName,
+std::shared_ptr<AnimatedSprite> ResourceManager::loadAnimatedSprite(const std::string& spriteName,
 	const std::string& textureName,
 	const std::string& shaderName,
 	const unsigned int spriteWidth,
@@ -217,15 +227,15 @@ std::shared_ptr<RenderEngine::AnimatedSprite> ResourceManager::loadAnimatedSprit
 		return nullptr;
 	}
 
-	std::shared_ptr<RenderEngine::AnimatedSprite> newSprite = m_AnimatedSprites.emplace
-	(textureName, std::make_shared<RenderEngine::AnimatedSprite>
+	std::shared_ptr<AnimatedSprite> newSprite = m_AnimatedSprites.emplace
+	(textureName, std::make_shared<AnimatedSprite>
 		(Texture, subTextureName, Shader,
 			glm::vec2(0.f, 0.f), glm::vec3(0.f), glm::vec2(spriteWidth, spriteHeight))).first->second;
 
 	return newSprite;
 }
 
-std::shared_ptr<RenderEngine::AnimatedSprite> ResourceManager::getAnimatedSprite(const std::string& spriteName)
+std::shared_ptr<AnimatedSprite> ResourceManager::getAnimatedSprite(const std::string& spriteName)
 {
 	auto it = m_AnimatedSprites.find(spriteName);
 	if (it != m_AnimatedSprites.end())
@@ -236,7 +246,7 @@ std::shared_ptr<RenderEngine::AnimatedSprite> ResourceManager::getAnimatedSprite
 	return nullptr;
 }
 
-std::shared_ptr<RenderEngine::Texture2D> ResourceManager::loadTextureAtlas(std::string textureName,
+std::shared_ptr<Texture2D> ResourceManager::loadTextureAtlas(std::string textureName,
 	std::string texturePath,
 	std::vector<std::string> subTextures,
 	const unsigned int subTextureWidth,
@@ -313,7 +323,6 @@ bool ResourceManager::loadSave(const std::string relativePath)
 void ResourceManager::loadSaveReal(const std::string& relativePath)
 {
 	UnloadAllResources();
-	ScriptEngine::ScriptProcessor::L.collect_garbage();
 
 	rapidjson::Document d = documentParse("res/default/main.json");
 
@@ -381,7 +390,7 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 		}
 
 		m_Components components = loadJSONComponents(it);
-		std::make_shared<GameObject>(GameObjectName, std::make_shared<Components::Transform>(buf3, bufRotation, bufScale), getSprite(spriteName), components.scripts, components.buttons, render_priority);
+		std::make_shared<GameObject>(GameObjectName, std::make_shared<Transform>(buf3, bufRotation, bufScale), getSprite(spriteName), components.scripts, components.buttons, render_priority);
 	}
 
 	return true;
@@ -397,11 +406,11 @@ ResourceManager::m_Components ResourceManager::loadJSONComponents(const rapidjso
 			std::string type = itComponents.FindMember("type")->value.GetString();
 			if (type == "LuaScript")
 			{
-				components.scripts.emplace(itComponents.FindMember("name")->value.GetString(), std::make_shared<Components::LuaScript>(itComponents.FindMember("name")->value.GetString(), itComponents.FindMember("path")->value.GetString()));
+				components.scripts.emplace(itComponents.FindMember("name")->value.GetString(), std::make_shared<LuaScript>(itComponents.FindMember("name")->value.GetString(), itComponents.FindMember("path")->value.GetString(), L));
 			}
 			else if (type == "Button")
 			{
-				components.buttons.emplace(itComponents.FindMember("name")->value.GetString(), std::make_shared<UI::Button>(itComponents.FindMember("name")->value.GetString()));
+				components.buttons.emplace(itComponents.FindMember("name")->value.GetString(), std::make_shared<Button>(itComponents.FindMember("name")->value.GetString()));
 			}
 		}
 	}
@@ -514,3 +523,5 @@ bool ResourceManager::loadJSONShaders(const std::string& relativePath)
 
 	return true;
 }
+
+std::string ResourceManager::GetPath() { return m_path; }

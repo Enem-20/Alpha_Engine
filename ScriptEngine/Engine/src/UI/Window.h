@@ -2,6 +2,8 @@
 
 #define OGL
 
+#include "../ExportPropety.h"
+
 #include <glm/vec2.hpp>
 
 #include <memory>
@@ -9,12 +11,12 @@
 
 
 struct GLFWwindow;
-namespace UI
-{
-	class UIelement;
-}
 
-class Window
+class UIelement;
+class Button;
+
+
+class DLLEXPORT Window
 {
 #ifdef OGL
 public:
@@ -29,12 +31,12 @@ public:
 	void Start();
 	void Update();
 	void FixedUpdate();
-	std::shared_ptr<UI::Button>& AddUI(const UI::Button& ui);
-	std::shared_ptr<UI::UIelement> GetUI(const std::string& name) const;
+	std::shared_ptr<Button>& AddUI(const Button& ui);
+	std::shared_ptr<UIelement> GetUI(const std::string& name) const;
 	void RemoveUI(const std::string name);
 
 	GLFWwindow* window;
 	glm::ivec2 size;
-	std::unordered_map<std::string, std::shared_ptr<UI::UIelement>> UIs;
+	std::unordered_map<std::string, std::shared_ptr<UIelement>> UIs;
 #endif
 };

@@ -1,8 +1,10 @@
 #pragma once
 
+#include "../ExportPropety.h"
+
 #include <string>
 
-class StringFuncs
+class DLLEXPORT StringFuncs
 {
 public:
 	static std::string Match(const std::string& str1, const std::string& str2) 

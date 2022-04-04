@@ -27,12 +27,12 @@ public:
 	struct components
 	{
 	public:
-		components(std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts, std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons)
+		components(std::unordered_map<std::string, std::shared_ptr<LuaScript>> scripts, std::unordered_map<std::string, std::shared_ptr<Button>> buttons)
 			:scripts(scripts)
 			,buttons(buttons)
 		{}
-		std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts;
-		std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons;
+		std::unordered_map<std::string, std::shared_ptr<LuaScript>> scripts;
+		std::unordered_map<std::string, std::shared_ptr<Button>> buttons;
 	};
 
 	static void Serialize(std::unordered_map<std::string, std::shared_ptr<GameObject>>& objects, prettywriter* writer);
@@ -48,9 +48,9 @@ public:
 		names[3] = "w";
 	}
 
-	static const rapidjson::StringBuffer  Serialize(std::shared_ptr<RenderEngine::Sprite> sprite, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
-	static const rapidjson::StringBuffer  Serialize(std::shared_ptr<RenderEngine::Texture2D> tex2D, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
-	static const rapidjson::StringBuffer  Serialize(std::shared_ptr<RenderEngine::ShaderProgram> shaderProgram, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
+	static const rapidjson::StringBuffer  Serialize(std::shared_ptr<Sprite> sprite, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
+	static const rapidjson::StringBuffer  Serialize(std::shared_ptr<Texture2D> tex2D, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
+	static const rapidjson::StringBuffer  Serialize(std::shared_ptr<ShaderProgram> shaderProgram, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
 
 	static const rapidjson::StringBuffer Serialize(glm::ivec2 _ivec2, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
 	static const rapidjson::StringBuffer Serialize(glm::vec2   _vec2, prettywriter* writer = nullptr, std::string name = "", std::string path = "");

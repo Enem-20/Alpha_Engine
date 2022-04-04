@@ -1,10 +1,13 @@
 #include "GameObject.h"
 
+#include "../Components/LuaScript.h"
+#include "../Components/Transform.h"
 #include "../Renderer/Sprite.h"
 #include "../Scene/Hierarchy.h"
 #include "../UI/Button.h"
 #include "../Helpers/StringFuncs.h"
 #include "../Logging/Clerk.h"
+#include "../Input/Input.h"
 
 #include <../glm/glm/vec2.hpp>
 #include <../glm/glm/vec3.hpp>
@@ -15,10 +18,10 @@ size_t GameObject::counter = 0;
 GameObject GameObject::Null;
 
 GameObject::GameObject(std::string name,
-	std::shared_ptr<Components::Transform> transform,
-	std::shared_ptr<RenderEngine::Sprite> sprite,
-	std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts,
-	std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons,
+	std::shared_ptr<Transform> transform,
+	std::shared_ptr<Sprite> sprite,
+	std::unordered_map<std::string, std::shared_ptr<LuaScript>> scripts,
+	std::unordered_map<std::string, std::shared_ptr<Button>> buttons,
 	int render_priority)
 	: transform(transform)
 	, sprite(sprite)
@@ -56,7 +59,7 @@ GameObject::GameObject(std::string name,
 	}
 	else
 	{
-		this->transform = std::make_shared<Components::Transform>(this->name);
+		this->transform = std::make_shared<Transform>(this->name);
 		this->transform->Scale(glm::vec3(0.f));
 	}
 	this->render_priority = render_priority;
@@ -66,7 +69,7 @@ GameObject::GameObject(std::string name,
 	Clerk::Knowledge(68, __FILE__, "GameObject::GameObject at " + name, L"Adding object to Hierarchy...");
 #endif
 	Hierarchy::addObject(*this);
-	if (onGrid)//Костыль
+	if (onGrid)//bad practice
 	{
 #ifdef LOG_INFO
 		Clerk::Knowledge(74, __FILE__, "GameObject::GameObject at " + name, L"Adding object to Grid...");
@@ -104,7 +107,7 @@ GameObject::GameObject(const GameObject& gameObject)
 	Clerk::Knowledge(102, __FILE__, "GameObject copy constructor", L"Begin of constructor");
 #endif
 	this->sprite = gameObject.sprite;
-	this->transform = std::make_shared<Components::Transform>(gameObject.transform->position, gameObject.transform->rotation, glm::vec3(0.f));
+	this->transform = std::make_shared<Transform>(gameObject.transform->position, gameObject.transform->rotation, glm::vec3(0.f));
 	if(sprite)
 		this->transform->scale = glm::vec3(sprite->getSize(), 0.f);
 	this->transform->Scale(glm::vec3(0.f));
@@ -171,30 +174,34 @@ void GameObject::render()
 	}
 }
 
+Transform& GameObject::GetTransform() { return *transform; }
+void GameObject::SetOnGrid(const bool& onGridNew) { onGrid = onGridNew; }
+std::shared_ptr<GameObject> GameObject::testShared(GameObject gameObject) { return std::make_shared<GameObject>(gameObject); }
+
 void GameObject::Translate(const glm::vec3& position)
 {
-	if(onGrid)	//Костыль
+	if(onGrid)	
 		Hierarchy::removeGridObject(Input::GetCell(transform->position));
 	transform->Translate(position);
 	for (auto it : children)
 	{
 		it->Translate(position);
 	}
-	if(onGrid)//Костыль
+	if(onGrid)
 		Hierarchy::addGridObject(this->name);
 	Update();
 }
 
 void GameObject::Teleport(const glm::vec3& position)
 {
-	if(onGrid)//Костыль
+	if(onGrid)
 		Hierarchy::removeGridObject(Input::GetCell(transform->position));
 	transform->Teleport(position);
 	for (auto& it : children)
 	{
 		it->Teleport(position);
 	}
-	if(onGrid)//Костыль
+	if(onGrid)
 		Hierarchy::addGridObject(this->name);
 	Update();
 }
@@ -231,7 +238,7 @@ void GameObject::Update()
 	//Teleport(transform->position);
 }
 
-std::shared_ptr<RenderEngine::Sprite> GameObject::GetSprite() const
+std::shared_ptr<Sprite> GameObject::GetSprite() const
 {
 	return sprite;
 }
@@ -268,4 +275,24 @@ GameObject GameObject::SetNull()
 {
 	Null = GameObject(-1);
 	return Null;
+}
+
+std::unordered_map<std::string, std::shared_ptr<LuaScript>> GameObject::GetScripts() const
+{
+	return scripts;
+}
+
+const int& GameObject::GetRenderPriority() const
+{
+	return render_priority;
+}
+
+const std::string& GameObject::Name() const
+{
+	return name;
+}
+
+const bool& GameObject::isGrided() const
+{
+	return onGrid;
 }
