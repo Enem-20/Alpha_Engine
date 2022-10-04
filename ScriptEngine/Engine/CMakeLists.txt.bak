@@ -67,7 +67,7 @@ set(Resources
 set(Other
 	src/Timer.h
 	src/Timer.cpp
-	src/ExportProperty.h
+	src/ExportPropety.h
 )
 
 set(Scene

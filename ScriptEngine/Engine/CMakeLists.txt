@@ -7,6 +7,8 @@ set(PROJECT_NAME Engine)
 
 project(${PROJECT_NAME})
 
+#find_package(imgui REQUIRED)
+
 set(UI
 src/UI/WindowManager.h
 src/UI/WindowManager.cpp
@@ -165,25 +167,22 @@ if (MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
-#target_link_libraries(${PROJECT_NAME} PRIVATE ImGUI)
 target_link_libraries(${PROJECT_NAME} PUBLIC
  p7
  )
  
 target_link_libraries(${PROJECT_NAME} PRIVATE 
-ImGui 
-lua_static
- glad glfw
- 
+lua_static 
+glad glfw
+IMGUI
  )
-
- target_link_libraries(ImGui glad glfw)
 
 target_include_directories(${PROJECT_NAME} PUBLIC external)
 target_include_directories(${PROJECT_NAME} PUBLIC external/glm)
-target_include_directories(${PROJECT_NAME} PUBLIC external/sol2/include)
+target_include_directories(${PROJECT_NAME} PRIVATE external/sol2/include)
 target_include_directories(${PROJECT_NAME} PUBLIC external/rapidjson/include)
 target_include_directories(${PROJECT_NAME} PRIVATE external/imguiLibrary)
+target_include_directories(${PROJECT_NAME} PRIVATE external/imguiLibrary/imgui)
 
 
 
