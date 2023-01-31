@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../ExportPropety.h"
+
 #include <glm/mat4x4.hpp>
 
 #include <string>
@@ -8,7 +10,7 @@ typedef unsigned int GLuint;
 typedef unsigned int GLenum;
 typedef int GLint;
 
-class ShaderProgram
+class DLLEXPORT ShaderProgram
 {
 public:
 	ShaderProgram(const std::string& vertexShader, const std::string& fragmentShader);

@@ -9,6 +9,7 @@ public:
 	static void SwapBuffers();
 	static void PollEvents();
 	static bool isNeedClose();
+	static void ClearScreenWithBufferColor();
 
 	static int init();
 };

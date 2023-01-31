@@ -14,11 +14,10 @@
 #include <typeinfo>
 #include <iostream>
 
-//#include "../ScriptEngine/src/ScriptEngine.h"
+#include "../ScriptEngine/src/ScriptEngine.h"
 //#include "../ScriptEngine/Engine/src/EngineMain.h"
 //#include "../ScriptEngine/src/ClassRegistrator.h"
 //#include "API.h"
-#include "API/ScriptEngineAPI.h"
 
 #ifdef WIN32
 #include <Windows.h>
@@ -38,7 +37,7 @@ int main(int argc, char** argv)
 #endif
 #endif
 	
-	ScriptEngine::ScriptProcessor::init(argv);
+	ScriptProcessor::init(argv);
 	//API::API::Init(argv[0]);
 	
 	std::cout << typeid(void).hash_code() << std::endl;

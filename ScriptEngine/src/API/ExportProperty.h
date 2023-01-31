@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef  ENGINE_EXPORTS || SCRIPT_ENGINE_EXPORTS
+#ifdef  SCRIPT_ENGINE_EXPORTS
 /*Enabled as "export" while compiling the dll project*/
 #define DLLEXPORT __declspec(dllexport)  
 #else

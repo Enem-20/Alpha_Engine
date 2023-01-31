@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../ExportPropety.h"
+
 #define OGL
 
 #include <list>
@@ -9,7 +11,7 @@
 
 struct GLFWwindow;
 //ruler or commander
-class Input
+class DLLEXPORT Input
 {
 #ifdef OGL
 public:

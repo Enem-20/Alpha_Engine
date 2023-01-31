@@ -26,11 +26,5 @@ set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAK
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 					COMMAND ${CMAKE_COMMAND} -E copy_directory
-					${CMAKE_SOURCE_DIR}/res $<TARGET_FILE_DIR:${PROJECT_NAME}>/bin)
+					${CMAKE_SOURCE_DIR}/res $<TARGET_FILE_DIR:${PROJECT_NAME}>/res)
 					
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-					COMMAND ${CMAKE_COMMAND} -E copy_directory
-					$<TARGET_FILE_DIR:ScriptEngine>/Debug $<TARGET_FILE_DIR:${PROJECT_NAME}>/bin)
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-					COMMAND ${CMAKE_COMMAND} -E copy_directory
-					$<TARGET_FILE_DIR:${PROJECT_NAME}>ScriptEngine/Engine/Debug $<TARGET_FILE_DIR:${PROJECT_NAME}>/bin)

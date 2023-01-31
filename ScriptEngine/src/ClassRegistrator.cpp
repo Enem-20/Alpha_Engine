@@ -1,6 +1,28 @@
 #include "ClassRegistrator.h"
 
-#include "API/EngineAPI.h"
+#include "Components/LuaScript.h"
+#include "Components/Transform.h"
+//#include "Components/Component.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/ShaderProgram.h"
+#include "Renderer/Sprite.h"
+#include "Renderer/Texture2D.h"
+#include "Resources/ResourceManager.h"
+#include "GameTypes/GameObject.h"
+#include "GLPref/GLPref.h"
+#include "Helpers/casts.h"
+#include "Helpers/StringFuncs.h"
+#include "Scene/Hierarchy.h"
+#include "UI/Button.h"
+#include "UI/UIelement.h"
+#include "UI/Window.h"
+#include "UI/WindowManager.h"
+#include "Timer.h"
+#include "Input/Input.h"
+
+//#include <glm/vec2.hpp>
+
+glm::dvec2 Renderer::ViewportSize = {};
 
 static GameObject GetData(std::shared_ptr<GameObject> gameObject)
 {
@@ -102,21 +124,21 @@ void ClassRegistrator::Reg_GLMMat4(sol::table* Lnamespace)
 void ClassRegistrator::Reg_ShaderProgram(sol::table* same)
 {
 	Reg_GLMMat4(same);
-	same->new_usertype<RenderEngine::ShaderProgram>("ShaderProgram"
-		, sol::constructors<RenderEngine::ShaderProgram(const std::string&, const std::string&)
-		, RenderEngine::ShaderProgram(RenderEngine::ShaderProgram&&)>()
+	same->new_usertype<ShaderProgram>("ShaderProgram"
+		, sol::constructors<ShaderProgram(const std::string&, const std::string&)
+		, ShaderProgram(ShaderProgram&&)>()
 
-		, "isCompiled", &RenderEngine::ShaderProgram::isCompiled
-		, "use", &RenderEngine::ShaderProgram::use
-		, "setInt", &RenderEngine::ShaderProgram::setMatrix4);
+		, "isCompiled", &ShaderProgram::isCompiled
+		, "use", &ShaderProgram::use
+		, "setInt", &ShaderProgram::setMatrix4);
 }
 
 void ClassRegistrator::Reg_SubTexture2D(sol::table* LTexture2D)
 {
-	LTexture2D->new_usertype<RenderEngine::Texture2D::SubTexture2D>("SubTexture2D"
-		, sol::constructors<RenderEngine::Texture2D::SubTexture2D(), RenderEngine::Texture2D::SubTexture2D(const glm::vec2, const glm::vec2)>()
-		, "leftBottomUV", &RenderEngine::Texture2D::SubTexture2D::getLeftBottomUV
-		, "rightTopUV", &RenderEngine::Texture2D::SubTexture2D::getRightTopUV
+	LTexture2D->new_usertype<Texture2D::SubTexture2D>("SubTexture2D"
+		, sol::constructors<Texture2D::SubTexture2D(), Texture2D::SubTexture2D(const glm::vec2, const glm::vec2)>()
+		, "leftBottomUV", &Texture2D::SubTexture2D::getLeftBottomUV
+		, "rightTopUV", &Texture2D::SubTexture2D::getRightTopUV
 		);
 }
 
@@ -124,17 +146,17 @@ void ClassRegistrator::Reg_Texture2D(sol::table* same)
 {
 	if (same != nullptr)
 	{
-		same->new_usertype<RenderEngine::Texture2D>("Texture2D"
-			, sol::constructors<RenderEngine::Texture2D(const GLuint, const GLuint
+		same->new_usertype<Texture2D>("Texture2D"
+			, sol::constructors<Texture2D(const GLuint, const GLuint
 				, const unsigned char*, const unsigned int, const GLenum, const GLenum)
 
-			, RenderEngine::Texture2D(RenderEngine::Texture2D&&)>()
+			, Texture2D(Texture2D&&)>()
 
-			, "addSubTexture", &RenderEngine::Texture2D::addSubTexture
-			, "getSubTexture", &RenderEngine::Texture2D::getSubTexture
-			, "getWidth", &RenderEngine::Texture2D::getWidth
-			, "getHeight", &RenderEngine::Texture2D::getHeight
-			, "bind", &RenderEngine::Texture2D::bind
+			, "addSubTexture", &Texture2D::addSubTexture
+			, "getSubTexture", &Texture2D::getSubTexture
+			, "getWidth", &Texture2D::getWidth
+			, "getHeight", &Texture2D::getHeight
+			, "bind", &Texture2D::bind
 			);
 
 		Reg_SubTexture2D(same);
@@ -143,42 +165,42 @@ void ClassRegistrator::Reg_Texture2D(sol::table* same)
 
 void ClassRegistrator::Reg_Sprite(sol::table* object)
 {
-	object->new_usertype<RenderEngine::Sprite>("Sprite"
-		, sol::constructors<RenderEngine::Sprite(std::shared_ptr<RenderEngine::Texture2D>,
+	object->new_usertype<Sprite>("Sprite"
+		, sol::constructors<Sprite(std::shared_ptr<Texture2D>,
 			std::string,
-			std::shared_ptr<RenderEngine::ShaderProgram>,
+			std::shared_ptr<ShaderProgram>,
 			const glm::vec2& position,
 			const glm::vec3& rotation,
 			const glm::vec2& size)>()
 
-		, "render", &RenderEngine::Sprite::render
-		, "setPosition", &RenderEngine::Sprite::setPosition
-		, "getSize", &RenderEngine::Sprite::getSize
-		, "setSize", &RenderEngine::Sprite::setSize
-		, "setRotation", &RenderEngine::Sprite::setRotation
+		, "render", &Sprite::render
+		, "setPosition", &Sprite::setPosition
+		, "getSize", &Sprite::getSize
+		, "setSize", &Sprite::setSize
+		, "setRotation", &Sprite::setRotation
 		);
 }
 
 void ClassRegistrator::Reg_UIelement(sol::table* UIElement)
 {
-	UIElement->new_usertype<UI::UIelement>("UIelement"
-		, "AddListener", &UI::UIelement::AddListener);
+	UIElement->new_usertype<UIelement>("UIelement"
+		, "AddListener", &UIelement::AddListener);
 }
 
 void ClassRegistrator::Reg_Transform(sol::table* Lnamespace)
 {
-	Lnamespace->new_usertype<Components::Transform>("Transform"
-		, sol::constructors<Components::Transform(), Components::Transform(std::string, std::shared_ptr<GameObject>), Components::Transform(const Components::Transform&)>()
-		, "position", &Components::Transform::GetPosition
-		, "rotation", &Components::Transform::GetRotation
-		, "scale", &Components::Transform::GetScale
-		, "GetPosition", &Components::Transform::GetVec2Position);
+	Lnamespace->new_usertype<Transform>("Transform"
+		, sol::constructors<Transform(), Transform(std::string, std::shared_ptr<GameObject>), Transform(const Transform&)>()
+		, "position", &Transform::GetPosition
+		, "rotation", &Transform::GetRotation
+		, "scale", &Transform::GetScale
+		, "GetPosition", &Transform::GetVec2Position);
 }
 
 void ClassRegistrator::Reg_GameObject(sol::table* object)
 {
 	object->new_usertype<GameObject>("GameObject"
-		, sol::constructors<GameObject(std::string), GameObject(std::string, std::shared_ptr<Components::Transform>, std::shared_ptr<RenderEngine::Sprite>), GameObject(const GameObject&)>()
+		, sol::constructors<GameObject(std::string), GameObject(std::string, std::shared_ptr<Transform>, std::shared_ptr<Sprite>), GameObject(const GameObject&)>()
 
 		, "Translate", &GameObject::Translate
 		, "Teleport", &GameObject::Teleport

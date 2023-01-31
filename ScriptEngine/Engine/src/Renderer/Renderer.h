@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../ExportPropety.h"
+
 #include <glm/vec2.hpp>
 
 #include <string>
@@ -13,7 +15,7 @@ class IndexBuffer;
 class VertexArray;
 class ShaderProgram;
 
-class Renderer
+class DLLEXPORT Renderer
 {
 public:
 	static void draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const ShaderProgram& shader);

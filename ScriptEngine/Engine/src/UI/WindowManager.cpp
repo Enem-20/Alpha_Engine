@@ -45,6 +45,7 @@ int WindowManager::init(std::string name, int width, int height)
 void WindowManager::ShutDown()
 {
 	windows.clear();
+	glfwTerminate();
 }
 Window& WindowManager::GetCurrentWindow()
 {

@@ -46,7 +46,7 @@ int GLPref::init()
 
 void GLPref::PollEvents()
 {
-	//glfwPollEvents();
+	glfwPollEvents();
 }
 
 void GLPref::SwapBuffers()
@@ -57,4 +57,8 @@ void GLPref::SwapBuffers()
 bool GLPref::isNeedClose()
 {
 	return glfwWindowShouldClose(WindowManager::CurrentWindow->window);
+}
+
+void GLPref::ClearScreenWithBufferColor() {
+	glClear(GL_COLOR_BUFFER_BIT);
 }

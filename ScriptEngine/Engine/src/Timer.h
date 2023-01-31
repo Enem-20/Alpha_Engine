@@ -1,8 +1,10 @@
 #pragma once
 
+#include "ExportPropety.h"
+
 #include <ctime>
 
-class Timer
+class DLLEXPORT Timer
 {
 public:
 	Timer();

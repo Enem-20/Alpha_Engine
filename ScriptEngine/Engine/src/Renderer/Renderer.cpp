@@ -8,8 +8,7 @@
 
 #include "../Logging/Clerk.h"
 
-
-glm::dvec2 Renderer::ViewportSize;
+glm::dvec2 Renderer::ViewportSize = {};
 glm::ivec2 Renderer::ViewportOffset;
 Renderer::Render_queue Renderer::render_queue;
 

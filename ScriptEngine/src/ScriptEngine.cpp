@@ -1,19 +1,29 @@
 #include "ScriptEngine.h"
 #include "ClassRegistrator.h"
-#include "API/EngineAPI.h"
+
+#include "../Engine/internal/Renderer/src/Vulkan/Instance.h"
+#include "../Engine/internal/Renderer/src/Vulkan/DebugMessenger.h"
+
+#include "Components/LuaScript.h"
+#include "Scene/Hierarchy.h"
+#include "UI/WindowManager.h"
+#include "Resources/ResourceManager.h"
+#include "GameTypes/GameObject.h"
+#include "GLPref/GLPref.h"
+#include "Timer.h"
 
 #include <thread>
 #include <queue>
 
 std::shared_ptr<Timer> ScriptProcessor::GenTimer;
-sol::state ScriptProcessor::L;
+std::shared_ptr <sol::state> ScriptProcessor::L = std::make_shared<sol::state>();
 
 sol::state& ScriptProcessor::getL()
 {
-	return L;
+	return *L;
 }
 
-std::shared_ptr<Timer> ScriptProcessor::GeneralTimer()
+std::shared_ptr<Timer>& ScriptProcessor::GeneralTimer()
 {
 	return GenTimer;
 }
@@ -47,16 +57,19 @@ void ScriptProcessor::FirstFrame()
 
 void ScriptProcessor::init(char** argv)
 {
-	GeneralTimer() = std::make_shared<Timer>();
-	L.open_libraries(sol::lib::base);
+	Instance instance;
+	auto dbgMsg = DebugMessenger::getDbgMsgInstance();
 
-	sol::table Lobject = L["Engine"].get_or_create<sol::table>();
+	GeneralTimer() = std::make_shared<Timer>();
+	L->open_libraries(sol::lib::base);
+	GeneralTimer();
+	sol::table Lobject = (*L)["Engine"].get_or_create<sol::table>();
 	std::thread th(ClassRegistrator::Registration, &Lobject);
 	th.join();
 	GLPref::init();
 	{
 		ResourceManager::SetExecutablePath(argv[0]);
-		ResourceManager::SetLuaState(std::make_shared<sol::state>(L));
+		ResourceManager::SetLuaState(L);
 		/*ScriptProcessor::getL().require_file("dequeue", ResourceManager::GetPath() + "/res/components/scripts/dequeue.lua");*/
 		ResourceManager::loadJSONScene("res/default/main.json");
 		size_t countFrames = 0;
@@ -68,8 +81,8 @@ void ScriptProcessor::init(char** argv)
 #ifndef NDEBUG
 			//auto start = std::chrono::high_resolution_clock::now();
 #endif
-			glfwPollEvents();
-			glClear(GL_COLOR_BUFFER_BIT);
+			GLPref::PollEvents();
+			GLPref::ClearScreenWithBufferColor();
 
 			ResourceManager::loadExecute();
 
@@ -91,7 +104,7 @@ void ScriptProcessor::init(char** argv)
 	}
 	std::thread th1(ResourceManager::UnloadAllResources);
 	WindowManager::ShutDown();
-	glfwTerminate();
+
 	th1.join();
 }
 

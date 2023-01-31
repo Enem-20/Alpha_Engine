@@ -1,19 +1,9 @@
 #pragma once
 
-#ifdef  SCRIPT_ENGINE_EXPORTS 
-/*Enabled as "export" while compiling the dll project*/
-#define DLLEXPORT __declspec(dllexport)  
-#else
-/*Enabled as "import" in the Client side for using already created dll file*/
-#define DLLEXPORT __declspec(dllimport)  
-#endif
+#include "API/ExportProperty.h"
 
 #include <sol/sol.hpp>
-
-namespace Components
-{
-	class LuaScript;
-}
+#include <memory>
 
 class Timer;
 
@@ -36,8 +26,8 @@ public:
 	static void LastUpdate();
 
 	static void ScriptUpdates();
-	static std::shared_ptr<Timer> GeneralTimer();
+	static std::shared_ptr<Timer>& GeneralTimer();
 private:
 	static std::shared_ptr<Timer> GenTimer;
-	static sol::state L;
+	static std::shared_ptr<sol::state> L;
 };

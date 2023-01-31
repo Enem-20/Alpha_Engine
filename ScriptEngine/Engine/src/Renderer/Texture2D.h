@@ -14,7 +14,7 @@ class DLLEXPORT Texture2D
 	friend class Serializer;
 	friend class DeserializerTexture2D;
 public:
-	struct SubTexture2D
+	struct DLLEXPORT SubTexture2D
 	{
 		glm::vec2 leftBottomUV;
 		glm::vec2 rightTopUV;

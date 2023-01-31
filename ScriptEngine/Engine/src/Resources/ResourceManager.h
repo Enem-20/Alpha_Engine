@@ -115,4 +115,6 @@ private:
 	static std::string relative_shaders;
 	static std::string relative_main;
 	static std::shared_ptr<std::pair<const std::string, std::function<void(const std::string)>>> loader;
+
+	
 };

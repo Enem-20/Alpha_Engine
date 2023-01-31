@@ -110,7 +110,8 @@ set(Logging
 	src/Logging/Clerk.h
 )
 
-add_compile_definitions(LOG_INFO LOG_ERR ENGINE_EXPORTS)
+#add_compile_definitions(LOG_INFO LOG_ERR)
+add_compile_definitions(ENGINE_EXPORTS)
 #add_compile_definitions(NLOG_FULL NLOG_NOERR NLOG_ONLYERRS NLOG_INFO NLOG_CRIT NLOG_ERR NLOG_WARN NLOG_DBG)
 
 add_library(${PROJECT_NAME} SHARED
@@ -150,6 +151,10 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 #	src/UI/UI.pch
 #)
 	
+add_subdirectory(internal/Renderer)
+
+#target_include_directories(${PROJECT_NAME} INTERFACE internal/Renderer/src)
+	
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -157,7 +162,7 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 
-add_subdirectory(external/glfw)
+#add_subdirectory(external/glfw)
 add_subdirectory(external/glad)
 add_subdirectory(external/Lua)
 add_subdirectory(external/P7)
@@ -172,8 +177,9 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
  )
  
 target_link_libraries(${PROJECT_NAME} PRIVATE 
+Renderer
 lua_static 
-glad glfw
+glad #glfw
 IMGUI
  )
 
@@ -183,9 +189,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE external/sol2/include)
 target_include_directories(${PROJECT_NAME} PUBLIC external/rapidjson/include)
 target_include_directories(${PROJECT_NAME} PRIVATE external/imguiLibrary)
 target_include_directories(${PROJECT_NAME} PRIVATE external/imguiLibrary/imgui)
+#target_include_directories(${PROJECT_NAME} PRIVATE external/VulkanHpp/Vulkan-Headers/include)
 
 
-
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 
 #set_target_properties(Engine PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
