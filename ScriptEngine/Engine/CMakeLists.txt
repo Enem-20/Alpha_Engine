@@ -10,14 +10,14 @@ project(${PROJECT_NAME})
 #find_package(imgui REQUIRED)
 
 set(UI
-src/UI/WindowManager.h
-src/UI/WindowManager.cpp
-src/UI/Window.h
-src/UI/Window.cpp
-src/UI/UIelement.h
-src/UI/UIelement.cpp
-src/UI/Button.h
-src/UI/Button.cpp
+#src/UI/WindowManager.h
+#src/UI/WindowManager.cpp
+#src/UI/Window.h
+#src/UI/Window.cpp
+#src/UI/UIelement.h
+#src/UI/UIelement.cpp
+#src/UI/Button.h
+#src/UI/Button.cpp
 # src/UI/Canvas.h
 # src/UI/Canvas.cpp
 # src/UI/ColorBuffer.h
@@ -111,7 +111,7 @@ set(Logging
 )
 
 #add_compile_definitions(LOG_INFO LOG_ERR)
-add_compile_definitions(ENGINE_EXPORTS)
+add_compile_definitions(ENGINE_EXPORTS GLFW_INCLUDE_VULKAN)
 #add_compile_definitions(NLOG_FULL NLOG_NOERR NLOG_ONLYERRS NLOG_INFO NLOG_CRIT NLOG_ERR NLOG_WARN NLOG_DBG)
 
 add_library(${PROJECT_NAME} SHARED
@@ -152,6 +152,8 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 #)
 	
 add_subdirectory(internal/Renderer)
+add_subdirectory(internal/UI)
+add_subdirectory(internal/ComponentSystem)
 
 #target_include_directories(${PROJECT_NAME} INTERFACE internal/Renderer/src)
 	
@@ -178,6 +180,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
  
 target_link_libraries(${PROJECT_NAME} PRIVATE 
 Renderer
+UI
+ComponentSystem
 lua_static 
 glad #glfw
 IMGUI
