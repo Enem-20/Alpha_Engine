@@ -7,8 +7,6 @@
 
 #include <memory>
 
-#define OGL
-
 
 class DLLEXPORT Transform : public Component
 {

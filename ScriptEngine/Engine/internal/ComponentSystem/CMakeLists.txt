@@ -5,11 +5,17 @@ add_library(ComponentSystem INTERFACE)
 target_sources(ComponentSystem INTERFACE
 	src/Component.h
 	src/Component.cpp
+	src/ComponentFabric.h
+	src/ComponentFabric.cpp
+	src/Script.h
+	src/Script.cpp
 	src/LuaScript.h
 	src/LuaScript.cpp
 	src/Transform.h
 	src/Transform.cpp
 )
+
+#target_compile_features(ComponentSystem INTERFACE cxx_std_20)
 
 #add_Subdirectory(external/glfw)
 #add_subdirectory(external/VulkanHpp)

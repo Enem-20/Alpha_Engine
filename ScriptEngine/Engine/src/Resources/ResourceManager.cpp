@@ -2,13 +2,13 @@
 
 #include "Serializer.h"
 #include "../Renderer/ShaderProgram.h"
-#include "../Renderer/Texture2D.h"
+#include "../../internal/Renderer/src/Texture2D.h"
 #include "../Renderer/Sprite.h"
 #include "../Renderer/AnimatedSprite.h"
 #include "Serializer.h"
-#include "../UI/Button.h"
 #include "../../../src/ScriptEngine.h"
-#include "../Components/LuaScript.h"
+#include "../../internal/ComponentSystem/src/LuaScript.h"
+#include "../../internal/UI/src/Button.h"
 #include "../Components/Transform.h"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -120,6 +120,7 @@ std::shared_ptr<ShaderProgram> ResourceManager::getShaderProgram(const std::stri
 	return nullptr;
 }
 
+#ifdef OGL
 std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textureName, const std::string& texturePath)
 {
 	int channels = 0;
@@ -128,7 +129,7 @@ std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textu
 
 	stbi_set_flip_vertically_on_load(true);
 
-	unsigned char* pixels = stbi_load(std::string(m_path + "/" + texturePath).c_str(), &width, &height, &channels, 0);
+	stbi_uc* pixels = stbi_load(std::string(m_path + "/" + texturePath).c_str(), &width, &height, &channels, 0);
 
 	if (!pixels)
 	{
@@ -145,6 +146,33 @@ std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textu
 
 	return newTexture;
 }
+
+#elif GLFW_INCLUDE_VULKAN
+std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textureName, const std::string& texturePath) {
+	int channels = 0;
+	int width = 0;
+	int height = 0;
+
+	unsigned char* pixels = stbi_load(std::string(m_path + "/" + texturePath).c_str(), &width, &height, &channels, STBI_rgb_alpha);
+
+	if (!pixels)
+	{
+		std::cerr << "Can't load image: " << texturePath << std::endl;
+		system("pause");
+		return nullptr;
+	}
+
+	renderer.textures.push_back(std::make_shared<Texture2D>(width, height,  channels, pixels, *renderer.swapchain, *renderer.physicalDevice, *renderer.logicalDevice, *renderer.commandPool));
+
+	std::shared_ptr<Texture2D> newTexture = renderer.textures[renderer.textures.size() - 1];
+
+	m_textures.emplace(textureName, newTexture);
+
+	stbi_image_free(pixels);
+
+	return newTexture;
+}
+#endif
 
 std::shared_ptr<Texture2D> ResourceManager::getTexture(const std::string& textureName)
 {
@@ -389,16 +417,17 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 			spriteName = it.FindMember("sprite")->value.GetString();
 		}
 
-		m_Components components = loadJSONComponents(it);
-		std::make_shared<GameObject>(GameObjectName, std::make_shared<Transform>(buf3, bufRotation, bufScale), getSprite(spriteName), components.scripts, components.buttons, render_priority);
+		const std::unordered_map<std::string, ComponentView>& components = loadJSONComponents(it);
+		std::make_shared<GameObject>(GameObjectName, std::make_shared<Transform>(buf3, bufRotation, bufScale), getSprite(spriteName), components, render_priority);
 	}
 
 	return true;
 }
 
-ResourceManager::m_Components ResourceManager::loadJSONComponents(const rapidjson::Value& it)
+std::unordered_map<std::string, ComponentView> ResourceManager::loadJSONComponents(const rapidjson::Value& it)
 {
-	m_Components components;
+	//m_Components components;
+	std::unordered_map<std::string, ComponentView> components;
 	if (it.FindMember("Components")->value.IsArray())
 	{
 		for (const auto& itComponents : it.FindMember("Components")->value.GetArray())
@@ -406,11 +435,15 @@ ResourceManager::m_Components ResourceManager::loadJSONComponents(const rapidjso
 			std::string type = itComponents.FindMember("type")->value.GetString();
 			if (type == "LuaScript")
 			{
-				components.scripts.emplace(itComponents.FindMember("name")->value.GetString(), std::make_shared<LuaScript>(itComponents.FindMember("name")->value.GetString(), itComponents.FindMember("path")->value.GetString(), L));
+				auto script = new LuaScript(itComponents.FindMember("name")->value.GetString(), itComponents.FindMember("path")->value.GetString(), L);
+				components.emplace(itComponents.FindMember("name")->value.GetString(), ComponentView{ reinterpret_cast<void*>(script) });
+				//components.scripts.emplace(itComponents.FindMember("name")->value.GetString(), std::make_shared<LuaScript>(itComponents.FindMember("name")->value.GetString(), itComponents.FindMember("path")->value.GetString(), L));
 			}
 			else if (type == "Button")
 			{
-				components.buttons.emplace(itComponents.FindMember("name")->value.GetString(), std::make_shared<Button>(itComponents.FindMember("name")->value.GetString()));
+				auto button = new Button(itComponents.FindMember("name")->value.GetString());
+				components.emplace(itComponents.FindMember("name")->value.GetString(), ComponentView{ reinterpret_cast<void*>(button) });
+				//components.buttons.emplace(itComponents.FindMember("name")->value.GetString(), std::make_shared<Button>(itComponents.FindMember("name")->value.GetString()));
 			}
 		}
 	}
@@ -495,7 +528,7 @@ bool ResourceManager::loadJSONTextures(const std::string& relativePath)
 		++it;
 		std::string path = it->GetString();
 		++it;
-		loadTexture(Name, path);
+		loadTexture(Name, path);//remake
 	}
 
 	return true;

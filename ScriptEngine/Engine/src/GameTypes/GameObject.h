@@ -1,13 +1,18 @@
 #pragma once
 
+#ifndef GAMEOBJECT
 #include "../ExportPropety.h"
 
-
-#include <vector>
-#include <unordered_map>
+#include "../../internal/ComponentSystem/src/Component.h"
 
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+
+#include <type_traits>
+#include <list>
+#include <vector>
+#include <unordered_map>
+#include <typeinfo>
 
 class Transform;
 class LuaScript;
@@ -25,11 +30,16 @@ public:
 public:
 	GameObject(const GameObject& gameObject);
 	//GameObject(GameObject&&) = default;
+	//GameObject(std::string name = "",
+	//	std::shared_ptr<Transform> transform = nullptr,
+	//	std::shared_ptr<Sprite> sprite = nullptr,
+	//	std::unordered_map<std::string, std::shared_ptr<LuaScript>> scripts = std::unordered_map<std::string, std::shared_ptr<LuaScript>>(),
+	//	std::unordered_map<std::string, std::shared_ptr<Button>> buttons = std::unordered_map<std::string, std::shared_ptr<Button>>(),
+	//	int render_priority = 0);
 	GameObject(std::string name = "",
 		std::shared_ptr<Transform> transform = nullptr,
 		std::shared_ptr<Sprite> sprite = nullptr,
-		std::unordered_map<std::string, std::shared_ptr<LuaScript>> scripts = std::unordered_map<std::string, std::shared_ptr<LuaScript>>(),
-		std::unordered_map<std::string, std::shared_ptr<Button>> buttons = std::unordered_map<std::string, std::shared_ptr<Button>>(),
+		std::unordered_map<std::string, ComponentView> components = std::unordered_map<std::string, ComponentView>(),
 		int render_priority = 0);
 	void operator=(const GameObject& gameObject);
 	GameObject(GameObject&&) = delete;
@@ -56,12 +66,36 @@ public:
 	GameObject& GetChild(int i) const;
 
 	virtual std::shared_ptr<Sprite> GetSprite() const;
-	
+
+	template<class T>
+	void addComponent(const std::string& name, T* component) {
+		static_assert(std::is_base_of<Component, T>::value || std::is_same<Component, T>::value, "T must inherit from Component or be a Component");
+		components.emplace(name, ComponentView{reinterpret_cast<void*>(component)});
+	}
+
+	void removeComponent(const std::string& name) {
+		size_t currentIndex = 0;
+		
+		if (components.contains(name))
+			components.erase(name);
+	}
+
+	template<class T>
+	T* getComponent(const std::string& name) {
+		static_assert(std::is_base_of<Component, T>::value || std::is_same<Component, T>::value, "T must inherit from Component or be a Component");
+		auto component = components.find(name);
+		
+		if(component != components.cend())
+			return component->second.getComponentFromView<T>();
+
+		return nullptr;
+	}
 public:
 	std::shared_ptr<Transform> transform;
 
 	std::unordered_map<std::string, std::shared_ptr<LuaScript>> scripts;
 	std::unordered_map<std::string, std::shared_ptr<Button>> buttons;
+	std::unordered_map<std::string, ComponentView> components;
 
 	std::vector<std::shared_ptr<GameObject>> children;
 
@@ -73,6 +107,7 @@ protected:
 	static size_t counter;
 	std::shared_ptr<Sprite> sprite;
 private:
-	
+
 	GameObject(size_t ID);
 };
+#endif // !GAMEOBJECT

@@ -26,11 +26,11 @@ public:
 
 	void LoadScript(std::shared_ptr<sol::state> L);
 
-	void Awake() const;
-	void Start() const;
-	void Update() const;
-	void FixedUpdate() const;
-	void LastUpdate()const;
+	void Awake();
+	void Start();
+	void Update();
+	void FixedUpdate();
+	void LastUpdate();
 
 	std::string m_path;
 private:

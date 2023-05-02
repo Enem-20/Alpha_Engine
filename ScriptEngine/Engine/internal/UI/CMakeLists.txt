@@ -9,6 +9,8 @@ target_sources(UI INTERFACE
 	src/Button.cpp
 )
 
+target_compile_features(UI INTERFACE cxx_std_20)
+
 #add_Subdirectory(external/glfw)
 #add_subdirectory(external/VulkanHpp)
 #

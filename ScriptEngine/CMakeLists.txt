@@ -11,6 +11,8 @@ add_library(${PROJECT_NAME} SHARED
 			src/ClassRegistrator.cpp
 			src/API/ExportProperty.h
 			)
+target_compile_features(ScriptEngine PRIVATE cxx_std_20)
+
 
 add_subdirectory(Engine/)
 

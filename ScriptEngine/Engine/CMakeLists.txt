@@ -45,15 +45,73 @@ set(Renderer
 	src/Renderer/VertexBufferLayout.cpp
 	src/Renderer/Renderer.h
 	src/Renderer/Renderer.cpp
+	
+	#internal/Renderer/src/Renderer.h
+	#internal/Renderer/src/Renderer.cpp
+	#internal/Renderer/src/Texture2D.h
+	#internal/Renderer/src/Texture2D.cpp
+	#internal/Renderer/src/Window.h
+	#internal/Renderer/src/Window.cpp
+	#internal/Renderer/src/WindowManager.h
+	#internal/Renderer/src/WindowManager.cpp
+	#
+	#internal/Renderer/src/Vulkan/CommandBuffer.h
+	#internal/Renderer/src/Vulkan/CommandBuffer.cpp
+	#internal/Renderer/src/Vulkan/CommandPool.h
+	#internal/Renderer/src/Vulkan/CommandPool.cpp
+	#internal/Renderer/src/Vulkan/DebugMessenger.h
+	#internal/Renderer/src/Vulkan/DebugMessenger.cpp
+	#internal/Renderer/src/Vulkan/DescriptionSets.h
+	#internal/Renderer/src/Vulkan/DescriptionSets.cpp
+	#internal/Renderer/src/Vulkan/DescriptorPool.h
+	#internal/Renderer/src/Vulkan/DescriptorPool.cpp
+	#internal/Renderer/src/Vulkan/DescriptorSetLayout.h
+	#internal/Renderer/src/Vulkan/DescriptorSetLayout.cpp
+	#internal/Renderer/src/Vulkan/GeneralVulkanStorage.h
+	#internal/Renderer/src/Vulkan/GeneralVulkanStorage.cpp
+	#internal/Renderer/src/Vulkan/ImageView.h
+	#internal/Renderer/src/Vulkan/ImageView.cpp
+	#internal/Renderer/src/Vulkan/IndexBuffer.h
+	#internal/Renderer/src/Vulkan/IndexBuffer.cpp
+	#internal/Renderer/src/Vulkan/Instance.h
+	#internal/Renderer/src/Vulkan/Instance.cpp
+	#internal/Renderer/src/Vulkan/LogicalDevice.h
+	#internal/Renderer/src/Vulkan/LogicalDevice.cpp
+	#internal/Renderer/src/Vulkan/PhysicalDevice.h
+	#internal/Renderer/src/Vulkan/PhysicalDevice.cpp
+	#internal/Renderer/src/Vulkan/RenderPipeline.h
+	#internal/Renderer/src/Vulkan/RenderPipeline.cpp
+	#internal/Renderer/src/Vulkan/SingleTimeBuffer.h
+	#internal/Renderer/src/Vulkan/SingleTimeBuffer.cpp
+	#internal/Renderer/src/Vulkan/SwapChain.h
+	#internal/Renderer/src/Vulkan/SwapChain.cpp
+	#internal/Renderer/src/Vulkan/SyncObjects.h
+	#internal/Renderer/src/Vulkan/SyncObjects.cpp
+	#internal/Renderer/src/Vulkan/UniformBuffer.h
+	#internal/Renderer/src/Vulkan/UniformBuffer.cpp
+	#internal/Renderer/src/Vulkan/Vertex.h
+	#internal/Renderer/src/Vulkan/Vertex.cpp
+	#internal/Renderer/src/Vulkan/VertexBuffer.h
+	#internal/Renderer/src/Vulkan/VertexBuffer.cpp
+	#internal/Renderer/src/Vulkan/WindowSurface.h
+	#internal/Renderer/src/Vulkan/WindowSurface.cpp
+	
 )
 
 set(Components
-	src/Components/Component.h
-	src/Components/Component.cpp
-	src/Components/LuaScript.h
-	src/Components/LuaScript.cpp
-	src/Components/Transform.h
-	src/Components/Transform.cpp
+	internal/ComponentSystem/src/Component.h
+	internal/ComponentSystem/src/Component.cpp
+	internal/ComponentSystem/src/LuaScript.h
+	internal/ComponentSystem/src/LuaScript.cpp
+	internal/ComponentSystem/src/Transform.h
+	internal/ComponentSystem/src/Transform.cpp
+	#src/Components/Component.h
+	#src/Components/Component.cpp
+	#src/Components/LuaScript.h
+	#src/Components/LuaScript.cpp
+	#src/Components/Transform.h
+	#src/Components/Transform.cpp
+
 	# src/Components/Vision.h
 	# src/Components/Vision.cpp
 )
@@ -111,7 +169,8 @@ set(Logging
 )
 
 #add_compile_definitions(LOG_INFO LOG_ERR)
-add_compile_definitions(ENGINE_EXPORTS GLFW_INCLUDE_VULKAN)
+add_compile_definitions(ENGINE_EXPORTS)
+
 #add_compile_definitions(NLOG_FULL NLOG_NOERR NLOG_ONLYERRS NLOG_INFO NLOG_CRIT NLOG_ERR NLOG_WARN NLOG_DBG)
 
 add_library(${PROJECT_NAME} SHARED
@@ -141,6 +200,8 @@ source_group("GLPref" 			FILES ${GLPref})
 source_group("Helpers" 			FILES ${Helpers})
 source_group("Logging" 			FILES ${Logging})
 
+target_compile_definitions(Engine PRIVATE GLFW_INCLUDE_VULKAN)
+#target_compile_definitions(Engine PRIVATE OGL)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 #target_precompile_headers(${PROJECT_NAME} PRIVATE 
 #	src/Components/Components.pch
@@ -177,9 +238,10 @@ endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC
  p7
  )
- 
+
+target_link_libraries(Engine PRIVATE Renderer)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE 
-Renderer
 UI
 ComponentSystem
 lua_static 

@@ -2,17 +2,25 @@
 
 #include "../ExportPropety.h"
 
+#include "../../internal/Renderer/src/Renderer.h"
 //#include <string>
-#include <memory>
-#include <unordered_map>
-#include <map>
+#include "../../internal/ComponentSystem/src/Component.h"
+
+
 
 #include <functional>
 #include <sol/sol.hpp>
 
 #include <rapidjson/document.h>
 
+#include <memory>
+#include <unordered_map>
+#include <map>
 
+class SwapChain;
+class PhysicalDevice;
+class LogicalDevice;
+class CommandPool;
 
 class ShaderProgram;
 class Texture2D;
@@ -50,7 +58,12 @@ public:
 	static std::shared_ptr<ShaderProgram> loadShaders(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
 	static std::shared_ptr<ShaderProgram> getShaderProgram(const std::string& shaderName);
 	
+#ifdef OGL
 	static std::shared_ptr<Texture2D> loadTexture(const std::string& textureName, const std::string& texturePath);
+#elif GLFW_INCLUDE_VULKAN
+	static std::shared_ptr<Texture2D> loadTexture(const std::string& textureName, const std::string& texturePath);
+#endif
+
 	static std::shared_ptr<Texture2D> getTexture(const std::string& textureName);
 
 	static std::shared_ptr<Sprite> loadSprite(const std::string& spriteName,
@@ -89,7 +102,7 @@ public:
 	static bool loadJSONTextureAtlasses(const std::string& relativePath);
 	static bool loadJSONTextures(const std::string& relativePath);
 	static bool loadJSONShaders(const std::string& relativePath);
-	static m_Components loadJSONComponents(const rapidjson::Value& it);
+	static std::unordered_map<std::string, ComponentView> loadJSONComponents(const rapidjson::Value& it);
 
 	static std::string GetPath();
 private:
@@ -99,7 +112,7 @@ private:
 	typedef std::map<const std::string, std::shared_ptr<ShaderProgram>> ShaderProgramsMap;
 	static ShaderProgramsMap m_shaderPrograms;
 
-	typedef std::map<const std::string, std::shared_ptr<Texture2D>> TexturesMap;
+	typedef std::map<std::string, std::shared_ptr<Texture2D>> TexturesMap;
 	static TexturesMap m_textures;
 
 	typedef std::map<const std::string, std::shared_ptr<Sprite>> SpritesMap;
@@ -116,5 +129,7 @@ private:
 	static std::string relative_main;
 	static std::shared_ptr<std::pair<const std::string, std::function<void(const std::string)>>> loader;
 
-	
+#ifdef GLFW_INCLUDE_VULKAN
+	static Renderer renderer;
+#endif
 };
