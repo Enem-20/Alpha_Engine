@@ -22,3 +22,6 @@
 [submodule "ScriptEngine/Engine/external/VulkanHpp"]
 	path = ScriptEngine/Engine/external/VulkanHpp
 	url = https://github.com/KhronosGroup/Vulkan-Hpp.git
+[submodule "ScriptEngine/Engine/internal/Renderer"]
+	path = ScriptEngine/Engine/internal/Renderer
+	url = https://github.com/Enem-20/Renderer.git
