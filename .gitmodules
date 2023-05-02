@@ -16,6 +16,9 @@
 [submodule "ScriptEngine/Engine/external/Lua"]
 	path = ScriptEngine/Engine/external/Lua
 	url = https://github.com/walterschell/Lua.git
+[submodule "ScriptEngine/external/Lua"]
+	path = ScriptEngine/external/Lua
+	url = https://github.com/walterschell/Lua.git
 [submodule "ScriptEngine/Engine/external/imguiLibrary/imgui"]
 	path = ScriptEngine/Engine/external/imguiLibrary/imgui
 	url = https://github.com/ocornut/imgui.git
