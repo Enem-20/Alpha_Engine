@@ -1,5 +1,7 @@
 #pragma once
 
+#ifndef SHADERPROGRAM
+#define SHADERPROGRAM
 #include "../ExportPropety.h"
 
 #include <glm/mat4x4.hpp>
@@ -31,3 +33,4 @@ private:
 	bool m_isCompiled = false;
 	GLuint m_ID = 0;
 };
+#endif // !SHADERPROGRAM

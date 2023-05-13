@@ -2,7 +2,9 @@
 
 #include <vector>
 
+#ifdef OGL
 #include <glad/glad.h>
+#endif
 
 
 struct VertexBufferLayoutElement

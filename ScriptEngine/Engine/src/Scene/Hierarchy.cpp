@@ -1,10 +1,10 @@
 #include "Hierarchy.h"
 
 #include "../GameTypes/GameObject.h"
-#include "../UI/WindowManager.h"
+#include "../../internal/Renderer/src/WindowManager.h"
 #include "../Input/Input.h"
-#include "../UI/Window.h"
-#include "../Components/Transform.h"
+#include "../../internal/Renderer/src/Window.h"
+#include "../../internal/ComponentSystem/src/Transform.h"
 
 std::queue<std::pair<std::string, std::function<void(const std::string&)>>>Hierarchy::qEventObjectsControl;
 std::unordered_map<glm::ivec2, std::string, IVector2Hash> Hierarchy::GridObjectsPos;
@@ -36,10 +36,10 @@ void Hierarchy::removeObjectReal(const std::string& name)
 	{
 		obj->second->buttons.clear();
 		WindowManager::CurrentWindow->RemoveUI(name);
-		auto cellObj = GridObjectsPos.find(Input::GetCell(obj->second->transform->position));
-		if((cellObj != GridObjectsPos.end()) && (cellObj->second == name))
-			GridObjectsPos.erase(Input::GetCell(obj->second->transform->position));
-		SceneObjects.erase(name);
+		//auto cellObj = GridObjectsPos.find(Input::GetCell(obj->second->transform->position));
+		//if((cellObj != GridObjectsPos.end()) && (cellObj->second == name))
+		//	GridObjectsPos.erase(Input::GetCell(obj->second->transform->position));
+		//SceneObjects.erase(name);
 		
 	}
 }
@@ -71,16 +71,16 @@ std::shared_ptr<GameObject> Hierarchy::getObject(const std::string& name)
 	return nullptr;
 }
 
-GameObject& Hierarchy::getOriginalObject(std::string name)
-{
-	auto objpair = SceneObjects.find(name);
-	if (objpair != SceneObjects.end())
-	{
-		return *objpair->second;
-	}
-
-	return GameObject::Null;
-}
+//GameObject& Hierarchy::getOriginalObject(std::string name)
+//{
+//	auto objpair = SceneObjects.find(name);
+//	if (objpair != SceneObjects.end())
+//	{
+//		return *objpair->second;
+//	}
+//
+//	return GameObject::Null;
+//}
 
 void Hierarchy::ExecuteEvent()
 {
@@ -94,9 +94,13 @@ void Hierarchy::ExecuteEvent()
 void Hierarchy::addGridObject(const std::string& objName)
 {
 	auto obj = getObject(objName);
-	glm::ivec2 cell = Input::GetCell(obj->transform->position);
+	//glm::ivec2 cell = Input::GetCell(obj->transform->position);
+
+
 	//GridObjectsPos.erase(cell);
-	GridObjectsPos[cell] = objName;
+
+
+	//GridObjectsPos[cell] = objName;
 }
 
 void Hierarchy::removeGridObject(const glm::ivec2& cell)

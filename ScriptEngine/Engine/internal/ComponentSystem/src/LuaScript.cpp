@@ -1,6 +1,6 @@
 #include "LuaScript.h"
-#include "../Resources/ResourceManager.h"
 
+#include "../../../../src/Resources/ResourceManager.h"
 
 LuaScript::LuaScript(sol::protected_function& Awake, sol::protected_function& Start, sol::protected_function& Update, sol::protected_function& FixedUpdate, sol::protected_function& LastUpdate)
 	: m_Awake(Awake)
@@ -8,9 +8,12 @@ LuaScript::LuaScript(sol::protected_function& Awake, sol::protected_function& St
 	, m_Update(Update)
 	, m_FixedUpdate(FixedUpdate)
 	, m_LastUpdate(LastUpdate)
+	/*, Component(*this)*/
+	, Script(*this)
 {}
 LuaScript::LuaScript(std::string name, std::string path, std::shared_ptr<sol::state> L, std::shared_ptr<GameObject> gameObject)
 	: Component(name, gameObject)
+	, Script(*this)
 	, m_path(path)
 {
 	LoadScript(L);
@@ -23,6 +26,8 @@ LuaScript::LuaScript(LuaScript&& script) noexcept
 	, m_Update(std::move(script.m_Update))
 	, m_FixedUpdate(std::move(script.m_FixedUpdate))
 	, m_LastUpdate(std::move(script.m_LastUpdate))
+	, Component(std::move(script.name), std::move(script.gameObject.lock()))
+	, Script(std::move(static_cast<Script>(script)))
 {}
 LuaScript::LuaScript(const LuaScript& script)
 	: m_path(script.m_path)
@@ -31,6 +36,8 @@ LuaScript::LuaScript(const LuaScript& script)
 	, m_Update(script.m_Update)
 	, m_FixedUpdate(script.m_FixedUpdate)
 	, m_LastUpdate(script.m_LastUpdate)
+	, Component(script.name, script.gameObject.lock())
+	, Script(static_cast<Script>(script))
 {}
 
 void LuaScript::SetAwake(const sol::protected_function& Awake)
@@ -74,8 +81,8 @@ void LuaScript::LoadScript(std::shared_ptr<sol::state> L)
 	(*L)["LastUpdate"] = nullptr;
 }
 
-void LuaScript::Awake() const { m_Awake(); }
-void LuaScript::Start() const { m_Start(); }
-void LuaScript::Update() const { m_Update(); }
-void LuaScript::FixedUpdate() const { m_FixedUpdate(); }
-void LuaScript::LastUpdate()const { m_LastUpdate(); }
+void LuaScript::Awake() { m_Awake(); }
+void LuaScript::Start() { m_Start(); }
+void LuaScript::Update() { m_Update(); }
+void LuaScript::FixedUpdate() { m_FixedUpdate(); }
+void LuaScript::LastUpdate() { m_LastUpdate(); }

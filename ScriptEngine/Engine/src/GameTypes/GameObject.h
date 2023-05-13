@@ -1,9 +1,13 @@
 #pragma once
 
 #ifndef GAMEOBJECT
+#define GAMEOBJECT
+
 #include "../ExportPropety.h"
 
+#include "../Resources/ResourceManager.h"
 #include "../../internal/ComponentSystem/src/Component.h"
+#include "../Resources/ResourceBase.h"
 
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
@@ -13,20 +17,22 @@
 #include <vector>
 #include <unordered_map>
 #include <typeinfo>
+#include <string>
+#include <memory>
 
 class Transform;
 class LuaScript;
 class Sprite;
 class Button;
 
-class DLLEXPORT GameObject
+class DLLEXPORT GameObject : public ResourceBase
 {
 	friend class Serializer;
 	friend class DeserializerObject;
 public:
 	static GameObject& toNull(GameObject& gameObject);
-	static GameObject SetNull();
-	static GameObject Null;
+	//static GameObject SetNull();
+	//static GameObject Null;
 public:
 	GameObject(const GameObject& gameObject);
 	//GameObject(GameObject&&) = default;
@@ -68,9 +74,10 @@ public:
 	virtual std::shared_ptr<Sprite> GetSprite() const;
 
 	template<class T>
-	void addComponent(const std::string& name, T* component) {
+	void addComponent(const std::string& name, std::shared_ptr<T> component) {
 		static_assert(std::is_base_of<Component, T>::value || std::is_same<Component, T>::value, "T must inherit from Component or be a Component");
-		components.emplace(name, ComponentView{reinterpret_cast<void*>(component)});
+		component->gameObject = ResourceManager::getResource<GameObject>(this->name);
+		components.emplace(name, ComponentView{std::reinterpret_pointer_cast<void>(component)});
 	}
 
 	void removeComponent(const std::string& name) {
@@ -81,7 +88,7 @@ public:
 	}
 
 	template<class T>
-	T* getComponent(const std::string& name) {
+	std::shared_ptr<T> getComponent(const std::string& name) {
 		static_assert(std::is_base_of<Component, T>::value || std::is_same<Component, T>::value, "T must inherit from Component or be a Component");
 		auto component = components.find(name);
 		
@@ -100,9 +107,10 @@ public:
 	std::vector<std::shared_ptr<GameObject>> children;
 
 	size_t ID;
-	std::string name;
 	int render_priority;
 	bool onGrid;
+
+	inline static const std::string type = GETTYPE(GameObject);
 protected:
 	static size_t counter;
 	std::shared_ptr<Sprite> sprite;

@@ -1,12 +1,13 @@
 #include "Input.h"
-#include "../Renderer/Renderer.h"
-#include "../UI/WindowManager.h"
+#include "../../internal/Renderer/src/Renderer.h"
+#include "../../internal/Renderer/src/WindowManager.h"
 #include "../Scene/Hierarchy.h"
 
-#include "../UI/Window.h"
+#include "../../internal/Renderer/src/Window.h"
 
 #include <GLFW/glfw3.h>
 
+#ifdef OGL
 std::list<sol::function> Input::OnClicks;
 
 void Input::glfwMouseCallBack(GLFWwindow* window, int button, int action, int mods)
@@ -107,3 +108,5 @@ glm::ivec2 Input::GetCell(const glm::vec2& objPos)
 	}
 	return res;
 }
+
+#endif

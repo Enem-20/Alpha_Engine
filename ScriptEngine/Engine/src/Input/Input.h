@@ -2,7 +2,7 @@
 
 #include "../ExportPropety.h"
 
-#define OGL
+//#define OGL
 
 #include <list>
 

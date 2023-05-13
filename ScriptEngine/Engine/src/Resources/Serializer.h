@@ -1,14 +1,10 @@
 #pragma once
 
-#include "../GameTypes/GameObject.h"
-#include "../Renderer/Sprite.h"
-#include "../Renderer/Texture2D.h"
-#include "../Scene/Scene.h"
-
 #include <rapidjson/prettywriter.h>
 
 #include <memory>
 #include <vector>
+#include <string>
 //#include <fstream>
 #include <unordered_map>
 
@@ -20,6 +16,13 @@
 
 typedef rapidjson::PrettyWriter<rapidjson::StringBuffer> prettywriter;
 typedef rapidjson::Reader reader;
+
+class Button;
+class LuaScript;
+class GameObject;
+class Sprite;
+class Texture2D;
+class ShaderProgram;
 
 class Serializer
 {

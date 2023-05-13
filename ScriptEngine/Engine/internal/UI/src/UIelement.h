@@ -10,13 +10,14 @@
 
 #include <list>
 #include <memory>
+#include <string>
 
 class GameObject;
 
 class UIelement : public Component
 {
 public:
-	UIelement(const std::string& name = "", std::shared_ptr<GameObject> gameObject = nullptr);
+	UIelement(const std::string& name, std::shared_ptr<GameObject> gameObject);
 	UIelement(const UIelement& uiElement);
 	UIelement(UIelement&& uiElement) noexcept;
 
@@ -35,35 +36,4 @@ protected:
 	std::list<sol::protected_function> elements;
 	static size_t ID;
 };
-
-size_t UIelement::ID = 0;
-
-UIelement::UIelement(const std::string& name, std::shared_ptr<GameObject> gameObject) 
-	: Component(name, gameObject)
-{}
-
-UIelement::UIelement(UIelement&& uiElement) noexcept
-{
-	++ID;
-}
-
-UIelement::UIelement(const UIelement& uiElement)
-	: elements(uiElement.elements)
-{
-	++ID;
-}
-
-void UIelement::AddListener(const sol::protected_function& func)
-{
-	elements.push_back(func);
-}
-
-void UIelement::executeOnClicks()
-{
-	for (auto it : elements)
-	{
-		it();
-	}
-}
-
 #endif //UIELEMENT

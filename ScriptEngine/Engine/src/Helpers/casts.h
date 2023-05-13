@@ -6,7 +6,7 @@
 #include <glm/vec3.hpp>
 #include <string>
 
-#include "../Renderer/Renderer.h"
+#include "../../internal/Renderer/src/Renderer.h"
 
 
 class DLLEXPORT Casts

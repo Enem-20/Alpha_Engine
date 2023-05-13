@@ -117,6 +117,8 @@ set(Components
 )
 
 set(Resources
+	src/Resources/ResourceBase.h
+	src/Resources/ResourceBase.cpp
 	src/Resources/ResourceManager.h
 	src/Resources/ResourceManager.cpp
 	src/Resources/stb_image.h
@@ -128,6 +130,7 @@ set(Other
 	src/Timer.h
 	src/Timer.cpp
 	src/ExportPropety.h
+	src/main.cpp
 )
 
 set(Scene
@@ -173,30 +176,30 @@ add_compile_definitions(ENGINE_EXPORTS)
 
 #add_compile_definitions(NLOG_FULL NLOG_NOERR NLOG_ONLYERRS NLOG_INFO NLOG_CRIT NLOG_ERR NLOG_WARN NLOG_DBG)
 
-add_library(${PROJECT_NAME} SHARED
+add_executable(${PROJECT_NAME} #SHARED
 	${Other}
 	${UI}
-	${Renderer}
+	#${Renderer}
 	${Resources}
 	${Scene}
 	${GameTypes}
 	${Physycs}
 	${Input}	
-	${Components}
-	${GLPref}
+	#${Components}
+	#${GLPref}
 	${Helpers}
 	${Logging}
 	)
 source_group("Other" 	  		FILES ${Other})
 source_group("UI" 		  		FILES ${UI})
-source_group("Renderer"   		FILES ${Renderer})
+#source_group("Renderer"   		FILES ${Renderer})
 source_group("Resources" 		FILES ${Resources})
 source_group("Scene" 			FILES ${Scene})
 source_group("GameTypes" 		FILES ${GameTypes})
 source_group("Physycs" 			FILES ${Physycs})
 source_group("Input" 	  		FILES ${Input})
-source_group("Components" 		FILES ${Components})
-source_group("GLPref" 			FILES ${GLPref})
+#source_group("Components" 		FILES ${Components})
+#source_group("GLPref" 			FILES ${GLPref})
 source_group("Helpers" 			FILES ${Helpers})
 source_group("Logging" 			FILES ${Logging})
 

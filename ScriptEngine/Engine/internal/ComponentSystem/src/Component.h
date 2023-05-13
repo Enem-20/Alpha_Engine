@@ -3,16 +3,18 @@
 #ifndef COMPONENT
 #define COMPONENT
 
+#include "../../src/Resources/ResourceBase.h"
+
 #include <string>
 #include <memory>
 
 class GameObject;
 
-class Component
+class Component : public ResourceBase
 {
 public:
 	Component(const std::string& name = "", const std::shared_ptr<GameObject>& gameObject = nullptr);
-	Component(std::string&& name, GameObject&& gameObject) noexcept;
+	Component(std::string&& name, std::shared_ptr<GameObject>&& gameObject) noexcept;
 	Component(Component&& component) noexcept;
 	Component(const Component& component);
 
@@ -28,54 +30,19 @@ public:
 	//	: name(name)
 	//	, gameObject(gameObject)
 	//{}
-	GameObject& GetGameObject() const;
-	std::shared_ptr<GameObject> gameObject;
-	std::string name;
-};
-
-Component::Component(const std::string& name, const std::shared_ptr<GameObject>& gameObject)
-	: name(name)
-	, gameObject(gameObject)
-{
-	if (gameObject == nullptr) {
-		//Paste hierarchy search here
-	}
-}
-
-Component::Component(std::string&& name, GameObject&& gameObject) noexcept
-	: name(std::move(name))
-	, gameObject(&gameObject)
-{}
-
-Component::Component(Component&& component) noexcept
-	: name(std::move(component.name))
-	, gameObject(component.gameObject)
-{}
-
-Component::Component(const Component& component)
-	: name(component.name)
-	, gameObject(component.gameObject)
-{}
-
-Component::~Component()
-{
-	gameObject = nullptr;
-}
-
-GameObject& Component::GetGameObject() const
-{
-	return *gameObject;
-}
-
-struct ComponentView {
-	ComponentView(void* Data) : Data(Data) {}
-	~ComponentView() { delete Data; }
-	template<class ComponentType>
-	ComponentType* getComponentFromView() {
-		return reinterpret_cast<ComponentType*>(Data);
-	}
-	std::string type;
-private:
-	void* Data;
+	std::shared_ptr<GameObject> GetGameObject() const;
+	std::weak_ptr<GameObject> gameObject;
 };
 #endif //COMPONENT
+
+
+struct ComponentView {
+	ComponentView(std::shared_ptr<void> Data) : Data(Data) {}
+	~ComponentView() { Data = nullptr; }
+	template<class ComponentType>
+	std::shared_ptr<ComponentType> getComponentFromView() {
+		return std::reinterpret_pointer_cast<ComponentType>(Data);
+	}
+private:
+	std::shared_ptr<void> Data;
+};

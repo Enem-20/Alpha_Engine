@@ -1,10 +1,20 @@
 #include "Serializer.h"
-#include "../Components/Transform.h"
-#include "../Components/LuaScript.h"
+
+#include "../Scene/Scene.h"
+#include "../Scene/Hierarchy.h"
+
+#include "../GameTypes/GameObject.h"
+
+#include "../../internal/Renderer/src/Sprite.h"
+#include "../../internal/Renderer/src/Texture2D.h"
+
+
+#include "../../internal/ComponentSystem/src/Transform.h"
+#include "../../internal/ComponentSystem/src/LuaScript.h"
 
 #include <fstream>
 
-#include "../Scene/Hierarchy.h"
+
 
 void Serializer::Serialize(std::unordered_map<std::string, std::shared_ptr<GameObject>>& objects, prettywriter* writer)
 {
@@ -121,7 +131,7 @@ const rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<Sprite> spr
 	Serialize(sprite->m_position, writer, "m_position");
 	Serialize(sprite->m_size, writer, "m_size");
 	writer->Key("RenderMode");
-	writer->Int(sprite->GetRenderMode());
+	//writer->Int(sprite->GetRenderMode());
 	writer->EndObject();
 
 	return sb;

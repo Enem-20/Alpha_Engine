@@ -39,7 +39,7 @@ public:
 	//static void addObj(const std::string& name);
 	static void removeObject(const std::string& name);
 	static std::shared_ptr<GameObject> getObject(const std::string& name);
-	static GameObject& getOriginalObject(std::string name);
+	//static GameObject& getOriginalObject(std::string name);
 	static void ExecuteEvent();
 	static void Clear();
 

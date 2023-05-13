@@ -28,7 +28,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
 add_compile_definitions(SCRIPT_ENGINE_EXPORTS)
 target_link_libraries(${PROJECT_NAME} PRIVATE
  Engine
- glad glfw
+ glad
+ glfw
  PUBLIC
  lua_static
  )

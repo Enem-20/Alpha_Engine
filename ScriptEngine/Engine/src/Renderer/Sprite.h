@@ -5,11 +5,17 @@
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 
-#include <memory>
-#include <string>
+#ifdef OGL
 #include <glad/glad.h>
+#endif
+
 #include <glm/mat4x4.hpp>
 #include <glm/vec2.hpp>
+
+#include <memory>
+#include <string>
+
+
 
 class Serializer;
 class DeserializerSprite;

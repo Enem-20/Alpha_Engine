@@ -57,8 +57,8 @@ void ScriptProcessor::FirstFrame()
 
 void ScriptProcessor::init(char** argv)
 {
-	Instance instance;
-	auto dbgMsg = DebugMessanger::getDbgMsgInstance();
+	/*Instance instance;
+	auto dbgMsg = DebugMessanger::getDbgMsgInstance();*/
 
 	GeneralTimer() = std::make_shared<Timer>();
 	L->open_libraries(sol::lib::base);
