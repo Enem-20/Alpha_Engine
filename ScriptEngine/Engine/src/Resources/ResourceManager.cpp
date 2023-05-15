@@ -7,6 +7,7 @@
 #include "../GameTypes/GameObject.h"
 
 #include "../../internal/Renderer/src/Renderer.h"
+#include "Mesh.h"
 
 
 //#include "../Renderer/AnimatedSprite.h"
@@ -15,7 +16,8 @@
 #include "../../internal/ComponentSystem/src/Transform.h"
 #include "../../internal/ComponentSystem/src/LuaScript.h"
 
-
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tinyobjloader/tiny_obj_loader.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -355,6 +357,54 @@ rapidjson::Document ResourceManager::documentParse(const std::string& relativePa
 	}
 
 	return d;
+}
+
+std::shared_ptr<Mesh> ResourceManager::loadMesh(const std::string& name, const std::string& relativePath) {
+	std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+	std::vector<Vertex> vertices;
+	std::vector<uint32_t> indices;
+	
+	tinyobj::attrib_t attrib;
+	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::material_t> materials;
+	std::string warn, err;
+
+	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, (m_path + '/' + relativePath).c_str())) {
+		throw std::runtime_error(warn + err);
+	}
+
+	for (const auto& shape : shapes) {
+		for (const auto& index : shape.mesh.indices) {
+			Vertex vertex{};
+			vertex.pos = {
+				attrib.vertices[3 * index.vertex_index + 0],
+				attrib.vertices[3 * index.vertex_index + 1],
+				attrib.vertices[3 * index.vertex_index + 2]
+			};
+
+			vertex.texCoord = {
+				attrib.texcoords[2 * index.texcoord_index + 0],
+				1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
+			};
+
+			vertex.color = { 1.0f, 1.0f, 1.0f };
+			//vertices.push_back(vertex);
+
+			if (uniqueVertices.count(vertex) == 0) {
+				uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+				vertices.push_back(vertex);
+			}
+			indices.push_back(uniqueVertices[vertex]);
+		}
+	}
+
+	vertices.clear();
+	vertices.push_back(Vertex{ {-0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f} });
+	vertices.push_back(Vertex{ {0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f} });
+	vertices.push_back(Vertex{ {0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f} });
+	vertices.push_back(Vertex{ {-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f} });
+
+	return makeResource<Mesh>(std::move(name), std::move(vertices), std::move(indices));
 }
 
 bool ResourceManager::loadJSONScene(const std::string& relativePath)

@@ -28,3 +28,6 @@
 [submodule "ScriptEngine/Engine/internal/Renderer"]
 	path = ScriptEngine/Engine/internal/Renderer
 	url = https://github.com/Enem-20/Renderer.git
+[submodule "ScriptEngine/Engine/external/tinyobjloader"]
+	path = ScriptEngine/Engine/external/tinyobjloader
+	url = https://github.com/tinyobjloader/tinyobjloader.git

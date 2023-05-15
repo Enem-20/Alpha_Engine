@@ -43,6 +43,7 @@
 #include <utility>
 
 class Renderer;
+class Mesh;
 
 
 class Resource {
@@ -119,6 +120,7 @@ public:
 
 	static rapidjson::Document documentParse(const std::string& relativePath);
 
+	static std::shared_ptr<Mesh> loadMesh(const std::string& name, const std::string& relativePath);
 	static bool loadJSONScene(const std::string& relativePath);
 	static bool loadSave(const std::string relativePath);
 	static void loadSaveReal(const std::string& relativePath);

@@ -124,6 +124,8 @@ set(Resources
 	src/Resources/stb_image.h
 	src/Resources/Serializer.h
 	src/Resources/Serializer.cpp
+	src/Resources/Mesh.h
+	src/Resources/Mesh.cpp
 )
 
 set(Other
