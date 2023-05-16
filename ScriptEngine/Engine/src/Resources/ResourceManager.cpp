@@ -199,7 +199,7 @@ std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textu
 
 	auto texture = makeResource<Texture2D>(textureName, width, height, channels, pixels, *getResource<SwapChain>("TestSwapChain"), *getResource<PhysicalDevice>("TestPhysicalDevice"), *getResource<LogicalDevice>("TestLogicalDevice"), *getResource<CommandPool>("TestCommandPool"));
 	//m_textures.emplace(textureName, newTexture);
-
+	
 	stbi_image_free(pixels);
 	return texture;
 }
@@ -248,9 +248,9 @@ std::shared_ptr<Sprite> ResourceManager::loadSprite(const std::string& spriteNam
 		(Texture, subTextureName, Shader,
 			glm::vec2(0.f, 0.f), glm::vec3(1.f), glm::vec2(spriteWidth, spriteHeight), RenderMode)).first->second;*/
 
-	
+
 	return makeResource<Sprite>(spriteName, std::shared_ptr<GameObject>(nullptr), Texture, subTextureName, Shader,
-		glm::vec2(0.f, 0.f), glm::vec3(1.f), glm::vec2(spriteWidth, spriteHeight));
+		getResource<Mesh>("SpriteMesh"), glm::vec3(0.f, 0.f, 1.0f), glm::vec3(1.f), glm::vec2(spriteWidth, spriteHeight));
 }
 //std::shared_ptr<Sprite> ResourceManager::getSprite(const std::string& spriteName)
 //{
@@ -335,7 +335,7 @@ std::shared_ptr<Texture2D> ResourceManager::loadTextureAtlas(std::string texture
 			}
 		}
 	}
-
+	
 	return Texture;
 }
 
@@ -363,7 +363,7 @@ std::shared_ptr<Mesh> ResourceManager::loadMesh(const std::string& name, const s
 	std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 	std::vector<Vertex> vertices;
 	std::vector<uint32_t> indices;
-	
+
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
@@ -397,14 +397,13 @@ std::shared_ptr<Mesh> ResourceManager::loadMesh(const std::string& name, const s
 			indices.push_back(uniqueVertices[vertex]);
 		}
 	}
+	//vertices.clear();
+	//vertices.push_back(Vertex{ {-1.0f, -1.0f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f} });
+	//vertices.push_back(Vertex{ {1.0f, -1.0f, 0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f} });
+	//vertices.push_back(Vertex{ {1.0f, 1.0f, 0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f} });
+	//vertices.push_back(Vertex{ {-1.0f, 1.0f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f} });
 
-	vertices.clear();
-	vertices.push_back(Vertex{ {-0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f} });
-	vertices.push_back(Vertex{ {0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f} });
-	vertices.push_back(Vertex{ {0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f} });
-	vertices.push_back(Vertex{ {-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f} });
-
-	return makeResource<Mesh>(std::move(name), std::move(vertices), std::move(indices));
+	return makeResource<Mesh>(name, std::move(vertices), std::move(indices));
 }
 
 bool ResourceManager::loadJSONScene(const std::string& relativePath)
@@ -451,7 +450,7 @@ void ResourceManager::loadExecute()
 }
 
 [[nodiscard]]
-bool ResourceManager::loadJSONGameOjects(const std::string& relativePath) 
+bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 {
 	rapidjson::Document d = documentParse(relativePath);
 
@@ -547,9 +546,9 @@ bool ResourceManager::loadJSONSprites(const std::string& relativePath)
 			glm::vec2(it->FindMember("spriteWidth")->value.GetInt(),
 				it->FindMember("spriteHeight")->value.GetInt());
 		const std::string subTextureName = it->FindMember("subTextureName")->value.GetString();
-		
+
 #ifdef OGL
-int RenderMode = it->FindMember("RenderMode")->value.GetInt();
+		int RenderMode = it->FindMember("RenderMode")->value.GetInt();
 
 		switch (RenderMode)
 		{
@@ -570,7 +569,7 @@ int RenderMode = it->FindMember("RenderMode")->value.GetInt();
 		int RenderMode = 0;
 #endif
 
-		
+
 
 		loadSprite(spriteName, textureName, shaderName, static_cast<uint32_t>(spriteSize.x), static_cast<uint32_t>(spriteSize.y), RenderMode, subTextureName);
 

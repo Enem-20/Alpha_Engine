@@ -205,7 +205,7 @@ source_group("Input" 	  		FILES ${Input})
 source_group("Helpers" 			FILES ${Helpers})
 source_group("Logging" 			FILES ${Logging})
 
-target_compile_definitions(Engine PRIVATE GLFW_INCLUDE_VULKAN)
+target_compile_definitions(Engine PRIVATE GLFW_INCLUDE_VULKAN  GLM_FORCE_DEPTH_ZERO_TO_ONE GLM_FORCE_RADIANS)
 #target_compile_definitions(Engine PRIVATE OGL)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 #target_precompile_headers(${PROJECT_NAME} PRIVATE 

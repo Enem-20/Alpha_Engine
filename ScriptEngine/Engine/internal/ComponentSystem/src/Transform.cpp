@@ -8,7 +8,9 @@ Transform::Transform(std::string name, std::shared_ptr<GameObject> gameObject)
 	, scale(glm::vec3(1.f))
 	, model(glm::mat4(1.f))
 	, Component(name, gameObject)
-{}
+{
+	transform();
+}
 Transform::Transform(Transform&& transform) noexcept
 	: position(std::move(transform.position))
 	, rotation(std::move(transform.rotation))
@@ -57,7 +59,7 @@ void Transform::Rotate(const glm::vec3& rotation)
 
 void Transform::Scale(const glm::vec3& scale)
 {
-	this->scale += scale;
+	this->scale = scale;
 
 	transform();
 }

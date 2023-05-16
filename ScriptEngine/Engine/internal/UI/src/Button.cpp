@@ -38,11 +38,8 @@ void Button::Start()
 
 void Button::Update()
 {
-	if (ImGui::Begin(name.c_str()))
-		if (ImGui::Button(name.c_str()))
+	if (ImGui::Button(name.c_str()))
 			executeOnClicks();
-
-	ImGui::End();
 }
 
 void Button::FixedUpdate()

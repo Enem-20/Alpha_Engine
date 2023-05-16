@@ -17,9 +17,8 @@ class GameObject;
 class DLLEXPORT Button : public UIelement
 {
 public:
-	~Button();
-
 	Button(const std::string& name, std::shared_ptr<GameObject> gameObject = nullptr);
+	~Button();
 
 	enum class States { Idle, Down, Stay, Up };
 
@@ -29,7 +28,7 @@ public:
 	void FixedUpdate() override;
 	void LastUpdate() override;
 
-	void translate(const glm::vec2& newPos) override;
+	virtual void translate(const glm::vec2& newPos) override;
 
 	inline static const std::string type = GETTYPE(Button);
 protected:

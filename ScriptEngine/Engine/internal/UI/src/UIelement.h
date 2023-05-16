@@ -25,6 +25,12 @@ public:
 
 	virtual void executeOnClicks();
 
+	virtual void Awake() = 0;
+	virtual void Start() = 0;
+	virtual void Update() = 0;
+	virtual void FixedUpdate() = 0;
+	virtual void LastUpdate() = 0;
+
 	//void setParamCollider();
 	//virtual void OnExecute() = 0;
 
@@ -35,5 +41,9 @@ public:
 protected:
 	std::list<sol::protected_function> elements;
 	static size_t ID;
+
+#if defined(OGL) || defined(GLFW_INCLUDE_VULKAN)
+	glm::vec2 position;
+#endif
 };
 #endif //UIELEMENT
