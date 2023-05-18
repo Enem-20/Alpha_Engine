@@ -14,105 +14,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 size_t GameObject::counter = 0;
-//GameObject GameObject::Null;
 
-//GameObject::GameObject(std::string name,
-//	std::shared_ptr<Transform> transform,
-//	std::shared_ptr<Sprite> sprite,
-//	std::unordered_map<std::string, std::shared_ptr<LuaScript>> scripts,
-//	std::unordered_map<std::string, std::shared_ptr<Button>> buttons,
-//	int render_priority)
-//	: transform(transform)
-//	, sprite(sprite)
-//	, scripts(scripts)
-//	, buttons(buttons)
-//	, render_priority(render_priority)
-//{
-//#ifdef LOG_INFO
-//	std::string FuncName("GameObject::GameObject(std::string name, std::shared_ptr<Components::Transform> transform, std::shared_ptr<RenderEngine::Sprite> sprite, std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts, std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons, int render_priority)" + name);
-//	Clerk::Knowledge(28, __FILE__, FuncName, L"Begin of constructor");
-//#endif
-//	onGrid = false;
-//
-//#ifdef LOG_INFO
-//	Clerk::Knowledge(41, __FILE__, FuncName, L"Choosing name");
-//#endif
-//	if (Hierarchy::getObject(name))
-//	{
-//		ID = counter ? ++counter : counter;
-//		this->name = name + std::to_string(ID);
-//	}
-//	else
-//	{
-//		ID = 0;
-//		this->name = name;
-//	}
-//
-//#ifdef LOG_INFO
-//	Clerk::Knowledge(59, __FILE__, "GameObject::GameObject at " + name, L"Creating transform...");
-//#endif
-//	if (this->transform != nullptr)
-//	{
-//		if (sprite) { this->transform->scale = glm::vec3(sprite->getSize(), 0.f); }
-//		this->transform->Scale(glm::vec3(0.f));
-//	}
-//	else
-//	{
-//		this->transform = std::make_shared<Transform>(this->name);
-//		this->transform->Scale(glm::vec3(0.f));
-//	}
-//	this->render_priority = render_priority;
-//
-//
-//#ifdef LOG_INFO
-//	Clerk::Knowledge(68, __FILE__, "GameObject::GameObject at " + name, L"Adding object to Hierarchy...");
-//#endif
-//	Hierarchy::addObject(*this);
-//	if (onGrid)//bad practice
-//	{
-//#ifdef LOG_INFO
-//		Clerk::Knowledge(74, __FILE__, "GameObject::GameObject at " + name, L"Adding object to Grid...");
-//#endif
-//		Hierarchy::addGridObject(this->name);
-//	}
-//#ifdef LOG_INFO
-//	Clerk::Knowledge(81, __FILE__, "GameObject::GameObject at " + name, L"Adding scripts...");
-//#endif
-//	for (auto itScripts : scripts)
-//	{
-//		itScripts.second->gameObject = Hierarchy::getObject(this->name);
-//		itScripts.second->Awake();
-//	}
-//#ifdef LOG_INFO
-//	Clerk::Knowledge(89, __FILE__, "GameObject::GameObject at " + name, L"Adding buttons...");
-//#endif
-//	for (auto button : buttons)
-//	{
-//		button.second->gameObject = Hierarchy::getObject(this->name);
-//		//button.second.setParamCollider();
-//	}
-//
-//#ifdef LOG_INFO
-//	Clerk::Knowledge(96, __FILE__, FuncName, L"End of constructor");
-//#endif
-//} 
-
-GameObject::GameObject(std::string name,
-	std::shared_ptr<Transform> transform,
-	std::shared_ptr<Sprite> sprite,
-	std::unordered_map<std::string, ComponentView> components,
-	int render_priority)
-	: transform(transform)
-	, sprite(sprite)
-	, components(components)
-	, render_priority(render_priority)
-	, ResourceBase(name)
+GameObject::GameObject(std::string name)
+	: ResourceBase(name)
 {
 #ifdef LOG_INFO
 	std::string FuncName("GameObject::GameObject(std::string name, std::shared_ptr<Components::Transform> transform, std::shared_ptr<RenderEngine::Sprite> sprite, std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts, std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons, int render_priority)" + name);
 	Clerk::Knowledge(28, __FILE__, FuncName, L"Begin of constructor");
 #endif
-	onGrid = false;
 
 #ifdef LOG_INFO
 	Clerk::Knowledge(41, __FILE__, FuncName, L"Choosing name");
@@ -124,70 +33,29 @@ GameObject::GameObject(std::string name,
 		this->name = std::to_string(ID = ++counter);
 	}
 	ResourceManager::addResource<GameObject>(this);
-	obj = ResourceManager::getResource<GameObject>(name);
-
-#ifdef LOG_INFO
-	Clerk::Knowledge(59, __FILE__, "GameObject::GameObject at " + name, L"Creating transform...");
-#endif
-	if (this->transform == nullptr)
-		this->transform = std::make_shared<Transform>(this->name);
-		
-	this->transform->gameObject = obj;
-	this->render_priority = render_priority;
-
-
-#ifdef LOG_INFO
-	Clerk::Knowledge(81, __FILE__, "GameObject::GameObject at " + name, L"Adding components...");
-#endif
-	for (auto itComponent : components)
-	{
-		auto component = itComponent.second.getComponentFromView<Component>();
-		if (component != nullptr) {
-			component->gameObject = obj;
-			component->Awake();
-		}
-	}
-
-	
-	sprite->gameObject = ResourceManager::getResource<GameObject>(this->name);
-#ifdef LOG_INFO
-	Clerk::Knowledge(96, __FILE__, FuncName, L"End of constructor");
-#endif
 }
 
 GameObject::GameObject(const GameObject& gameObject)
-	: scripts(gameObject.scripts)
-	, buttons(gameObject.buttons)
-	, onGrid(gameObject.onGrid)
+	: components(gameObject.components)
+	, children(gameObject.children)
 	, ResourceBase(gameObject.name)
 {
 #ifdef LOG_INFO
 	Clerk::Knowledge(102, __FILE__, "GameObject copy constructor", L"Begin of constructor");
 #endif
-	this->sprite = gameObject.sprite;
-	this->transform = std::make_shared<Transform>(gameObject.transform->position, gameObject.transform->rotation, glm::vec3(0.f));
-	if (sprite)
-		this->transform->scale = glm::vec3(sprite->getSize(), 0.f);
-	this->transform->Scale(glm::vec3(0.f));
 
 	this->name = StringFuncs::RemoveNumbersEnd(gameObject.name) + std::to_string(ID = ++counter);
 
-
-	this->render_priority = gameObject.render_priority;
 	ResourceManager::addResource<GameObject>(this);
 }
 
 void GameObject::operator=(const GameObject& gameObject)
 {
-	buttons = gameObject.buttons;
 	children = gameObject.children;
 	ID = ++counter;
 	this->name = StringFuncs::RemoveNumbersEnd(gameObject.name) + std::to_string(ID);
-	onGrid = gameObject.onGrid;
-	render_priority = gameObject.render_priority;
-	scripts = gameObject.scripts;
-	sprite = gameObject.sprite;
-	transform = gameObject.transform;
+
+	components = gameObject.components;
 }
 
 GameObject::~GameObject()
@@ -195,23 +63,21 @@ GameObject::~GameObject()
 #ifdef LOG_INFO
 	Clerk::Knowledge(148, __FILE__, "GameObject::~GameObject at " + name, L"Clear all data...");
 #endif
-	scripts.clear();
-	buttons.clear();
-	sprite.reset();
-	transform.reset();
 	children.clear();
 	components.clear();
 	ResourceManager::removeResource<GameObject>(name);
 }
 
-void GameObject::render()
+void GameObject::render(CommandBuffer& commandBuffer, RenderPipeline& renderPipeline, uint32_t currentFrame)
 {
 #ifdef LOG_INFO
 	Clerk::Knowledge(159, __FILE__, "GameObject::render() at " + name, L"Rendering sprites...");
 #endif
-	if (sprite)
-	{
-		sprite->render(transform->GetModel());
+
+	auto sprites = getComponentsWithType<Sprite>();
+
+	for (auto sprite : *sprites) {
+		sprite.second.getComponentFromView<Sprite>()->render(commandBuffer, renderPipeline, currentFrame);
 	}
 
 #ifdef LOG_INFO
@@ -219,82 +85,63 @@ void GameObject::render()
 #endif
 	for (auto it : children)
 	{
-		it->render();
+		it->render(commandBuffer, renderPipeline, currentFrame);
 	}
 }
-
-Transform& GameObject::GetTransform() { return *transform; }
-void GameObject::SetOnGrid(const bool& onGridNew) { onGrid = onGridNew; }
-std::shared_ptr<GameObject> GameObject::testShared(GameObject gameObject) { return std::make_shared<GameObject>(gameObject); }
 
 void GameObject::Translate(const glm::vec3& position)
 {
 	//if(onGrid)	
 	//	Hierarchy::removeGridObject(Input::GetCell(transform->position));
-	transform->Translate(position);
+
+	getComponent<Transform>(name)->Translate(position);
+	
 	for (auto it : children)
 	{
 		it->Translate(position);
 	}
 	//if(onGrid)
 	//	Hierarchy::addGridObject(this->name);
-	Update();
 }
 
 void GameObject::Teleport(const glm::vec3& position)
 {
-	/*if(onGrid)
-		Hierarchy::removeGridObject(Input::GetCell(transform->position));*/
-	transform->Teleport(position);
+	getComponent<Transform>(name)->Teleport(position);
+
 	for (auto& it : children)
 	{
 		it->Teleport(position);
 	}
-	//if(onGrid)
-	//	Hierarchy::addGridObject(this->name);
-	Update();
 }
 
 void GameObject::Rotate(glm::vec3 rotation)
 {
-	transform->Rotate(std::move(rotation));
+	getComponent<Transform>(name)->Rotate(rotation);
+
+
 	for (auto it : children)
 	{
 		it->Rotate(rotation);
 	}
-
-	Update();
 }
 
 void GameObject::Scale(glm::vec3 scale)
 {
-	transform->Scale(std::move(scale));
+	getComponent<Transform>(name)->Scale(scale);
+
 	for (auto it : children)
 	{
 		it->Scale(scale);
 	}
-
-	Update();
 }
 
-void GameObject::Update()
+void GameObject::Update(uint32_t currentImage)
 {
-	for (auto& it : components)
-	{
-		auto component = it.second.getComponentFromView<Button>();
-		if (component != nullptr) {
-			//component->translate(transform->position);
-			//component->Update();
-		}
-			
+	auto componentsByType = components.find(Sprite::type);
+
+	for (auto sprite : componentsByType->second) {
+		sprite.second.getComponentFromView<Sprite>()->Update(currentImage);
 	}
-
-	//Teleport(transform->position);
-}
-
-std::shared_ptr<Sprite> GameObject::GetSprite() const
-{
-	return sprite;
 }
 
 void GameObject::AddChild(const GameObject& gameObject)
@@ -309,13 +156,9 @@ GameObject& GameObject::GetChild(int i) const
 GameObject& GameObject::toNull(GameObject& gameObject)
 {
 	gameObject.children.clear();
-	gameObject.buttons.clear();
 	gameObject.ID = -1;
 	gameObject.name = "Null";
-	gameObject.render_priority = -1;
-	gameObject.scripts.clear();
-	gameObject.sprite = nullptr;
-	gameObject.transform = nullptr;
+	gameObject.components.clear();
 
 	return gameObject;
 }
@@ -332,22 +175,7 @@ GameObject::GameObject(size_t ID)
 //	return Null;
 //}
 
-std::unordered_map<std::string, std::shared_ptr<LuaScript>> GameObject::GetScripts() const
-{
-	return scripts;
-}
-
-const int& GameObject::GetRenderPriority() const
-{
-	return render_priority;
-}
-
 const std::string& GameObject::Name() const
 {
 	return name;
-}
-
-const bool& GameObject::isGrided() const
-{
-	return onGrid;
 }

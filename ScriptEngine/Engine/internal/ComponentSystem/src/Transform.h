@@ -36,7 +36,7 @@ public:
 
 	void Awake() override{}
 	void Start() override {}
-	void Update() override {}
+	void Update(uint32_t currentImage) override {}
 	void FixedUpdate() override {}
 	void LastUpdate() override {}
 
@@ -44,6 +44,8 @@ public:
 	glm::vec3 GetPosition() const;
 	glm::vec3 GetRotation() const;
 	glm::vec3 GetScale() const;
+
+	GENERATETYPE(Transform)
 public:
 	glm::vec3 position;
 	glm::vec3 rotation;

@@ -6,7 +6,8 @@
 #include <string>
 #include <memory>
 
-#define GETTYPE(ClassName) #ClassName
+#define GETTYPE(ClassName) #ClassName;
+#define GENERATETYPE(ClassName) inline static const std::string type = #ClassName;
 
 class ResourceBase {
 public:

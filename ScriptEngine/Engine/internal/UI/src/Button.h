@@ -24,13 +24,13 @@ public:
 
 	void Awake() override;
 	void Start() override;
-	void Update() override;
+	void Update(uint32_t currentImage) override;
 	void FixedUpdate() override;
 	void LastUpdate() override;
 
 	virtual void translate(const glm::vec2& newPos) override;
 
-	inline static const std::string type = GETTYPE(Button);
+	GENERATETYPE(Button)
 protected:
 	States state;
 };

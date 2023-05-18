@@ -17,7 +17,7 @@ public:
 
 	virtual void Awake() override;
 	virtual void Start() override;
-	virtual void Update() override;
+	virtual void Update(uint32_t currentImage) override;
 	virtual void FixedUpdate() override;
 	virtual void LastUpdate() override;
 
@@ -25,7 +25,7 @@ public:
 
 	void addChild(std::shared_ptr<UIelement> ui);
 
-	inline static const std::string type = GETTYPE(Panel);
+	GENERATETYPE(Panel)
 private:
 	std::unordered_map<std::string, std::shared_ptr<UIelement>> uis;
 };

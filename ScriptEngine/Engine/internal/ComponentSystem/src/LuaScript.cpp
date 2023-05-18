@@ -83,6 +83,6 @@ void LuaScript::LoadScript(std::shared_ptr<sol::state> L)
 
 void LuaScript::Awake() { m_Awake(); }
 void LuaScript::Start() { m_Start(); }
-void LuaScript::Update() { m_Update(); }
+void LuaScript::Update(uint32_t currentImage) { m_Update(); }
 void LuaScript::FixedUpdate() { m_FixedUpdate(); }
 void LuaScript::LastUpdate() { m_LastUpdate(); }

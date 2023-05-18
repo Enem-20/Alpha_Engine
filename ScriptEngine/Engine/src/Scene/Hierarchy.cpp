@@ -34,7 +34,6 @@ void Hierarchy::removeObjectReal(const std::string& name)
 	auto obj = SceneObjects.find(name);
 	if (obj != SceneObjects.end())
 	{
-		obj->second->buttons.clear();
 		WindowManager::CurrentWindow->RemovePanel(name);
 		//auto cellObj = GridObjectsPos.find(Input::GetCell(obj->second->transform->position));
 		//if((cellObj != GridObjectsPos.end()) && (cellObj->second == name))
@@ -53,7 +52,6 @@ void Hierarchy::Clear()
 {
 	for (auto& it : SceneObjects)
 	{
-		it.second->buttons.clear();
 		WindowManager::CurrentWindow->RemovePanel(it.second->name);
 	}
 	SceneObjects.clear();

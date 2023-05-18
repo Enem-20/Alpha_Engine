@@ -130,7 +130,7 @@ public:
 	static bool loadJSONTextureAtlasses(const std::string& relativePath);
 	static bool loadJSONTextures(const std::string& relativePath);
 	static bool loadJSONShaders(const std::string& relativePath);
-	static std::unordered_map<std::string, ComponentView> loadJSONComponents(const rapidjson::Value& it);
+	static void loadJSONComponents(const rapidjson::Value& it, std::shared_ptr<GameObject> gameObject);
 
 	static std::string GetPath();
 

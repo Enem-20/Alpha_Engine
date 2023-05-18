@@ -26,10 +26,10 @@ void Panel::Awake() {
 void Panel::Start() {
 
 }
-void Panel::Update() {
+void Panel::Update(uint32_t currentImage) {
 	if (ImGui::Begin(name.c_str()))
 		for (auto ui : uis) {
-			ui.second->Update();
+			ui.second->Update(currentImage);
 		}
 
 	ImGui::End();
@@ -43,7 +43,7 @@ void Panel::LastUpdate() {
 
 void Panel::translate(const glm::vec2& newPos) {
 	ImGui::Begin(name.c_str());
-	ImGui::SetWindowPos({ GetGameObject()->transform->position.x, (GetGameObject()->transform->position.y - WindowManager::CurrentWindow->size.y) * -1 });
+	ImGui::SetWindowPos({ GetGameObject()->getComponent<Transform>(name)->position.x, (GetGameObject()->getComponent<Transform>(name)->position.y - WindowManager::CurrentWindow->size.y) * -1 });
 	ImGui::End();
 }
 

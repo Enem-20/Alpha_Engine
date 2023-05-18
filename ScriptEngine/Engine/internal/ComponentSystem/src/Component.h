@@ -22,7 +22,7 @@ public:
 
 	virtual void Awake() = 0;
 	virtual void Start() = 0;
-	virtual void Update() = 0;
+	virtual void Update(uint32_t currentImage) = 0;
 	virtual void FixedUpdate() = 0;
 	virtual void LastUpdate() = 0;
 

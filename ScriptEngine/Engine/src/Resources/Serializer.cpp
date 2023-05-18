@@ -20,36 +20,36 @@ void Serializer::Serialize(std::unordered_map<std::string, std::shared_ptr<GameO
 {
 
 
-	writer->StartArray();
+	//writer->StartArray();
 
-	for (const auto& object : objects)
-	{
-		writer->StartObject();
-
-
-		writer->Key("name");
-		writer->String(object.second->name.c_str());
-
-		Serialize(object.second->transform->position, writer, "position");
-		Serialize(object.second->transform->rotation, writer, "rotation");
-		Serialize(object.second->transform->scale, writer, "scale");
-
-		Serialize(std::make_shared<components>(object.second->scripts, object.second->buttons), writer, "Components");
-
-		if (object.second->sprite)
-		{
-			writer->Key("sprite");
-			writer->String(object.second->sprite->name.c_str());
-		}
+	//for (const auto& object : objects)
+	//{
+	//	writer->StartObject();
 
 
-		writer->Key("render_priority");
-		writer->Int(object.second->render_priority);
+	//	writer->Key("name");
+	//	writer->String(object.second->name.c_str());
 
-		writer->EndObject();
-	}
+	//	Serialize(object.second->transform->position, writer, "position");
+	//	Serialize(object.second->transform->rotation, writer, "rotation");
+	//	Serialize(object.second->transform->scale, writer, "scale");
 
-	writer->EndArray();
+	//	//Serialize(std::make_shared<components>(object.second->scripts, object.second->buttons), writer, "Components");
+
+	//	if (object.second->sprite)
+	//	{
+	//		writer->Key("sprite");
+	//		writer->String(object.second->sprite->name.c_str());
+	//	}
+
+
+	//	writer->Key("render_priority");
+	//	writer->Int(object.second->render_priority);
+
+	//	writer->EndObject();
+	//}
+
+	//writer->EndArray();
 }
 void Serializer::Serialize(const std::string& path)
 {

@@ -28,12 +28,12 @@ public:
 
 	void Awake() override;
 	void Start() override;
-	void Update() override;
+	void Update(uint32_t currentImage) override;
 	void FixedUpdate() override;
 	void LastUpdate() override;
 
 	std::string m_path;
-	//inline static const std::string type = GETTYPE(LuaScript);
+	GENERATETYPE(LuaScript)
 private:
 	sol::protected_function m_Awake;
 	sol::protected_function m_Start;

@@ -497,14 +497,17 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 			spriteName = it.FindMember("sprite")->value.GetString();
 		}
 
-		const std::unordered_map<std::string, ComponentView>& components = loadJSONComponents(it);
-		std::make_shared<GameObject>(GameObjectName, std::make_shared<Transform>(buf3, bufRotation, bufScale), getResource<Sprite>(spriteName), components, render_priority);
+		auto gameObject = std::make_shared<GameObject>(GameObjectName);
+		loadJSONComponents(it, gameObject);
+
+		gameObject->addComponent<Transform>(std::make_shared<Transform>(buf3, bufRotation, bufScale));
+		gameObject->addComponent<Sprite>(getResource<Sprite>(spriteName));
 	}
 
 	return true;
 }
 
-std::unordered_map<std::string, ComponentView> ResourceManager::loadJSONComponents(const rapidjson::Value& it)
+void ResourceManager::loadJSONComponents(const rapidjson::Value& it, std::shared_ptr<GameObject> gameObject)
 {
 	//m_Components components;
 	std::unordered_map<std::string, ComponentView> components;
@@ -515,20 +518,16 @@ std::unordered_map<std::string, ComponentView> ResourceManager::loadJSONComponen
 			std::string type = itComponents.FindMember("type")->value.GetString();
 			if (type == "LuaScript")
 			{
-				auto script = std::make_shared<LuaScript>(itComponents.FindMember("name")->value.GetString(), itComponents.FindMember("path")->value.GetString(), L);
-				components.emplace(itComponents.FindMember("name")->value.GetString(), ComponentView{ std::reinterpret_pointer_cast<void>(script) });
+				gameObject->addComponent<LuaScript>(std::make_shared<LuaScript>(itComponents.FindMember("name")->value.GetString(), itComponents.FindMember("path")->value.GetString(), L));
 				//components.scripts.emplace(itComponents.FindMember("name")->value.GetString(), std::make_shared<LuaScript>(itComponents.FindMember("name")->value.GetString(), itComponents.FindMember("path")->value.GetString(), L));
 			}
 			else if (type == "Button")
 			{
-				auto button = std::make_shared<Button>(itComponents.FindMember("name")->value.GetString());
-				components.emplace(itComponents.FindMember("name")->value.GetString(), ComponentView{ std::reinterpret_pointer_cast<void>(button) });
+				gameObject->addComponent<Button>(std::make_shared<Button>(itComponents.FindMember("name")->value.GetString()));
 				//components.buttons.emplace(itComponents.FindMember("name")->value.GetString(), std::make_shared<Button>(itComponents.FindMember("name")->value.GetString()));
 			}
 		}
 	}
-
-	return components;
 }
 
 bool ResourceManager::loadJSONSprites(const std::string& relativePath)
