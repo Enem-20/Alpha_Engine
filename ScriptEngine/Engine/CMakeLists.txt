@@ -251,6 +251,7 @@ target_link_libraries(Engine PRIVATE Renderer)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
 ReactPhysics3D::reactphysics3d
+Input
 Physics
 UI
 ComponentSystem

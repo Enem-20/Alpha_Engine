@@ -12,19 +12,13 @@
 class DLLEXPORT Casts
 {
 public:
-	static glm::vec3 CellToScreen(const glm::ivec2& ivec2, const glm::ivec2& cellSize)
+	static float castValueToNewRange(const float oldValue, const glm::vec2& oldRange, const glm::vec2& newRange)
 	{
-		glm::vec3 res(0.f);
+		return (((oldValue - oldRange.x) * (newRange.y - newRange.x)) / (oldRange.y - oldRange.x)) + newRange.x;
+	}
 
-		float scaleX = static_cast<float>(Renderer::ViewportSize.x / cellSize.x);
-		res.x = ivec2.x * scaleX;
-		//res.x = std::max(res.x, (float)((RenderEngine::Renderer::ViewportSize.x - RenderEngine::Renderer::ViewportOffset.x) / cellSize.x));
-
-		float scaleY = static_cast<float>(Renderer::ViewportSize.y / cellSize.y);
-		res.y = ivec2.y * scaleY;
-		//res.y = std::max(res.y, (float)((RenderEngine::Renderer::ViewportSize.y - RenderEngine::Renderer::ViewportOffset.y) / cellSize.y));
-
-		return res;
+	static float castFromFramebufferToNDCrange(const float& oldValue) {
+		return castValueToNewRange(oldValue, glm::vec2(0.0f, 0.0f), glm::vec2(-1.0f, 1.0f));
 	}
 
 	static std::wstring CharStoWstring(const char* str, int last)
