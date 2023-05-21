@@ -1,14 +1,11 @@
 #include "Canvas.h"
 
-#include "../Input/Input.h"
+#include "../../internal/Physics/src/Physics.h"
 
-namespace UI
-{
-	std::shared_ptr<GameObject> Canvas::WhatClicked()
-	{
-		for (auto el : UIelements)
-		{
-			return std::make_shared<GameObject>(el); //Бред, заменить
-		}
-	}
+Canvas::Canvas() {
+	body = Physics::getWorld()->createCollisionBody(reactphysics3d::Transform(reactphysics3d::Vector3(0.0f, 0.0f, 0.0f), reactphysics3d::Quaternion::identity()));
+}
+
+reactphysics3d::CollisionBody* Canvas::getCollisionBody() {
+	return body;
 }

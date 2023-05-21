@@ -4,11 +4,12 @@
 #define PANEL
 
 #include "../../src/Resources/ResourceBase.h"
-#include "../../src/GameTypes/GameObject.h"
 #include "UIelement.h"
 
 #include <memory>
 #include <string>
+
+class GameObject;
 
 class Panel : public UIelement {
 public:

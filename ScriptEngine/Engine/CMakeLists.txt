@@ -147,7 +147,7 @@ set(GameTypes
 	src/GameTypes/GameObject.h
 	src/GameTypes/GameObject.cpp
 )
-set(Physycs
+set(Physics
 	# src/Physics/Raycast2D.h
 	# src/Physics/Raycast2D.cpp
 	# src/Physics/Collider.h
@@ -185,7 +185,7 @@ add_executable(${PROJECT_NAME} #SHARED
 	${Resources}
 	${Scene}
 	${GameTypes}
-	${Physycs}
+	${Physics}
 	${Input}	
 	#${Components}
 	#${GLPref}
@@ -198,7 +198,7 @@ source_group("UI" 		  		FILES ${UI})
 source_group("Resources" 		FILES ${Resources})
 source_group("Scene" 			FILES ${Scene})
 source_group("GameTypes" 		FILES ${GameTypes})
-source_group("Physycs" 			FILES ${Physycs})
+source_group("Physics" 			FILES ${Physics})
 source_group("Input" 	  		FILES ${Input})
 #source_group("Components" 		FILES ${Components})
 #source_group("GLPref" 			FILES ${GLPref})
@@ -220,6 +220,8 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 add_subdirectory(internal/Renderer)
 add_subdirectory(internal/UI)
 add_subdirectory(internal/ComponentSystem)
+add_subdirectory(internal/Physics)
+add_subdirectory(internal/Input)
 
 #target_include_directories(${PROJECT_NAME} INTERFACE internal/Renderer/src)
 	
@@ -235,6 +237,7 @@ add_subdirectory(external/glad)
 add_subdirectory(external/Lua)
 add_subdirectory(external/P7)
 add_subdirectory(external/imguiLibrary)
+add_subdirectory(external/reactphysics3d)
 
 if (MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
@@ -247,6 +250,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 target_link_libraries(Engine PRIVATE Renderer)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
+ReactPhysics3D::reactphysics3d
+Physics
 UI
 ComponentSystem
 lua_static 
@@ -260,6 +265,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE external/sol2/include)
 target_include_directories(${PROJECT_NAME} PUBLIC external/rapidjson/include)
 target_include_directories(${PROJECT_NAME} PRIVATE external/imguiLibrary)
 target_include_directories(${PROJECT_NAME} PRIVATE external/imguiLibrary/imgui)
+target_include_directories(${PROJECT_NAME} PRIVATE external/reactphysics3d/include)
+
 #target_include_directories(${PROJECT_NAME} PRIVATE external/VulkanHpp/Vulkan-Headers/include)
 
 

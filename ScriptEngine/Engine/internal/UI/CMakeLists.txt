@@ -9,6 +9,8 @@ target_sources(UI INTERFACE
 	src/Button.cpp
 	src/Panel.h
 	src/Panel.cpp
+	src/Canvas.h
+	src/Canvas.cpp
 )
 
 target_compile_features(UI INTERFACE cxx_std_20)

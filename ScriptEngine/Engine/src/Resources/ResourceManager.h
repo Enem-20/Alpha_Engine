@@ -7,11 +7,12 @@
 
 #include "../../internal/Renderer/src/Window.h"
 
+#include "../../internal/Renderer/src/Sprite.h"
+#include "../../internal/ComponentSystem/src/Collider2D.h"
 #include "../../internal/ComponentSystem/src/Component.h"
 
 #include "../../internal/Renderer/src/ShaderProgram.h"
 #include "../../internal/Renderer/src/Texture2D.h"
-#include "../../internal/Renderer/src/Sprite.h"
 #include "../../internal/Renderer/src/Vulkan/CommandBuffer.h"
 #include "../../internal/Renderer/src/Vulkan/CommandPool.h"
 #include "../../internal/Renderer/src/Vulkan/Instance.h"
@@ -263,6 +264,7 @@ std::unordered_map<std::string, Resource>* ResourceManager::getResourcesWithType
 
 template<class ResourceType, class... Args>
 std::shared_ptr<ResourceType> ResourceManager::makeResource(Args&&... args) {
+	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
 	ResourceType* instance = new ResourceType(args...);
 	return getResource<ResourceType>(instance->name);
 }

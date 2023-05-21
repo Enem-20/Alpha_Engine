@@ -31,3 +31,6 @@
 [submodule "ScriptEngine/Engine/external/tinyobjloader"]
 	path = ScriptEngine/Engine/external/tinyobjloader
 	url = https://github.com/tinyobjloader/tinyobjloader.git
+[submodule "ScriptEngine/Engine/external/reactphysics3d"]
+	path = ScriptEngine/Engine/external/reactphysics3d
+	url = https://github.com/DanielChappuis/reactphysics3d.git

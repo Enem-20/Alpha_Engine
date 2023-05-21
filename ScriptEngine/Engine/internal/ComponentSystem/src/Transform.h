@@ -5,6 +5,8 @@
 
 #include "Component.h"
 
+#include <reactphysics3d/reactphysics3d.h>
+
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <glm/glm.hpp>
@@ -44,6 +46,10 @@ public:
 	glm::vec3 GetPosition() const;
 	glm::vec3 GetRotation() const;
 	glm::vec3 GetScale() const;
+
+	reactphysics3d::Transform ToPhysicsTransform();
+	static reactphysics3d::Vector3 FromGLMToPhysicsVector3(const glm::vec3& vec);
+	static reactphysics3d::Quaternion FromGLMToPhysicsQuaternion(const glm::vec3& orientation);
 
 	GENERATETYPE(Transform)
 public:

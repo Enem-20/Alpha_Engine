@@ -7,6 +7,8 @@ target_sources(ComponentSystem INTERFACE
 	src/Component.cpp
 	src/ComponentFabric.h
 	src/ComponentFabric.cpp
+	src/Collider2D.h
+	src/Collider2D.cpp
 	src/Script.h
 	src/Script.cpp
 	src/LuaScript.h

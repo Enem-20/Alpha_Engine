@@ -24,7 +24,6 @@ Transform::Transform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, st
 	, scale(scale)
 	, Component(name, gameObject)
 {
-	
 	transform();
 }
 
@@ -73,7 +72,8 @@ void Transform::transform()
 	model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1, 0, 0));
 	model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
 	model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
-	position.z *= -1;
+	//position.z *= -1;
+
 	model = glm::translate(model, position);
 	model = glm::scale(model, scale);
 }
@@ -96,4 +96,17 @@ glm::vec3 Transform::GetRotation() const
 glm::vec3 Transform::GetScale() const
 {
 	return scale;
+}
+
+reactphysics3d::Transform Transform::ToPhysicsTransform() {
+	return reactphysics3d::Transform(FromGLMToPhysicsVector3(position), FromGLMToPhysicsQuaternion(rotation));
+}
+
+reactphysics3d::Vector3 Transform::FromGLMToPhysicsVector3(const glm::vec3& vec) {
+	return reactphysics3d::Vector3(vec.x, vec.y, vec.z);
+}
+
+reactphysics3d::Quaternion Transform::FromGLMToPhysicsQuaternion(const glm::vec3& orientation) {
+	glm::vec3 radiansRotation = glm::radians(orientation);
+	return reactphysics3d::Quaternion::fromEulerAngles(reactphysics3d::Vector3(radiansRotation.x, radiansRotation.y, radiansRotation.z));
 }
