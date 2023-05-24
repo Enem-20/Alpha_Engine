@@ -27,10 +27,13 @@ void Panel::Start() {
 
 }
 void Panel::Update(uint32_t currentImage) {
-	if (ImGui::Begin(name.c_str()))
-		for (auto ui : uis) {
-			ui.second->Update(currentImage);
+	if (ImGui::Begin(name.c_str())) {
+		for (auto types : m_uis) {
+			for (auto uiElement : types.second) {
+				uiElement.second.getUIFromView<UIelement>()->Update(currentImage);
+			}
 		}
+	}
 
 	ImGui::End();
 }
@@ -47,11 +50,11 @@ void Panel::translate(const glm::vec2& newPos) {
 	ImGui::End();
 }
 
-void Panel::addChild(std::shared_ptr<UIelement> ui) {
-	if (uis.contains(ui->name)) {
-		std::cout << ui->name + " alreay exists" << '\n';
-		return;
-	}
-
-	uis.emplace(ui->name, ui);
-}
+//void Panel::addChild(std::shared_ptr<UIelement> ui) {
+//	if (uis.contains(ui->name)) {
+//		std::cout << ui->name + " alreay exists" << '\n';
+//		return;
+//	}
+//	ui->parent = gameObject.lock()->getComponent<Panel>(name);
+//	uis.emplace(ui->name, ui);
+//}

@@ -32,12 +32,11 @@
 
 
 std::unordered_map<std::string, std::unordered_map<std::string, Resource>> ResourceManager::m_resources = {};
-//std::unique_ptr<Renderer> ResourceManager::renderer = std::make_unique<Renderer>();
-//ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
-//ResourceManager::TexturesMap ResourceManager::m_textures;
-//ResourceManager::SpritesMap ResourceManager::m_sprites;
-//ResourceManager::AnimatedSpritesMap ResourceManager::m_AnimatedSprites;
-std::shared_ptr<std::pair<const std::string, std::function<void(const std::string)>>> ResourceManager::loader;
+
+std::queue<std::function<void(const std::string&, const std::string&, const std::string&)>> ResourceManager::shaderLoaders;
+std::queue<std::tuple<std::string, std::string, std::string>> ResourceManager::shaderLoaderParameters;
+
+//std::shared_ptr<std::pair<const std::string, std::function<void(const std::string)>>> ResourceManager::loader;
 std::string ResourceManager::m_path;
 std::shared_ptr<sol::state> ResourceManager::L;
 
@@ -52,7 +51,7 @@ void ResourceManager::SetExecutablePath(const std::string& executablePath)
 {
 	//TODO: Serializer::Init();
 
-
+	Serializer::Init();
 	size_t found = executablePath.find_last_of("/\\");
 	m_path = executablePath.substr(0, found);
 }
@@ -60,10 +59,9 @@ void ResourceManager::SetExecutablePath(const std::string& executablePath)
 void ResourceManager::UnloadAllResources()
 {
 	//TODO: Serializer::Serialize(m_path + "/res/scene.json");
-	//m_shaderPrograms.clear();
-	//m_textures.clear();
-	//m_sprites.clear();
-	//m_AnimatedSprites.clear();
+
+	Serializer::Serialize(m_path + "/res/saves");
+
 	m_resources.clear();
 	Hierarchy::Clear();
 }
@@ -111,49 +109,42 @@ static std::vector<char> readFile(const std::string& filename) {
 	return buffer;
 }
 
-std::shared_ptr<ShaderProgram> ResourceManager::loadShaders(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath)
+void ResourceManager::loadShaders(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath)
 {
+	shaderLoaders.push(loadShaderProgram);
+	shaderLoaderParameters.push({ shaderName, vertexPath, fragmentPath });
+}
 
+void ResourceManager::loadShaderProgram(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath) {
 	std::string vertexString = getFileString(vertexPath);
 	if (vertexString.empty())
 	{
 		std::cerr << "No vertex shader!" << std::endl;
 		system("pause");
-		return nullptr;
+		return;
 	}
 	std::string fragmentString = getFileString(fragmentPath);
 	if (fragmentString.empty())
 	{
 		std::cerr << "No fragment shader!" << std::endl;
 		system("pause");
-		return nullptr;
+		return;
 	}
 
-#ifdef OGL
-	std::shared_ptr<ShaderProgram>& newShader = m_shaderPrograms.emplace(shaderName, std::make_shared<ShaderProgram>(vertexString, fragmentString)).first->second;
-	if (newShader->isCompiled())
-	{
-		return newShader;
-	}
-	std::cerr << "Can't load shader program:\n" << "Vertex: " << vertexPath << "\n" << "Fragment: " << fragmentPath << std::endl;
-	system("pause");
-	return nullptr;
-#elif GLFW_INCLUDE_VULKAN
-	return makeResource<ShaderProgram>(shaderName, vertexString, fragmentString);;
-#endif
+	makeResource<ShaderProgram>(shaderName, vertexPath, fragmentPath, vertexString, fragmentString);
 }
 
-//std::shared_ptr<ShaderProgram> ResourceManager::getShaderProgram(const std::string& shaderName)
-//{
-//	ShaderProgramsMap::const_iterator it = m_shaderPrograms.find(shaderName);
-//	if (it != m_shaderPrograms.end())
-//	{
-//		return it->second;
-//	}
-//	std::cerr << "Can't find the shader program: " << shaderName << std::endl;
-//	system("pause");
-//	return nullptr;
-//}
+void ResourceManager::loadShadersReal() {
+	while (!shaderLoaders.empty()) {
+		auto currentLoader = shaderLoaders.front();
+		auto currentLoaderParameters = shaderLoaderParameters.front();
+
+		std::apply(currentLoader, currentLoaderParameters);
+
+		shaderLoaders.pop();
+		shaderLoaderParameters.pop();
+	}
+}
 
 #ifdef OGL
 std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textureName, const std::string& texturePath)
@@ -188,7 +179,6 @@ std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textu
 	int width = 0;
 	int height = 0;
 
-	//stbi_set_flip_vertically_on_load(true);
 	unsigned char* pixels = stbi_load(std::string(m_path + "/" + texturePath).c_str(), &width, &height, &channels, STBI_rgb_alpha);
 
 	if (!pixels)
@@ -198,7 +188,9 @@ std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textu
 		return nullptr;
 	}
 
-	auto texture = makeResource<Texture2D>(textureName, width, height, channels, pixels, *getResource<SwapChain>("TestSwapChain"), *getResource<PhysicalDevice>("TestPhysicalDevice"), *getResource<LogicalDevice>("TestLogicalDevice"), *getResource<CommandPool>("TestCommandPool"));
+	auto texture = makeResource<Texture2D>(textureName, texturePath, width, height, channels, pixels, *getResource<SwapChain>("TestSwapChain"), *getResource<PhysicalDevice>("TestPhysicalDevice"), *getResource<LogicalDevice>("TestLogicalDevice"), *getResource<CommandPool>("TestCommandPool"));
+	ResourceManager::getResource<Renderer>("main")->textures.push_back(texture);
+	
 	//m_textures.emplace(textureName, newTexture);
 	
 	stbi_image_free(pixels);
@@ -221,9 +213,9 @@ std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textu
 std::shared_ptr<Sprite> ResourceManager::loadSprite(const std::string& spriteName,
 	const std::string& textureName,
 	const std::string& shaderName,
+	const std::string& meshName,
 	const unsigned int spriteWidth,
 	const unsigned int spriteHeight,
-	const int RenderMode,
 	const std::string& subTextureName)
 {
 	auto Texture = getResource<Texture2D>(textureName);
@@ -244,69 +236,10 @@ std::shared_ptr<Sprite> ResourceManager::loadSprite(const std::string& spriteNam
 		return nullptr;
 	}
 
-	/*std::shared_ptr<Sprite> newSprite = m_sprites.emplace
-	(spriteName, std::make_shared<Sprite>
-		(Texture, subTextureName, Shader,
-			glm::vec2(0.f, 0.f), glm::vec3(1.f), glm::vec2(spriteWidth, spriteHeight), RenderMode)).first->second;*/
-
 
 	return makeResource<Sprite>(spriteName, std::shared_ptr<GameObject>(nullptr), Texture, subTextureName, Shader,
-		getResource<Mesh>("SpriteMesh"), glm::vec3(0.f, 0.f, 1.0f), glm::vec3(1.f), glm::vec2(spriteWidth, spriteHeight));
+		getResource<Mesh>(meshName), glm::vec3(0.f, 0.f, 1.0f), glm::vec3(1.f), glm::vec2(spriteWidth, spriteHeight));
 }
-//std::shared_ptr<Sprite> ResourceManager::getSprite(const std::string& spriteName)
-//{
-//	SpritesMap::const_iterator it = m_sprites.find(spriteName);
-//	if (it != m_sprites.end())
-//	{
-//		return it->second;
-//	}
-//	std::cerr << "Can't find the texture " << spriteName << std::endl;
-//	return nullptr;
-//}
-
-//std::shared_ptr<AnimatedSprite> ResourceManager::loadAnimatedSprite(const std::string& spriteName,
-//	const std::string& textureName,
-//	const std::string& shaderName,
-//	const unsigned int spriteWidth,
-//	const unsigned int spriteHeight,
-//	const std::string& subTextureName)
-//{
-//	auto Texture = getTexture(textureName);
-//
-//	if (!Texture)
-//	{
-//		std::cerr << "Can't find the texture " << textureName << " for the sprite: " << spriteName << std::endl;
-//		system("pause");
-//		return nullptr;
-//	}
-//
-//	auto Shader = getShaderProgram(shaderName);
-//
-//	if (!Shader)
-//	{
-//		std::cerr << "Can't find the shader program: " << shaderName << " for the sprite: " << spriteName << std::endl;
-//		system("pause");
-//		return nullptr;
-//	}
-//
-//	std::shared_ptr<AnimatedSprite> newSprite = m_AnimatedSprites.emplace
-//	(textureName, std::make_shared<AnimatedSprite>
-//		(Texture, subTextureName, Shader,
-//			glm::vec2(0.f, 0.f), glm::vec3(0.f), glm::vec2(spriteWidth, spriteHeight))).first->second;
-//
-//	return newSprite;
-//}
-
-//std::shared_ptr<AnimatedSprite> ResourceManager::getAnimatedSprite(const std::string& spriteName)
-//{
-//	auto it = m_AnimatedSprites.find(spriteName);
-//	if (it != m_AnimatedSprites.end())
-//	{
-//		return it->second;
-//	}
-//	std::cerr << "Can't find the animated sprite: " << spriteName << std::endl;
-//	return nullptr;
-//}
 
 std::shared_ptr<Texture2D> ResourceManager::loadTextureAtlas(std::string textureName,
 	std::string texturePath,
@@ -398,18 +331,12 @@ std::shared_ptr<Mesh> ResourceManager::loadMesh(const std::string& name, const s
 			indices.push_back(uniqueVertices[vertex]);
 		}
 	}
-	//vertices.clear();
-	//vertices.push_back(Vertex{ {-1.0f, -1.0f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f} });
-	//vertices.push_back(Vertex{ {1.0f, -1.0f, 0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f} });
-	//vertices.push_back(Vertex{ {1.0f, 1.0f, 0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f} });
-	//vertices.push_back(Vertex{ {-1.0f, 1.0f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f} });
 
-	return makeResource<Mesh>(name, std::move(vertices), std::move(indices));
+	return makeResource<Mesh>(name, relativePath, std::move(vertices), std::move(indices));
 }
 
 bool ResourceManager::loadJSONScene(const std::string& relativePath)
 {
-	//GameObject::SetNull();
 	UnloadAllResources();
 	rapidjson::Document d = documentParse(std::move(relativePath));
 
@@ -418,14 +345,13 @@ bool ResourceManager::loadJSONScene(const std::string& relativePath)
 	loadJSONTextures(d.FindMember("textures")->value.GetString());
 	loadJSONSprites(d.FindMember("sprites")->value.GetString());
 	loadJSONGameOjects(d.FindMember("GameObjects")->value.GetString());
-	//loadJSONText("");
 
 	return true;
 }
 
 bool ResourceManager::loadSave(const std::string relativePath)
 {
-	loader = std::make_shared<std::pair<const std::string, std::function<void(const std::string)>>>(relativePath, loadSaveReal);
+	//loader = std::make_shared<std::pair<const std::string, std::function<void(const std::string)>>>(relativePath, loadSaveReal);
 	return true;
 }
 
@@ -441,13 +367,13 @@ void ResourceManager::loadSaveReal(const std::string& relativePath)
 	loadJSONSprites(d.FindMember("sprites")->value.GetString());
 	loadJSONGameOjects(/*m_path + '/' +*/relativePath);
 
-	loader = nullptr;
+	//loader = nullptr;
 }
 
 void ResourceManager::loadExecute()
 {
-	if (loader)
-		loader->second(loader->first);
+	//if (loader)
+	//	loader->second(loader->first);
 }
 
 [[nodiscard]]
@@ -488,9 +414,9 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 			++itVecScale;
 		}
 
-		int render_priority = 0;
-		if (it.FindMember("render_priority")->value.IsInt())
-			render_priority = it.FindMember("render_priority")->value.GetInt();
+		//int render_priority = 0;
+		//if (it.FindMember("render_priority")->value.IsInt())
+		//	render_priority = it.FindMember("render_priority")->value.GetInt();
 
 		std::string spriteName;
 		if (it.FindMember("sprite")->value.IsString())
@@ -510,7 +436,6 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 
 void ResourceManager::loadJSONComponents(const rapidjson::Value& it, std::shared_ptr<GameObject> gameObject)
 {
-	//m_Components components;
 	std::unordered_map<std::string, ComponentView> components;
 	if (it.FindMember("Components")->value.IsArray())
 	{
@@ -520,18 +445,16 @@ void ResourceManager::loadJSONComponents(const rapidjson::Value& it, std::shared
 			if (type == "LuaScript")
 			{
 				gameObject->addComponent<LuaScript>(std::make_shared<LuaScript>(itComponents.FindMember("name")->value.GetString(), itComponents.FindMember("path")->value.GetString(), L));
-				//components.scripts.emplace(itComponents.FindMember("name")->value.GetString(), std::make_shared<LuaScript>(itComponents.FindMember("name")->value.GetString(), itComponents.FindMember("path")->value.GetString(), L));
 			}
 			else if (type == "Button")
 			{
 				gameObject->addComponent<Button>(std::make_shared<Button>(itComponents.FindMember("name")->value.GetString()));
-				//components.buttons.emplace(itComponents.FindMember("name")->value.GetString(), std::make_shared<Button>(itComponents.FindMember("name")->value.GetString()));
 			}
 		}
 	}
 }
 
-bool ResourceManager::loadJSONSprites(const std::string& relativePath)
+bool ResourceManager::loadJSONSprites(const std::string& relativePath) //correct
 {
 	rapidjson::Document d = documentParse(std::move(relativePath));
 
@@ -542,6 +465,7 @@ bool ResourceManager::loadJSONSprites(const std::string& relativePath)
 		const std::string spriteName = it->FindMember("spriteName")->value.GetString();
 		const std::string textureName = it->FindMember("textureName")->value.GetString();
 		const std::string shaderName = it->FindMember("shaderName")->value.GetString();
+		const std::string meshName = it->FindMember("meshName")->value.GetString();
 		const glm::vec2 spriteSize =
 			glm::vec2(it->FindMember("spriteWidth")->value.GetInt(),
 				it->FindMember("spriteHeight")->value.GetInt());
@@ -566,12 +490,11 @@ bool ResourceManager::loadJSONSprites(const std::string& relativePath)
 			RenderMode = 0;
 		}
 #else
-		int RenderMode = 0;
 #endif
 
 
 
-		loadSprite(spriteName, textureName, shaderName, static_cast<uint32_t>(spriteSize.x), static_cast<uint32_t>(spriteSize.y), RenderMode, subTextureName);
+		loadSprite(spriteName, textureName, shaderName, meshName, static_cast<uint32_t>(spriteSize.x), static_cast<uint32_t>(spriteSize.y), subTextureName);
 
 		++it;
 	}
@@ -615,7 +538,7 @@ bool ResourceManager::loadJSONTextures(const std::string& relativePath)
 		++it;
 		std::string path = it->GetString();
 		++it;
-		loadTexture(Name, path);//remake
+		loadTexture(Name, path);
 	}
 
 	return true;
@@ -630,10 +553,11 @@ bool ResourceManager::loadJSONShaders(const std::string& relativePath)
 		std::string shaderName = itShaders.FindMember("name")->value.GetString();
 		std::string shader_v = itShaders.FindMember("filePath_v")->value.GetString();
 		std::string shader_f = itShaders.FindMember("filePath_f")->value.GetString();
-		auto ShaderProgram = loadShaders(std::move(shaderName), std::move(shader_v), std::move(shader_f));
+		loadShaders(std::move(shaderName), std::move(shader_v), std::move(shader_f));
 
-		glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(1080.f), 0.f, static_cast<float>(1080.f), -100.f, 100.f);
 #ifdef OGL
+		glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(1080.f), 0.f, static_cast<float>(1080.f), -100.f, 100.f);
+
 		ShaderProgram->use();
 		ShaderProgram->setInt("tex", 0);
 		ShaderProgram->setMatrix4("projectionMat", projectionMatrix);

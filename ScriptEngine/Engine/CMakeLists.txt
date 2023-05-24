@@ -222,6 +222,7 @@ add_subdirectory(internal/UI)
 add_subdirectory(internal/ComponentSystem)
 add_subdirectory(internal/Physics)
 add_subdirectory(internal/Input)
+add_subdirectory(internal/Containers)
 
 #target_include_directories(${PROJECT_NAME} INTERFACE internal/Renderer/src)
 	
@@ -238,6 +239,7 @@ add_subdirectory(external/Lua)
 add_subdirectory(external/P7)
 add_subdirectory(external/imguiLibrary)
 add_subdirectory(external/reactphysics3d)
+add_subdirectory(external/obj-io)
 
 if (MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
@@ -251,6 +253,7 @@ target_link_libraries(Engine PRIVATE Renderer)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
 ReactPhysics3D::reactphysics3d
+Containers
 Input
 Physics
 UI
@@ -261,6 +264,7 @@ IMGUI
  )
 
 target_include_directories(${PROJECT_NAME} PUBLIC external)
+target_include_directories(${PROJECT_NAME} PRIVATE external/obj-io/include)
 target_include_directories(${PROJECT_NAME} PUBLIC external/glm)
 target_include_directories(${PROJECT_NAME} PRIVATE external/sol2/include)
 target_include_directories(${PROJECT_NAME} PUBLIC external/rapidjson/include)

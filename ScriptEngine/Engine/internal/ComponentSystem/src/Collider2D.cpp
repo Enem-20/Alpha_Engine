@@ -15,7 +15,7 @@ Collider2D::Collider2D(const std::string& name, std::shared_ptr<Transform> trans
 	auto& common = Physics::getCommon();
 	auto world = Physics::getWorld();
 
-	shape = common.createBoxShape(reactphysics3d::Vector3(transform->scale.x/(float)2, transform->scale.y/(float)2, transform->scale.z/(float)2));
+	shape = common.createBoxShape(reactphysics3d::Vector3(transform->scale.x, transform->scale.y, transform->scale.z));
 	collisionBody = world->createCollisionBody(transform->ToPhysicsTransform());
 	collisionBody->addCollider(shape, transform->ToPhysicsTransform());
 	collisionBody->setUserData(toVoidPointer());

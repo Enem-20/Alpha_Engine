@@ -4,10 +4,12 @@ size_t UIelement::ID = 0;
 
 UIelement::UIelement(const std::string& name, std::shared_ptr<GameObject> gameObject)
 	: Component(name, gameObject)
+	, parent(parent)
 {}
 
 UIelement::UIelement(UIelement&& uiElement) noexcept
 	: elements(std::move(uiElement.elements))
+	, parent(std::move(uiElement.parent.lock()))
 	, Component(std::move(uiElement))
 {
 	++ID;
@@ -15,6 +17,7 @@ UIelement::UIelement(UIelement&& uiElement) noexcept
 
 UIelement::UIelement(const UIelement& uiElement)
 	: elements(uiElement.elements)
+	, parent(uiElement.parent.lock())
 	, Component(uiElement)
 {
 	++ID;

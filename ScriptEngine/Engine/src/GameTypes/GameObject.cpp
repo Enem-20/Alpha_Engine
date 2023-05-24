@@ -144,17 +144,15 @@ void GameObject::Update(uint32_t currentImage)
 	}
 }
 
-void GameObject::AddChild(const GameObject& gameObject)
-{
-	children.push_back(std::make_shared<GameObject>(gameObject));
+void GameObject::AddChild(std::shared_ptr<GameObject> gameObject) {
+	gameObject->parent = ResourceManager::getResource<GameObject>(name);
+	children.push_back(gameObject);
 }
-GameObject& GameObject::GetChild(int i) const
-{
-	return *children[i];
+std::shared_ptr<GameObject> GameObject::GetChild(int i) {
+	return children[i];
 }
 
-GameObject& GameObject::toNull(GameObject& gameObject)
-{
+GameObject& GameObject::toNull(GameObject& gameObject) {
 	gameObject.children.clear();
 	gameObject.ID = -1;
 	gameObject.name = "Null";
@@ -175,7 +173,6 @@ GameObject::GameObject(size_t ID)
 //	return Null;
 //}
 
-const std::string& GameObject::Name() const
-{
+const std::string& GameObject::Name() const {
 	return name;
 }

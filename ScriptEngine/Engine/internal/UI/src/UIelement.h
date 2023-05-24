@@ -38,7 +38,9 @@ public:
 	//virtual void render(glm::mat4 model) = 0;
 
 	//std::shared_ptr<Physics::Collider> collider;
+	std::weak_ptr<UIelement> parent;
 protected:
+	
 	std::list<sol::protected_function> elements;
 	static size_t ID;
 
@@ -46,4 +48,16 @@ protected:
 	glm::vec2 position;
 #endif
 };
+
+struct UIelementView {
+	UIelementView(std::shared_ptr<void> Data) : Data(Data) {}
+	~UIelementView() { Data = nullptr; }
+	template<class UIelementType>
+	std::shared_ptr<UIelementType> getUIFromView() {
+		return std::reinterpret_pointer_cast<UIelementType>(Data);
+	}
+private:
+	std::shared_ptr<void> Data;
+};
+
 #endif //UIELEMENT

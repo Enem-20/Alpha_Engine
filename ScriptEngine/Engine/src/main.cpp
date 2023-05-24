@@ -2,6 +2,7 @@
 
 #include "../internal/Renderer/src/Renderer.h"
 #include "Resources/ResourceManager.h"
+#include "../internal/Input/src/Input.h"
 #include "../internal/Renderer/src/ImGui/ImGui.h"
 #include "GameTypes/GameObject.h"
 #include "../internal/Physics/src/Raycast.h"
@@ -21,13 +22,19 @@
 int main(int argc, char** argv) {
 	ResourceManager::SetExecutablePath(argv[0]);
 
+	ResourceManager::loadShaders("TestShaderProgram", "vert.spv", "frag.spv");
 #ifdef GLFW_INCLUDE_VULKAN
-	std::unique_ptr<Renderer> renderer = std::make_unique<Renderer>();
+	std::shared_ptr<Renderer> renderer = ResourceManager::makeResource<Renderer>("main");
 #endif
 	{
+		Input::init();
 		ImGuiManager::init();
-		auto sprite = ResourceManager::loadSprite("DeskSprite", "Desk", "TestShaderProgram", ResourceManager::getResource<Texture2D>("Desk")->getWidth(), ResourceManager::getResource<Texture2D>("Desk")->getHeight(), 0, "default");
-		auto another = ResourceManager::loadSprite("AnotherSprite", "Another", "TestShaderProgram", ResourceManager::getResource<Texture2D>("Another")->getWidth(), ResourceManager::getResource<Texture2D>("Another")->getHeight(), 0, "default");
+
+		ResourceManager::loadTexture("Desk", "Desk.png");
+		ResourceManager::loadTexture("Another", "Another.png");
+		auto mesh = ResourceManager::loadMesh("SpriteMesh", "SpriteMesh.obj");
+		auto sprite = ResourceManager::loadSprite("DeskSprite", "Desk", "TestShaderProgram", "SpriteMesh", ResourceManager::getResource<Texture2D>("Desk")->getWidth(), ResourceManager::getResource<Texture2D>("Desk")->getHeight(), "default");
+		auto another = ResourceManager::loadSprite("AnotherSprite", "Another", "TestShaderProgram", "SpriteMesh", ResourceManager::getResource<Texture2D>("Another")->getWidth(), ResourceManager::getResource<Texture2D>("Another")->getHeight(), "default");
 		//sprite->setPosition(glm::vec3(0.0f, 0.0f, 0.1f));
 		auto transform = std::make_shared<Transform>(glm::vec3(0.f, 0.0f, 20.0f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 0.01f), "Desk");
 		auto transform2 = std::make_shared<Transform>(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.f), glm::vec3(0.125f, 0.125f, 0.01f), "Another");
@@ -47,8 +54,8 @@ int main(int argc, char** argv) {
 		gameObject->addComponent<Transform>(transform);
 		gameObject->addComponent<Sprite>(sprite);
 		gameObject->addComponent<Panel>(panel);
-		gameObject->addComponent<Button>(button);
-		gameObject->addComponent<Button>(button2);
+		//gameObject->addComponent<Button>(button);
+		//gameObject->addComponent<Button>(button2);
 		gameObject->addComponent<Collider2D>(collider);
 
 		gameObject2->addComponent<Transform>(transform2);

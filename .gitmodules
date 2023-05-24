@@ -34,3 +34,6 @@
 [submodule "ScriptEngine/Engine/external/reactphysics3d"]
 	path = ScriptEngine/Engine/external/reactphysics3d
 	url = https://github.com/DanielChappuis/reactphysics3d.git
+[submodule "ScriptEngine/Engine/external/obj-io"]
+	path = ScriptEngine/Engine/external/obj-io
+	url = https://github.com/thinks/obj-io.git

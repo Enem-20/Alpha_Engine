@@ -58,8 +58,8 @@ public:
 	Transform& GetTransform();
 	virtual void render(CommandBuffer& commandBuffer, RenderPipeline& renderPipeline, uint32_t currentFrame);
 
-	void AddChild(const GameObject& gameObject);
-	GameObject& GetChild(int i) const;
+	void AddChild(std::shared_ptr<GameObject> gameObject);
+	std::shared_ptr<GameObject> GetChild(int i);
 
 	template<class ComponentType>
 	void addComponent(std::shared_ptr<ComponentType> component);
@@ -78,6 +78,8 @@ public:
 	std::unordered_map<std::string, std::unordered_map<std::string, ComponentView>> components;
 
 	std::vector<std::shared_ptr<GameObject>> children;
+
+	std::weak_ptr<GameObject> parent;
 
 	size_t ID;
 

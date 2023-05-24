@@ -42,6 +42,8 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <tuple>
+#include <queue>
 
 class Renderer;
 class Mesh;
@@ -57,12 +59,6 @@ public:
 	std::shared_ptr<T> getResource() {
 		return std::reinterpret_pointer_cast<T>(data);
 	}
-
-	//template<class T>
-	//void free() {
-	//	delete reinterpret_cast<T*>(data);
-	//	data = nullptr;
-	//}
 private:
 	std::shared_ptr<void> data;
 };
@@ -70,13 +66,6 @@ private:
 class DLLEXPORT ResourceManager
 {
 public:
-	//struct m_Components
-	//{
-	//	std::unordered_map<std::string, std::shared_ptr<LuaScript>> scripts;
-	//	std::unordered_map<std::string, std::shared_ptr<Button>> buttons;
-	//};
-
-
 	static void SetExecutablePath(const std::string& executablePath);
 	static void UnloadAllResources();
 
@@ -87,29 +76,19 @@ public:
 	ResourceManager(ResourceManager&&) = delete;
 
 	static void SetLuaState(std::shared_ptr<sol::state> newL);
-	static std::shared_ptr<ShaderProgram> loadShaders(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
-	//static std::shared_ptr<ShaderProgram> getShaderProgram(const std::string& shaderName);
+	static void loadShaders(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
+	static void loadShaderProgram(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
+	static void loadShadersReal();
 
 	static std::shared_ptr<Texture2D> loadTexture(const std::string& textureName, const std::string& texturePath);
-
-	//static std::shared_ptr<Texture2D> getTexture(const std::string& textureName);
 
 	static std::shared_ptr<Sprite> loadSprite(const std::string& spriteName,
 		const std::string& textureName,
 		const std::string& shaderName,
+		const std::string& meshName,
 		const unsigned int spriteWidth,
 		const unsigned int spriteHeight,
-		const int RenderMode,
 		const std::string& subTextureName = "default");
-	//static std::shared_ptr<Sprite> getSprite(const std::string& spriteName);
-
-	//static std::shared_ptr<AnimatedSprite> loadAnimatedSprite(const std::string& spriteName,
-	//	const std::string& textureName,
-	//	const std::string& shaderName,
-	//	const unsigned int spriteWidth,
-	//	const unsigned int spriteHeight,
-	//	const std::string& subTextureName = "default");
-	//static std::shared_ptr<AnimatedSprite> getAnimatedSprite(const std::string& spriteName);
 
 
 	static std::shared_ptr<Texture2D> loadTextureAtlas(std::string textureName,
@@ -153,24 +132,8 @@ public:
 	template<class ResourceType, class... Args>
 	static std::shared_ptr<ResourceType> makeResource(Args&&... args);
 private:
-//#ifdef GLFW_INCLUDE_VULKAN
-//	static std::unique_ptr<Renderer> renderer;
-//#endif
-
 	static std::shared_ptr<sol::state> L;
 	static std::string getFileString(const std::string& relativeFilePath);
-
-	//typedef std::map<const std::string, std::shared_ptr<ShaderProgram>> ShaderProgramsMap;
-	//static ShaderProgramsMap m_shaderPrograms;
-
-	//typedef std::map<std::string, std::shared_ptr<Texture2D>> TexturesMap;
-	//static TexturesMap m_textures;
-
-	//typedef std::map<const std::string, std::shared_ptr<Sprite>> SpritesMap;
-	//static SpritesMap m_sprites;
-
-	//typedef std::map<const std::string, std::shared_ptr<AnimatedSprite>> AnimatedSpritesMap;
-	//static AnimatedSpritesMap m_AnimatedSprites;
 
 	static std::unordered_map<std::string, std::unordered_map<std::string, Resource>> m_resources;
 
@@ -180,7 +143,8 @@ private:
 	static std::string relative_textureAtlasses;
 	static std::string relative_shaders;
 	static std::string relative_main;
-	static std::shared_ptr<std::pair<const std::string, std::function<void(const std::string)>>> loader;
+	static std::queue<std::function<void(const std::string&, const std::string&, const std::string&)>> shaderLoaders;
+	static std::queue<std::tuple<std::string, std::string, std::string>> shaderLoaderParameters;
 };
 
 template<class ResourceType>
@@ -189,11 +153,9 @@ void ResourceManager::addResource(ResourceType* resource) {
 	auto resourcesByType = m_resources.find(ResourceType::type);
 	std::shared_ptr<ResourceType> toShared(resource);
 	if (resourcesByType != m_resources.end()) {
-
 		resourcesByType->second.emplace(resource->name, Resource{ std::reinterpret_pointer_cast<void>(toShared) });
 	}
 	else {
-		//m_resources.emplace(ResourceType::type, std::unordered_map<std::string, Resource>());
 		m_resources[ResourceType::type].emplace(resource->name, Resource{ std::reinterpret_pointer_cast<void>(toShared) });
 	}
 }
