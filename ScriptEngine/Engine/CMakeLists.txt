@@ -138,8 +138,8 @@ set(Other
 set(Scene
 	# src/Scene/Scene.h
 	# src/Scene/Scene.cpp
-	src/Scene/Hierarchy.h
-	src/Scene/Hierarchy.cpp
+	#src/Scene/Hierarchy.h
+	#src/Scene/Hierarchy.cpp
 	# src/Scene/Camera.h
 	# src/Scene/Camera.cpp
 )

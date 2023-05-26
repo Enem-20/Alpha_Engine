@@ -105,7 +105,9 @@ public:
 	static bool loadSave(const std::string relativePath);
 	static void loadSaveReal(const std::string& relativePath);
 	static void loadExecute();
+	static std::vector<std::string> getDirectories(const std::string& relativePath);
 	[[nodiscard]] static bool loadJSONGameOjects(const std::string& relativePath);
+	static std::shared_ptr<Transform> loadJSONTransform(const std::string& path);
 	static bool loadJSONSprites(const std::string& relativePath);
 	static bool loadJSONTextureAtlasses(const std::string& relativePath);
 	static bool loadJSONTextures(const std::string& relativePath);
@@ -151,11 +153,19 @@ template<class ResourceType>
 void ResourceManager::addResource(ResourceType* resource) {
 	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
 	auto resourcesByType = m_resources.find(ResourceType::type);
-	std::shared_ptr<ResourceType> toShared(resource);
 	if (resourcesByType != m_resources.end()) {
-		resourcesByType->second.emplace(resource->name, Resource{ std::reinterpret_pointer_cast<void>(toShared) });
+		if (!resourcesByType->second.contains(resource->name)) {
+			std::shared_ptr<ResourceType> toShared(resource);
+			resourcesByType->second.emplace(resource->name, Resource{ std::reinterpret_pointer_cast<void>(toShared) });
+		}
+			
+		else {
+			std::cout << "Resource with type " << ResourceType::type << " and name " << resource->name << " already exists and can't be overwritten" << '\n';
+			delete resource;
+		}
 	}
 	else {
+		std::shared_ptr<ResourceType> toShared(resource);
 		m_resources[ResourceType::type].emplace(resource->name, Resource{ std::reinterpret_pointer_cast<void>(toShared) });
 	}
 }
@@ -227,8 +237,10 @@ std::unordered_map<std::string, Resource>* ResourceManager::getResourcesWithType
 template<class ResourceType, class... Args>
 std::shared_ptr<ResourceType> ResourceManager::makeResource(Args&&... args) {
 	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
+	std::tuple<Args...> store(args...);
+	auto name = std::get<0>(store);
 	ResourceType* instance = new ResourceType(args...);
-	return getResource<ResourceType>(instance->name);
+	return getResource<ResourceType>(name);
 }
 
 #endif // !RESOURCEMANAGER

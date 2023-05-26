@@ -44,3 +44,8 @@ Mesh::Mesh(Mesh&& model) noexcept
 {
 	ResourceManager::addResource<Mesh>(this);
 }
+
+Mesh::~Mesh() {
+	name = "1";
+	//ResourceManager::removeResource<Mesh>(name);
+}

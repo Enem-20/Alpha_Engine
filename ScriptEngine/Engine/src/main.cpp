@@ -30,23 +30,23 @@ int main(int argc, char** argv) {
 		Input::init();
 		ImGuiManager::init();
 
-		ResourceManager::loadTexture("Desk", "Desk.png");
+		ResourceManager::loadJSONGameOjects("res/saves/GameObjects");
+
+		/*ResourceManager::loadTexture("Desk", "Desk.png");
 		ResourceManager::loadTexture("Another", "Another.png");
 		auto mesh = ResourceManager::loadMesh("SpriteMesh", "SpriteMesh.obj");
 		auto sprite = ResourceManager::loadSprite("DeskSprite", "Desk", "TestShaderProgram", "SpriteMesh", ResourceManager::getResource<Texture2D>("Desk")->getWidth(), ResourceManager::getResource<Texture2D>("Desk")->getHeight(), "default");
 		auto another = ResourceManager::loadSprite("AnotherSprite", "Another", "TestShaderProgram", "SpriteMesh", ResourceManager::getResource<Texture2D>("Another")->getWidth(), ResourceManager::getResource<Texture2D>("Another")->getHeight(), "default");
-		//sprite->setPosition(glm::vec3(0.0f, 0.0f, 0.1f));
+
 		auto transform = std::make_shared<Transform>(glm::vec3(0.f, 0.0f, 20.0f), glm::vec3(0.f), glm::vec3(1.f, 1.f, 0.01f), "Desk");
 		auto transform2 = std::make_shared<Transform>(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.f), glm::vec3(0.125f, 0.125f, 0.01f), "Another");
 		auto button = std::make_shared<Button>("Button");
 		auto button2 = std::make_shared<Button>("Button2");
 		auto panel = ResourceManager::makeResource<Panel>("panel");
-		//components.emplace("Desk", ComponentView{ std::reinterpret_pointer_cast<void>(sprite)});
-		//components.emplace("Desk", ComponentView{ std::reinterpret_pointer_cast<void>(transform) });
+
 
 		auto collider = ResourceManager::makeResource<Collider2D>("Desk", transform);
 		auto collider2 = ResourceManager::makeResource<Collider2D>("Another", transform2);
-		//auto collider = ResourceManager::makeResource<Collider2D>("Another", transform2);
 
 		auto gameObject = ResourceManager::makeResource<GameObject>("Desk");
 		auto gameObject2 = ResourceManager::makeResource<GameObject>("Another");
@@ -54,8 +54,6 @@ int main(int argc, char** argv) {
 		gameObject->addComponent<Transform>(transform);
 		gameObject->addComponent<Sprite>(sprite);
 		gameObject->addComponent<Panel>(panel);
-		//gameObject->addComponent<Button>(button);
-		//gameObject->addComponent<Button>(button2);
 		gameObject->addComponent<Collider2D>(collider);
 
 		gameObject2->addComponent<Transform>(transform2);
@@ -63,12 +61,11 @@ int main(int argc, char** argv) {
 		gameObject2->addComponent<Collider2D>(collider2);
 
 		panel->addChild(button);
-		panel->addChild(button2);
+		panel->addChild(button2);*/
 
 		Raycast raycast;
 
 
-		//while(!raycast.rayIsEnded()){}
 
 		auto hittedCollider = raycast.closestBodyHit(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 50.0f));
 
@@ -78,18 +75,6 @@ int main(int argc, char** argv) {
 		renderer->render();
 
 		ResourceManager::UnloadAllResources();
-
-		/*gameObject2.reset();
-		gameObject.reset();
-		sprite.reset();
-		another.reset();
-		panel.reset();
-		collider.reset();
-		collider2.reset();
-		button.reset();
-		button2.reset();
-		transform.reset();
-		transform2.reset();*/
 	}
 
 	ImGuiManager::destroy();

@@ -15,6 +15,7 @@ struct Mesh : ResourceBase{
 	Mesh(std::string&& name, std::string&& path, std::vector<Vertex>&& vertices, std::vector<uint32_t>&& indices) noexcept;
 	Mesh(const Mesh& model);
 	Mesh(Mesh&& model) noexcept;
+	~Mesh();
 
 	std::vector<Vertex> vertices{};
 	std::vector<uint32_t> indices{};

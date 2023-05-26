@@ -2,7 +2,7 @@
 
 #include "Serializer.h"
 
-#include "../Scene/Hierarchy.h"
+//#include "../Scene/Hierarchy.h"
 
 #include "../GameTypes/GameObject.h"
 
@@ -12,18 +12,23 @@
 
 //#include "../Renderer/AnimatedSprite.h"
 //#include "../../../src/ScriptEngine.h"
+#include "../../internal/UI/src/Panel.h"
 #include "../../internal/UI/src/Button.h"
 #include "../../internal/ComponentSystem/src/Transform.h"
 #include "../../internal/ComponentSystem/src/LuaScript.h"
+
+#include "../Helpers/casts.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tinyobjloader/tiny_obj_loader.h>
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/vec3.hpp>
 
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <filesystem>					 
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
@@ -63,7 +68,7 @@ void ResourceManager::UnloadAllResources()
 	Serializer::Serialize(m_path + "/res/saves");
 
 	m_resources.clear();
-	Hierarchy::Clear();
+	//Hierarchy::Clear();
 }
 
 std::string ResourceManager::getFileString(const std::string& relativeFilePath)
@@ -376,62 +381,188 @@ void ResourceManager::loadExecute()
 	//	loader->second(loader->first);
 }
 
+std::vector<std::string> ResourceManager::getDirectories(const std::string& relativePath) {
+	std::vector<std::string> directories;
+
+	auto path = m_path + '/' + relativePath;
+	for (auto& entry : std::filesystem::directory_iterator(path)) {
+		auto absolute = Casts::wharTochar(entry.path().c_str());
+		auto relative = Casts::wharTochar(std::filesystem::relative(absolute, path).c_str());
+		directories.push_back({ relativePath + '/' + relative});
+	}
+
+	return directories;
+}
+
 [[nodiscard]]
 bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 {
-	rapidjson::Document d = documentParse(relativePath);
+	auto directories = getDirectories(relativePath);
 
-	if (d.IsObject())
-	{
-		std::cout << "that's object" << std::endl;
+	std::unordered_map<std::string, std::vector<std::string>> gameObjectsChildren;
+
+	for (size_t i = 0; i < directories.size(); ++i) {
+		auto gameObjectFilename = std::filesystem::path{ directories[i] }.filename().string() + ".json";
+		rapidjson::Document d = documentParse(directories[i] + '/' + gameObjectFilename);
+		std::string name = d.FindMember("name")->value.GetString();
+		std::shared_ptr<GameObject> gameObject = makeResource<GameObject>(name);
+
+
+
+		std::unordered_map<std::string, std::vector<std::string>> components;
+		std::vector<std::string> children;
+		for (const auto& child : d.FindMember("children")->value.GetArray()) {
+			children.push_back(child.GetString());
+
+
+		}
+		gameObjectsChildren.emplace(name, children);
+
+		auto jsonComponents = d.FindMember("components")->value.GetObject();
+
+		for (const auto& panel : jsonComponents.FindMember((Panel::type + 's').c_str())->value.GetArray()) {
+			components[Panel::type].push_back(panel.FindMember("name")->value.GetString());
+
+
+		}
+
+
+
+		for (const auto& sprite : jsonComponents.FindMember((Sprite::type + 's').c_str())->value.GetArray()) {
+			components[Sprite::type].push_back(sprite.FindMember("name")->value.GetString());
+
+
+		}
+
+
+		for (const auto& luascript : jsonComponents.FindMember((LuaScript::type + 's').c_str())->value.GetArray()) {
+			components[Sprite::type].push_back(luascript.FindMember("name")->value.GetString());
+		}
+
+		for (const auto& transform : jsonComponents.FindMember((Transform::type + 's').c_str())->value.GetArray()) {
+
+
+			components[Sprite::type].push_back(transform.FindMember("name")->value.GetString());
+		}
+
+		const std::string panelsDirectoryPath = directories[i] + "/Components/" + Panel::type + 's';
+		const std::string scriptsDirectoryPath = directories[i] + "/Components/" + LuaScript::type + 's';
+		const std::string spritesDirectoryPath = directories[i] + "/Components/" + Sprite::type + 's';
+		const std::string transformsDirectoryPath = directories[i] + "/Components/" + Transform::type + 's';
+		const std::string colliderDirectoryPath = directories[i] + "/Components/" + Collider2D::type + 's';
+
+		auto panelDirectories = getDirectories(panelsDirectoryPath);
+		for (size_t i = 0; i < panelDirectories.size(); ++i) {
+			auto panelFilename = std::filesystem::path{ panelDirectories[i] }.filename().string() + ".json";
+
+			rapidjson::Document panelDocument = documentParse(panelDirectories[i] + '/' + panelFilename);
+
+			auto panelName = panelDocument.FindMember("name")->value.GetString();
+			std::shared_ptr<Panel> panel = makeResource<Panel>(panelName);
+			gameObject->addComponent<Panel>(panel);
+			auto uis = panelDocument.FindMember("uis")->value.GetObject();
+			auto jsonButtons = uis.FindMember(std::string(Button::type + 's').c_str());
+
+			for (const auto& button : jsonButtons->value.GetArray()) {
+				panel->addChild(std::make_shared<Button>(button.FindMember("name")->value.GetString()));
+				//TODO: additional settings could be added by reading "Buttons" subdirectory
+			}
+		}
+
+		auto spriteDirectories = getDirectories(spritesDirectoryPath);
+		for (size_t i = 0; i < spriteDirectories.size(); ++i) {
+			auto spriteFilename = std::filesystem::path{ spriteDirectories[i] }.filename().string() + ".json";
+
+			rapidjson::Document spriteDocument = documentParse(spriteDirectories[i] + '/' + spriteFilename);
+
+			std::string spriteName = spriteDocument.FindMember("name")->value.GetString();
+			std::string textureName = spriteDocument.FindMember("textureName")->value.GetString();
+			std::string shaderProgramName = spriteDocument.FindMember("shaderProgramName")->value.GetString();
+			std::string meshName = spriteDocument.FindMember("meshName")->value.GetString();
+			float width = spriteDocument.FindMember("width")->value.GetFloat();
+			float height = spriteDocument.FindMember("height")->value.GetFloat();
+			std::string subTextureName = spriteDocument.FindMember("subTextureName")->value.GetString();
+
+			//TODO: for additional settings you could implement sprite settings loading by sprite name
+
+			auto textureDocument = documentParse(spriteDirectories[i] + '/' + textureName + ".json");
+			auto shaderDocument = documentParse(spriteDirectories[i] + '/' + shaderProgramName + ".json");
+			auto meshDocument = documentParse(spriteDirectories[i] + '/' + meshName + ".json");
+
+			ResourceManager::loadShaders(shaderDocument.FindMember("name")->value.GetString(), shaderDocument.FindMember("vertexPath")->value.GetString(), shaderDocument.FindMember("fragmentPath")->value.GetString());
+			auto shaderProgram = getResource<ShaderProgram>(shaderProgramName);
+			auto texture = loadTexture(textureName, textureDocument.FindMember("path")->value.GetString());
+			auto mesh = ResourceManager::loadMesh(meshName, meshDocument.FindMember("path")->value.GetString());
+			gameObject->addComponent<Sprite>(ResourceManager::loadSprite(spriteName, textureName, shaderProgramName, meshName, width, height, subTextureName));
+		}
+
+		auto scriptDirectories = getDirectories(scriptsDirectoryPath);
+		for (size_t i = 0; i < scriptDirectories.size(); ++i) {
+			auto scriptFilename = std::filesystem::path{ scriptDirectories[i] }.filename().string() + ".json";
+
+			rapidjson::Document scriptDocument = documentParse(spriteDirectories[i] + '/' + scriptFilename);
+
+			auto scriptName = scriptDocument.FindMember("name")->value.GetString();
+			auto scriptPath = scriptDocument.FindMember("path")->value.GetString();
+
+			gameObject->addComponent<LuaScript>(std::make_shared<LuaScript>(scriptName, scriptPath, L));
+		}
+
+		auto transformDirectories = getDirectories(transformsDirectoryPath);
+		for (size_t i = 0; i < transformDirectories.size(); ++i) {
+			auto transformFilename = std::filesystem::path{ transformDirectories[i] }.filename().string() + ".json";
+
+			gameObject->addComponent<Transform>(loadJSONTransform(transformDirectories[i] + '/' + transformFilename));
+		}
+
+		auto colliderDirectories = getDirectories(colliderDirectoryPath);
+		for (size_t i = 0; i < colliderDirectories.size(); ++i) {
+			auto colliderFilename = std::filesystem::path{ colliderDirectories[i] }.filename().string() + ".json";
+
+			rapidjson::Document colliderDocument = documentParse(colliderDirectories[i] + '/' + colliderFilename);
+
+			auto colliderName = colliderDocument.FindMember("name")->value.GetString();
+
+			std::shared_ptr<Transform> transform = loadJSONTransform(colliderDirectories[i] + '/' + colliderDocument.FindMember(Transform::type.c_str())->value.GetString() + ".json");
+
+			gameObject->addComponent<Collider2D>(makeResource<Collider2D>(colliderName, transform));
+		}
 	}
 
-	for (const auto& it : d.GetArray())
-	{
-		const std::string GameObjectName = it.FindMember("name")->value.GetString();
 
-		glm::vec3 buf3;
-		int itBuf = 0;
-		for (const auto& itPosition : it.FindMember("position")->value.GetArray())
-		{
-			buf3[itBuf] = static_cast<float>(itPosition.GetDouble());
-			++itBuf;
-		}
-
-		glm::vec3 bufRotation;
-		int itVecRotation = 0;
-		for (const auto& itRotation : it.FindMember("rotation")->value.GetArray())
-		{
-			bufRotation[itVecRotation] = static_cast<float>(itRotation.GetDouble());
-			++itVecRotation;
-		}
-
-		glm::vec3 bufScale;
-		int itVecScale = 0;
-		for (const auto& itScale : it.FindMember("scale")->value.GetArray())
-		{
-			bufScale[itVecScale] = static_cast<float>(itScale.GetDouble());
-			++itVecScale;
-		}
-
-		//int render_priority = 0;
-		//if (it.FindMember("render_priority")->value.IsInt())
-		//	render_priority = it.FindMember("render_priority")->value.GetInt();
-
-		std::string spriteName;
-		if (it.FindMember("sprite")->value.IsString())
-		{
-			spriteName = it.FindMember("sprite")->value.GetString();
-		}
-
-		auto gameObject = std::make_shared<GameObject>(GameObjectName);
-		loadJSONComponents(it, gameObject);
-
-		gameObject->addComponent<Transform>(std::make_shared<Transform>(buf3, bufRotation, bufScale));
-		gameObject->addComponent<Sprite>(getResource<Sprite>(spriteName));
-	}
 
 	return true;
+}
+
+std::shared_ptr<Transform> ResourceManager::loadJSONTransform(const std::string& path) {
+	rapidjson::Document transformDocument = documentParse(path);
+
+	auto transformName = transformDocument.FindMember("name")->value.GetString();
+	auto transformPosition = transformDocument.FindMember("position")->value.GetArray();
+	auto transformRotation = transformDocument.FindMember("rotation")->value.GetArray();
+	auto transformScale = transformDocument.FindMember("scale")->value.GetArray();
+
+	glm::vec3 position;
+	glm::vec3 rotation;
+	glm::vec3 scale;
+
+	size_t j = 0;
+	for (auto& arg : transformPosition) {
+		position[j] = arg.GetFloat();
+		++j;
+	}
+	j = 0;
+	for (auto& arg : transformRotation) {
+		rotation[j] = arg.GetFloat();
+		++j;
+	}
+	j = 0;
+	for (auto& arg : transformScale) {
+		scale[j] = arg.GetFloat();
+		++j;
+	}
+
+	return std::make_shared<Transform>(position, rotation, scale, transformName);
 }
 
 void ResourceManager::loadJSONComponents(const rapidjson::Value& it, std::shared_ptr<GameObject> gameObject)

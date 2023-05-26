@@ -65,7 +65,7 @@ GameObject::~GameObject()
 #endif
 	children.clear();
 	components.clear();
-	ResourceManager::removeResource<GameObject>(name);
+	//ResourceManager::removeResource<GameObject>(name);
 }
 
 void GameObject::render(CommandBuffer& commandBuffer, RenderPipeline& renderPipeline, uint32_t currentFrame)

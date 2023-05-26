@@ -42,6 +42,8 @@ public:
 
 	}
 
+	std::shared_ptr<Transform> getTransform();
+
 	GENERATETYPE(Collider2D)
 private:
 	reactphysics3d::BoxShape* shape;

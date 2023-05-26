@@ -48,8 +48,12 @@ public:
 	glm::vec3 GetScale() const;
 
 	reactphysics3d::Transform ToPhysicsTransform();
+	static std::shared_ptr<Transform> ToTransformFromPhysicsTransform(reactphysics3d::Transform physicsTransform, glm::vec3 scale = glm::vec3(0.0f));
 	static reactphysics3d::Vector3 FromGLMToPhysicsVector3(const glm::vec3& vec);
+	static glm::vec3 FromPhysicsVector3ToGLM(const reactphysics3d::Vector3& vec);
 	static reactphysics3d::Quaternion FromGLMToPhysicsQuaternion(const glm::vec3& orientation);
+	static glm::vec3 FromPhysicsQuaternionToGLM(const reactphysics3d::Quaternion& orientation);
+
 
 	GENERATETYPE(Transform)
 public:

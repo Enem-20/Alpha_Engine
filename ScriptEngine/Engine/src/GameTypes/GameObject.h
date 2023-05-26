@@ -4,10 +4,18 @@
 #define GAMEOBJECT
 
 #include "../ExportPropety.h"
-
+//#include "../../internal/ComponentSystem/src/Collider2D.h"
+//#include "../../internal/ComponentSystem/src/Transform.h"
+//#include "../../internal/ComponentSystem/src/LuaScript.h"
+//#include "../../internal/Renderer/src/Sprite.h"
+//#include "../../internal/UI/src/Panel.h"
+//#include "../../internal/UI/src/Button.h"
 #include "../Resources/ResourceManager.h"
+
 #include "../../internal/ComponentSystem/src/Component.h"
 #include "../Resources/ResourceBase.h"
+
+
 
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
@@ -24,6 +32,8 @@ class Transform;
 class LuaScript;
 class Sprite;
 class Button;
+class RenderPipeline;
+class CommandBuffer;
 
 class DLLEXPORT GameObject : public ResourceBase
 {
@@ -91,11 +101,10 @@ private:
 	GameObject(size_t ID);
 };
 
-
 template<class ComponentType>
 void GameObject::addComponent(std::shared_ptr<ComponentType> component) {
 	static_assert(std::is_base_of<Component, ComponentType>::value || std::is_same<Component, ComponentType>::value, "ComponentType must inherit from Component or be a Component");
-	component->gameObject = ResourceManager::getResource<GameObject>(this->name);
+	component->gameObject = ResourceManager::template getResource<GameObject>(this->name);
 
 	auto componentsByType = components.find(ComponentType::type);
 	if (componentsByType != components.end()) {

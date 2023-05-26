@@ -17,7 +17,7 @@ Panel::Panel(const std::string& name, std::shared_ptr<GameObject> gameObject)
 }
 
 Panel::~Panel() {
-	ResourceManager::removeResource<Panel>(name);
+	//ResourceManager::removeResource<Panel>(name);
 }
 
 void Panel::Awake() {

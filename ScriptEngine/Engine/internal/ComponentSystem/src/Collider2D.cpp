@@ -24,7 +24,7 @@ Collider2D::Collider2D(const std::string& name, std::shared_ptr<Transform> trans
 }
 
 Collider2D::~Collider2D() {
-	ResourceManager::removeResource<Collider2D>(name);
+	//ResourceManager::removeResource<Collider2D>(name);
 }
 
 void* Collider2D::toVoidPointer() {
@@ -33,4 +33,8 @@ void* Collider2D::toVoidPointer() {
 
 std::string* Collider2D::colliderNameFromVoidPointer(void* data) {
 	return reinterpret_cast<std::string*>(data);
+}
+
+std::shared_ptr<Transform> Collider2D::getTransform() {
+	return Transform::ToTransformFromPhysicsTransform(collisionBody->getTransform(), Transform::FromPhysicsVector3ToGLM(shape->getHalfExtents()));
 }

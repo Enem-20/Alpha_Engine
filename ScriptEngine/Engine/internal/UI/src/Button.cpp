@@ -53,6 +53,7 @@ void Button::LastUpdate() {
 
 Button::~Button()
 {
+	//ResourceManager::removeResource<Button>(name);
 }
 
 void Button::translate(const glm::vec2& newPos)

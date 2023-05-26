@@ -36,4 +36,10 @@ public:
 	{
 		return std::wstring(str.begin(), str.end());
 	}
+
+	static char* wharTochar(const wchar_t* str) {
+		char* vOut = new char[wcslen(str) + 1];
+		wcstombs_s(NULL, vOut, wcslen(str) + 1, str, wcslen(str) + 1);
+		return vOut;
+	}
 };

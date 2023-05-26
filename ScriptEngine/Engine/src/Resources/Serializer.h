@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef SERIALIZER
+#define SERIALIZER
+
+
 #include <rapidjson/prettywriter.h>
 
 #include <memory>
@@ -17,22 +21,13 @@
 typedef rapidjson::PrettyWriter<rapidjson::StringBuffer> prettywriter;
 typedef rapidjson::Reader reader;
 
-class Button;
-class LuaScript;
-class GameObject;
-class Sprite;
-class Texture2D;
-class ShaderProgram;
-class ComponentView;
 class Transform;
 
 
 class Serializer
 {
 public:
-	static void Serialize(std::unordered_map<std::string, std::shared_ptr<GameObject>>& objects, prettywriter* writer);
 	static void Serialize(const std::string& directory);
-	static const rapidjson::StringBuffer Serialize(std::unordered_map<std::string, std::unordered_map<std::string, ComponentView>>& _components, prettywriter* writer = nullptr, std::string name = "", std::string directory = "");
 
 
 	static void Init()
@@ -44,10 +39,7 @@ public:
 		names[3] = "w";
 	}
 
-	static const rapidjson::StringBuffer  Serialize(std::shared_ptr<Sprite> sprite, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
-	static const rapidjson::StringBuffer  Serialize(std::shared_ptr<Texture2D> tex2D, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
-	static const rapidjson::StringBuffer  Serialize(std::shared_ptr<ShaderProgram> shaderProgram, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
-	static const rapidjson::StringBuffer  Serialize(std::shared_ptr<Transform> transform, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
+	static void Serialize(std::shared_ptr<Transform> transform, prettywriter* writer, std::string name = "", std::string path = "");
 
 	static const rapidjson::StringBuffer Serialize(glm::ivec2 _ivec2, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
 	static const rapidjson::StringBuffer Serialize(glm::vec2   _vec2, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
@@ -62,3 +54,5 @@ public:
 private:
 	inline static std::vector<std::string> names;
 };
+
+#endif // !SERIALIZER

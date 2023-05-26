@@ -6,12 +6,11 @@
 
 #include "../GameTypes/GameObject.h"
 
+#include "../../internal/ComponentSystem/src/Collider2D.h"
 #include "../../internal/Renderer/src/Sprite.h"
 #include "../../internal/Renderer/src/Texture2D.h"
-#include "../../internal/UI/src/Button.h"
 #include "../../internal/UI/src/Panel.h"
-
-
+#include "../../internal/UI/src/Button.h"
 #include "../../internal/ComponentSystem/src/Transform.h"
 #include "../../internal/ComponentSystem/src/LuaScript.h"
 
@@ -54,7 +53,8 @@ void SerializeInSubdirectory(const std::string& path, std::function<R(Args...)>&
 
 	std::ofstream f(path);
 
-	auto buffer = serializeInSubdirectoryFunction(args...);
+	rapidjson::StringBuffer buffer = serializeInSubdirectoryFunction(args...);
+	buffer.Flush();
 	auto string = buffer.GetString();
 
 	f << string;
@@ -69,42 +69,6 @@ void CreateSubDirectories(const std::string& root, const std::vector<std::string
 	}
 }
 
-
-void Serializer::Serialize(std::unordered_map<std::string, std::shared_ptr<GameObject>>& objects, prettywriter* writer)
-{
-
-
-	//writer->StartArray();
-
-	//for (const auto& object : objects)
-	//{
-	//	writer->StartObject();
-
-
-	//	writer->Key("name");
-	//	writer->String(object.second->name.c_str());
-
-	//	Serialize(object.second->transform->position, writer, "position");
-	//	Serialize(object.second->transform->rotation, writer, "rotation");
-	//	Serialize(object.second->transform->scale, writer, "scale");
-
-	//	//Serialize(std::make_shared<components>(object.second->scripts, object.second->buttons), writer, "Components");
-
-	//	if (object.second->sprite)
-	//	{
-	//		writer->Key("sprite");
-	//		writer->String(object.second->sprite->name.c_str());
-	//	}
-
-
-	//	writer->Key("render_priority");
-	//	writer->Int(object.second->render_priority);
-
-	//	writer->EndObject();
-	//}
-
-	//writer->EndArray();
-}
 void Serializer::Serialize(const std::string& directory)
 {
 	const std::string gameObjectsDirectory = directory + '/' + GameObject::type + 's';
@@ -135,7 +99,7 @@ void Serializer::Serialize(const std::string& directory)
 			writer.EndArray();
 
 			writer.Key("components");
-			writer.StartArray();
+			writer.StartObject();
 
 			const std::string componentsDirectory = gameObjectDirectory + '/' + "Components";
 			if(!std::filesystem::exists(componentsDirectory))
@@ -145,17 +109,17 @@ void Serializer::Serialize(const std::string& directory)
 			const std::string spritesDirectory = componentsDirectory + '/' + Sprite::type + 's';
 			const std::string scriptsDirectory = componentsDirectory + '/' + LuaScript::type + 's';
 			const std::string transformsDirectory = componentsDirectory + '/' + Transform::type + 's';
+			const std::string collider2DsDirectory = componentsDirectory + '/' + Collider2D::type + 's';
 
-			std::vector<std::string> compDirs = { Panel::type + 's', Sprite::type + 's', LuaScript::type + 's', Transform::type + 's' };
+			std::vector<std::string> compDirs = { Panel::type + 's', Sprite::type + 's', LuaScript::type + 's', Transform::type + 's', Collider2D::type + 's'};
 
 			CreateSubDirectories(componentsDirectory, compDirs);
 
-			writer.StartObject();
 			writer.Key((Panel::type + 's').c_str());
 			writer.StartArray();
 			auto panels = gameObject.second.getResource<GameObject>()->getComponentsWithType<Panel>();
 			if(panels)
-			for (auto panelIt : *panels) {
+				for (auto panelIt : *panels) {
 				const std::string panelDirectory = panelsDirectory + '/' + panelIt.second.getComponentFromView<Panel>()->name;
 				
 				writer.StartObject();
@@ -176,9 +140,9 @@ void Serializer::Serialize(const std::string& directory)
 					writer.String(panelIt.second.getComponentFromView<Panel>()->name.c_str());
 
 					writer.Key("uis");
-					writer.StartArray();
+					writer.StartObject();
 
-					writer.Key(Button::type.c_str());
+					writer.Key((Button::type + 's').c_str());
 					writer.StartArray();
 
 					const std::string buttonsDirectory = panelDirectory + '/' + Button::type + 's';
@@ -215,7 +179,7 @@ void Serializer::Serialize(const std::string& directory)
 
 
 							writer.Key("type");
-							writer.String(Button::type.c_str());
+							writer.String(std::string(Button::type + 's').c_str());
 
 							writer.EndObject();
 
@@ -227,7 +191,7 @@ void Serializer::Serialize(const std::string& directory)
 
 					writer.EndArray();
 
-					writer.EndArray();
+					writer.EndObject();
 
 					writer.EndObject();
 
@@ -239,14 +203,12 @@ void Serializer::Serialize(const std::string& directory)
 				SerializeInSubdirectory(panelDirectory + '/' + panelIt.second.getComponentFromView<Panel>()->name.c_str() + ".json", panelSerializer);
 			}
 			writer.EndArray();
-			writer.EndObject();
 
-			writer.StartObject();
 			writer.Key((Sprite::type + 's').c_str());
 			writer.StartArray();
 			auto sprites = gameObject.second.getResource<GameObject>()->getComponentsWithType<Sprite>();
 			if(sprites)
-			for (auto spriteIt : *sprites) {
+				for (auto spriteIt : *sprites) {
 				const std::string spriteDirectory = spritesDirectory + '/' + spriteIt.second.getComponentFromView<Sprite>()->name;
 
 				writer.StartObject();
@@ -352,7 +314,7 @@ void Serializer::Serialize(const std::string& directory)
 
 					writer.Key("name");
 					writer.String(meshName.c_str());
-					writer.Key("meshPath");
+					writer.Key("path");
 					writer.String(spriteIt.second.getComponentFromView<Sprite>()->getMesh()->path.c_str());
 
 					writer.EndObject();
@@ -366,19 +328,19 @@ void Serializer::Serialize(const std::string& directory)
 				}
 			}
 			writer.EndArray();
-			writer.EndObject();
 
-			writer.StartObject();
 			writer.Key((LuaScript::type + 's').c_str());
 			writer.StartArray();
 			auto scripts = gameObject.second.getResource<GameObject>()->getComponentsWithType<LuaScript>();
 			if(scripts)
-			for (auto scriptIt : *scripts) {
+				for (auto scriptIt : *scripts) {
 				const std::string scriptDirectory = scriptsDirectory + '/' + scriptIt.second.getComponentFromView<LuaScript>()->name;
 				
 				writer.StartObject();
 				writer.Key("name");
 				writer.String(scriptIt.second.getComponentFromView<LuaScript>()->name.c_str());
+				writer.Key("path");
+				writer.String(scriptIt.second.getComponentFromView<LuaScript>()->m_path.c_str());
 				writer.EndObject();
 
 				auto scriptSerializer = std::function<rapidjson::StringBuffer()>([&]() {
@@ -399,14 +361,12 @@ void Serializer::Serialize(const std::string& directory)
 				SerializeInSubdirectory(scriptDirectory + '/' + scriptIt.second.getComponentFromView<LuaScript>()->name + ".json", scriptSerializer);
 			}
 			writer.EndArray();
-			writer.EndObject();
 
-			writer.StartObject();
 			writer.Key((Transform::type + 's').c_str());
 			writer.StartArray();
 			auto transforms = gameObject.second.getResource<GameObject>()->getComponentsWithType<Transform>();
 			if(transforms)
-			for (auto transformIt : *transforms) {
+				for (auto transformIt : *transforms) {
 				const std::string transformDirectory = transformsDirectory + '/' + transformIt.second.getComponentFromView<Transform>()->name;
 				
 				writer.StartObject();
@@ -421,13 +381,7 @@ void Serializer::Serialize(const std::string& directory)
 
 					prettywriter writer(sb);
 
-					writer.StartObject();
-
-					Serialize(transformIt.second.getComponentFromView<Transform>()->GetPosition(), &writer, "position");
-					Serialize(transformIt.second.getComponentFromView<Transform>()->GetRotation(), &writer, "rotation");
-					Serialize(transformIt.second.getComponentFromView<Transform>()->GetScale(), &writer, "scale");
-
-					writer.EndObject();
+					Serialize(transformIt.second.getComponentFromView<Transform>(), &writer, transformIt.second.getComponentFromView<Transform>()->name);
 
 					return sb;
 				});
@@ -435,9 +389,55 @@ void Serializer::Serialize(const std::string& directory)
 				SerializeInSubdirectory(transformDirectory + '/' + transformIt.second.getComponentFromView<Transform>()->name + ".json", transformSerializer);
 			}
 			writer.EndArray();
-			writer.EndObject();
 
+			writer.Key((Collider2D::type + 's').c_str());
+			writer.StartArray();
+			auto collider2Ds = gameObject.second.getResource<GameObject>()->getComponentsWithType<Collider2D>();
+			if(collider2Ds)
+				for (auto colliderIt : *collider2Ds) {
+					const std::string colliderDirectory = collider2DsDirectory + '/' + colliderIt.second.getComponentFromView<Collider2D>()->name;
+
+					writer.StartObject();
+
+					writer.Key("name");
+					writer.String(colliderIt.second.getComponentFromView<Collider2D>()->name.c_str());
+
+					writer.EndObject();
+
+					auto colliderSerializer = std::function<rapidjson::StringBuffer()>([&]() {
+						rapidjson::StringBuffer sb;
+
+						prettywriter writer(sb);
+
+						writer.StartObject();
+
+						writer.Key("name");
+						writer.String(colliderIt.second.getComponentFromView<Collider2D>()->name.c_str());
+						writer.Key(Transform::type.c_str());
+						writer.String(Transform::type.c_str());
+
+						writer.EndObject();
+
+						return sb;
+					});
+
+					auto colliderTransformSerializer = std::function<rapidjson::StringBuffer()>([&]() {
+						rapidjson::StringBuffer sb;
+
+						prettywriter writer(sb);
+
+						auto transform = colliderIt.second.getComponentFromView<Collider2D>()->getTransform();
+						Serialize(transform, &writer);
+
+						return sb;
+					});
+
+					SerializeInSubdirectory(colliderDirectory + '/' + colliderIt.second.getComponentFromView<Collider2D>()->name.c_str() + ".json", colliderSerializer);
+					SerializeInSubdirectory(colliderDirectory + '/' + Transform::type + ".json", colliderTransformSerializer);
+				}
 			writer.EndArray();
+
+			writer.EndObject();
 			writer.EndObject();
 
 			return sb;
@@ -447,213 +447,21 @@ void Serializer::Serialize(const std::string& directory)
 	}
 }
 
-const rapidjson::StringBuffer Serializer::Serialize(std::unordered_map<std::string, std::unordered_map<std::string, ComponentView>>& _components, prettywriter* writer, std::string name, std::string directory)
-{
-	rapidjson::StringBuffer sb;
-	if (_components.empty()) { return sb; }
-	if (writer && name != "")
-	{
-		writer->Key(name.c_str());
-	}
-	else
-	{
-		writer = new prettywriter(sb);
-	}
-	//Write write(path, &sb);
-
-	writer->StartArray();
-
-	auto scripts = _components.find(LuaScript::type);
-	if (scripts != _components.end()) {
-		for (auto it : scripts->second)
-		{
-			writer->StartObject();
-
-			writer->Key("type");
-			writer->String("LuaScript");
-			writer->Key("resourcePath");
-			writer->String(it.second.getComponentFromView<LuaScript>()->m_path.c_str());
-			writer->Key("name");
-			writer->String(it.first.c_str());
-
-			writer->EndObject();
-		}
-	}
-
-	auto buttons = _components.find(Button::type);
-
-	if (buttons != _components.end()) {
-		for (auto it : buttons->second)
-		{
-			writer->StartObject();
-
-			RecordAnyComponentInfo<Button>(it.second.getComponentFromView<Button>(), writer);
-
-			writer->EndObject();
-		}
-	}
-
-	const std::string panelsDirectory = directory + '/' + Panel::type + 's';
-	std::ofstream panelsStream(panelsDirectory);
-
-	auto panels = _components.find(Panel::type);
-
-	if (panels != _components.end()) {
-		for (auto it : panels->second)
-		{
-			std::ofstream panel(panelsDirectory + '/' + it.first);
-
-			writer->StartObject();
-
-			writer->Key("type");
-			writer->String(Panel::type.c_str());
-			writer->Key("name");
-			writer->String(it.second.getComponentFromView<Panel>()->name.c_str());
-
-
-			writer->Key("uis");
-			writer->StartArray();
-
-
-			writer->Key(Button::type.c_str());
-			writer->StartArray();
-
-			auto buttons = it.second.getComponentFromView<Panel>()->getChildrenWithType<Button>();
-
-			for (auto buttonIt : *buttons) {
-				writer->StartObject();
-
-				writer->Key("name");
-				writer->String(buttonIt.second.getUIFromView<Button>()->name.c_str());
-
-				writer->Key("type");
-				writer->String(Button::type.c_str());
-
-				writer->EndObject();
-			}
-
-			writer->EndArray();
-
-
-			writer->EndArray();
-
-			writer->EndObject();
-
-			panel.close();
-		}
-	}
-
-	panelsStream.close();
-
-	writer->EndArray();
-
-
-	return sb;
-}
-
-const rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<Sprite> sprite, prettywriter* writer, std::string name, std::string path)
-{
-	rapidjson::StringBuffer sb;
-	if (!sprite) { return sb; }
-
-	if (writer && name != "")
-	{
-		writer->Key(name.c_str());
-	}
-	else
-	{
-		writer = new prettywriter(sb);
-	}
-
-	//Write write(path, &sb);
-
-	writer->StartObject();
-	Serialize(sprite->m_Texture, writer, "m_Texture");
-	writer->Key("shaderName");
-	writer->String(sprite->m_shaderProgram->name.c_str());
-	writer->Key("meshName");
-	writer->String(sprite->mesh->name.c_str());
-	writer->Key("meshName");
-	writer->String(sprite->mesh->path.c_str());
-	writer->Key("subTextureName");
-	writer->String(sprite->m_subTextureName.c_str());
-	Serialize(sprite->m_position, writer, "m_position");
-	Serialize(sprite->m_rotation, writer, "m_rotation");
-	Serialize(sprite->m_size, writer, "m_size");
-	//writer->Key("RenderMode");
-	//writer->Int(sprite->GetRenderMode());
-	writer->EndObject();
-
-	return sb;
-}
-const rapidjson::StringBuffer  Serializer::Serialize(std::shared_ptr<Texture2D> tex2D, prettywriter* writer, std::string name, std::string path)
-{
-	rapidjson::StringBuffer sb;
-	if (!tex2D) { return sb; }
-
-	if (writer && name != "")
-	{
-		writer->Key(name.c_str());
-	}
-	else
-	{
-		writer = new prettywriter(sb);
-	}
-
-	//Write write(path, &sb);
-
-	writer->StartObject();
-
-	writer->Key("m_width");
-	writer->Uint(tex2D->m_width);
-	writer->Key("m_height");
-	writer->Uint(tex2D->m_height);
-
-	writer->Key("m_subTextures");
-	writer->StartArray();
-	for (const auto& it : tex2D->m_subTextures)
-	{
-		writer->Key("subName");
-		writer->String(it.first.c_str());
-		Serialize(it.second.leftBottomUV, writer, "leftBottomUV");
-		Serialize(it.second.rightTopUV, writer, "rightTopUV");
-	}
-	writer->EndArray();
-
-	writer->EndObject();
-
-	return sb;
-}
-
-const rapidjson::StringBuffer Serializer::Serialize(std::shared_ptr<Transform> transform, prettywriter* writer, std::string name, std::string path) {
-	rapidjson::StringBuffer sb;
-	if (!transform) { return sb; }
-
-	if (writer && name != "")
-	{
-		writer->Key(name.c_str());
-	}
-	else
-	{
-		writer = new prettywriter(sb);
-	}
-
-	//Write write(path, &sb);
+void Serializer::Serialize(std::shared_ptr<Transform> transform, prettywriter* writer, std::string name, std::string path) {
 
 	writer->StartObject();
 
 	writer->Key("name");
-	writer->String(transform->name.c_str());
-	writer->Key("type");
-	writer->String(Transform::type.c_str());
+	if (name != "")
+		writer->String(name.c_str());
+	else
+		writer->String(Transform::type.c_str());
 
-	Serialize(transform->position, writer, "position");
-	Serialize(transform->rotation, writer, "rotation");
-	Serialize(transform->scale, writer, "scale");
+	Serialize(transform->GetPosition(), writer, "position");
+	Serialize(transform->GetRotation(), writer, "rotation");
+	Serialize(transform->GetScale(), writer, "scale");
 
 	writer->EndObject();
-
-	return sb;
 }
 
 const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec2 _ivec2, prettywriter* writer, std::string name, std::string path)

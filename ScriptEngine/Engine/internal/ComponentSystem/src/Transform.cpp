@@ -101,11 +101,30 @@ reactphysics3d::Transform Transform::ToPhysicsTransform() {
 	return reactphysics3d::Transform(FromGLMToPhysicsVector3(position), FromGLMToPhysicsQuaternion(rotation));
 }
 
+std::shared_ptr<Transform> Transform::ToTransformFromPhysicsTransform(reactphysics3d::Transform physicsTransform, glm::vec3 scale) {
+	return std::make_shared<Transform>(FromPhysicsVector3ToGLM(physicsTransform.getPosition()), FromPhysicsQuaternionToGLM(physicsTransform.getOrientation()), scale);
+}
+
 reactphysics3d::Vector3 Transform::FromGLMToPhysicsVector3(const glm::vec3& vec) {
 	return reactphysics3d::Vector3(vec.x, vec.y, vec.z);
+}
+
+glm::vec3 Transform::FromPhysicsVector3ToGLM(const reactphysics3d::Vector3& vec) {
+	return glm::vec3(vec.x, vec.y, vec.z);
 }
 
 reactphysics3d::Quaternion Transform::FromGLMToPhysicsQuaternion(const glm::vec3& orientation) {
 	glm::vec3 radiansRotation = glm::radians(orientation);
 	return reactphysics3d::Quaternion::fromEulerAngles(reactphysics3d::Vector3(radiansRotation.x, radiansRotation.y, radiansRotation.z));
+}
+
+glm::vec3 Transform::FromPhysicsQuaternionToGLM(const reactphysics3d::Quaternion& orientation) {
+	reactphysics3d::Vector3 physicsVector3;
+	float angle;
+	
+	orientation.getRotationAngleAxis(angle, physicsVector3);
+
+	reactphysics3d::Vector3 result = physicsVector3 * angle;
+
+	return glm::vec3(result.x, result.y, result.z);
 }
