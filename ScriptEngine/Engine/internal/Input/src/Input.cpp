@@ -9,7 +9,9 @@
 
 #include <iostream>
 
-std::unordered_map<std::string, sol::function&> Input::mouseCallbacks;
+#ifdef SHOWONBUILD
+std::unordered_map<std::string, sol::function> Input::mouseCallbacks;
+#endif
 
 
 void /*Input::*/mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -36,7 +38,7 @@ void Input::executeMouseCallbacks() {
 		callback.second();
 }
 
-void Input::addMouseCallback(const std::string& name, sol::function& callback) {
+void Input::addMouseCallback(const std::string& name, const sol::function& callback) {
 	mouseCallbacks.emplace(name, callback);
 }
 

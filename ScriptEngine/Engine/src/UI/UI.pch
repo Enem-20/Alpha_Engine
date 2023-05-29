@@ -1,7 +1,0 @@
-#pragma once
-
-#include "Button.h"
-#include "Canvas.h"
-#include "UIelement.h"
-#include "Window.h"
-#include "WindowManager.h"

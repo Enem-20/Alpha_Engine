@@ -3,19 +3,27 @@
 #ifndef LUASCRIPT
 #define LUASCRIPT
 
+#include "../../src/ExportPropety.h"
+
 #include "Script.h"
 #include "Component.h"
 
+#ifdef SHOWONBUILD
+
 #include <sol/sol.hpp>
 #include <string>
+#else // SHOWONBUILD
+class Script;
+class Component;
+#endif
 
 class GameObject;
 
-class LuaScript : public Component, public Script
+class DLLEXPORT LuaScript : public Component, public Script
 {
 public:
 	LuaScript(sol::protected_function& Awake, sol::protected_function& Start, sol::protected_function& Update, sol::protected_function& FixedUpdate, sol::protected_function& LastUpdate);
-	LuaScript(std::string name, std::string path, std::shared_ptr<sol::state> L = nullptr, std::shared_ptr<GameObject> gameObject = nullptr);
+	LuaScript(std::string name, std::string path, std::shared_ptr<sol::state> L, std::shared_ptr<GameObject> gameObject = nullptr);
 	LuaScript(LuaScript&& script) noexcept;
 	LuaScript(const LuaScript& script);
 	void SetAwake(const sol::protected_function& Awake);
@@ -26,11 +34,11 @@ public:
 
 	void LoadScript(std::shared_ptr<sol::state> L);
 
-	void Awake() override;
-	void Start() override;
-	void Update(uint32_t currentImage) override;
-	void FixedUpdate() override;
-	void LastUpdate() override;
+	void Awake();
+	void Start();
+	void Update(uint32_t currentImage);
+	void FixedUpdate();
+	void LastUpdate();
 
 	std::string m_path;
 	GENERATETYPE(LuaScript)

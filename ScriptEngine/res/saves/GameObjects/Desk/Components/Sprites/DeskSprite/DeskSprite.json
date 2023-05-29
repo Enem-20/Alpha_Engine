@@ -1,0 +1,9 @@
+{
+    "name": "DeskSprite",
+    "textureName": "Desk",
+    "shaderProgramName": "TestShaderProgram",
+    "meshName": "SpriteMesh",
+    "width": 1080.0,
+    "height": 1080.0,
+    "subTextureName": "default"
+}

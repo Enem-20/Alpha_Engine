@@ -4,6 +4,8 @@
 #define SERIALIZER
 
 
+#include "../ExportPropety.h"
+
 #include <rapidjson/prettywriter.h>
 
 #include <memory>
@@ -24,7 +26,7 @@ typedef rapidjson::Reader reader;
 class Transform;
 
 
-class Serializer
+class DLLEXPORT Serializer
 {
 public:
 	static void Serialize(const std::string& directory);

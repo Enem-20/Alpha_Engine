@@ -3,6 +3,8 @@
 #ifndef COLLIDER2D
 #define COLLIDER2D
 
+#include "../../src/ExportPropety.h"
+
 #include "Component.h"
 
 #include <glm/glm.hpp>
@@ -19,7 +21,7 @@ namespace reactphysics3d {
 	class BoxShape;
 };
 
-class Collider2D : public Component {
+class DLLEXPORT Collider2D : public Component {
 public:
 	Collider2D(const std::string& name, std::shared_ptr<Transform> transform = std::make_shared<Transform>(), std::shared_ptr<GameObject> gameObject = nullptr);
 	~Collider2D();

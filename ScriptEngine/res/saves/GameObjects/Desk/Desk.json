@@ -1,0 +1,27 @@
+{
+    "name": "Desk",
+    "children": [],
+    "components": {
+        "Panels": [
+            {
+                "name": "panel"
+            }
+        ],
+        "Sprites": [
+            {
+                "name": "DeskSprite"
+            }
+        ],
+        "LuaScripts": [],
+        "Transforms": [
+            {
+                "name": "Desk"
+            }
+        ],
+        "Collider2Ds": [
+            {
+                "name": "Desk"
+            }
+        ]
+    }
+}

@@ -1,12 +1,14 @@
 #pragma once
 
+#include "../../src/ExportPropety.h"
+
 #include <memory>
 #include <string>
 
 class IP7_Client;
 class IP7_Trace;
 
-class Clerk
+class DLLEXPORT Clerk
 {
 public:
 	static std::string Misstep	(uint16_t lineNumber, std::string fileName, std::string funcName, std::wstring formatter);

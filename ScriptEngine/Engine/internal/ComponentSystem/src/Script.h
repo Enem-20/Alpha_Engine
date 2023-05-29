@@ -1,7 +1,9 @@
 #pragma once
 
+#include "../../src/ExportPropety.h"
+
 //template<class ScriptType>
-class Script {
+class DLLEXPORT Script {
 public:
 	/*Script(const Script& script);
 	Script(Script&& script);*/

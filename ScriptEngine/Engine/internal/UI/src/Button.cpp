@@ -32,7 +32,7 @@ void Button::Start()
 {
 	ImGui::Begin(name.c_str());
 	ImGui::Button(name.c_str());
-	ImGui::SetWindowPos({ GetGameObject()->getComponent<Transform>(name)->position.x, (GetGameObject()->getComponent<Transform>(name)->position.y - WindowManager::CurrentWindow->size.y) * -1 });
+	ImGui::SetWindowPos({ GetGameObject()->getComponent<Transform>(name)->position->x, (GetGameObject()->getComponent<Transform>(name)->position->y - WindowManager::CurrentWindow->size.y) * -1 });
 	ImGui::End();
 }
 
@@ -60,6 +60,6 @@ void Button::translate(const glm::vec2& newPos)
 {
 	ImGui::Begin(name.c_str());
 	ImGui::Button(name.c_str());
-	ImGui::SetWindowPos({ GetGameObject()->getComponent<Transform>(name)->position.x, (GetGameObject()->getComponent<Transform>(name)->position.y - WindowManager::CurrentWindow->size.y) * -1 });
+	ImGui::SetWindowPos({ GetGameObject()->getComponent<Transform>(name)->position->x, (GetGameObject()->getComponent<Transform>(name)->position->y - WindowManager::CurrentWindow->size.y) * -1 });
 	ImGui::End();
 }

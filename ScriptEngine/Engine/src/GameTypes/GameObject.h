@@ -4,21 +4,13 @@
 #define GAMEOBJECT
 
 #include "../ExportPropety.h"
-//#include "../../internal/ComponentSystem/src/Collider2D.h"
-//#include "../../internal/ComponentSystem/src/Transform.h"
-//#include "../../internal/ComponentSystem/src/LuaScript.h"
-//#include "../../internal/Renderer/src/Sprite.h"
-//#include "../../internal/UI/src/Panel.h"
-//#include "../../internal/UI/src/Button.h"
+
+#ifdef SHOWONBUILD
 #include "../Resources/ResourceManager.h"
 
 #include "../../internal/ComponentSystem/src/Component.h"
 #include "../Resources/ResourceBase.h"
 
-
-
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
 
 #include <type_traits>
 #include <list>
@@ -27,6 +19,14 @@
 #include <typeinfo>
 #include <string>
 #include <memory>
+#else
+//namespace glm {
+//	struct vec3;
+//}
+struct ComponentView;
+#endif
+#include <glm/glm.hpp>
+
 
 class Transform;
 class LuaScript;
@@ -52,7 +52,7 @@ public:
 	//	std::unordered_map<std::string, std::shared_ptr<LuaScript>> scripts = std::unordered_map<std::string, std::shared_ptr<LuaScript>>(),
 	//	std::unordered_map<std::string, std::shared_ptr<Button>> buttons = std::unordered_map<std::string, std::shared_ptr<Button>>(),
 	//	int render_priority = 0);
-	GameObject(std::string name = "");
+	GameObject(const std::string& name);
 	void operator=(const GameObject& gameObject);
 	GameObject(GameObject&&) = delete;
 	virtual ~GameObject();
@@ -60,12 +60,13 @@ public:
 
 	void Translate(const glm::vec3& position);
 	void Teleport(const glm::vec3& position);
-	void Rotate(glm::vec3 rotation);
-	void Scale(glm::vec3 scale);
+	void Rotate(const glm::vec3& rotation);
+	void Scale(const glm::vec3& scale);
+
+	void Start();
 	void Update(uint32_t currentImage);
 
-	const std::string& Name() const;
-	Transform& GetTransform();
+	std::string& Name();
 	virtual void render(CommandBuffer& commandBuffer, RenderPipeline& renderPipeline, uint32_t currentFrame);
 
 	void AddChild(std::shared_ptr<GameObject> gameObject);

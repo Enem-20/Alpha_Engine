@@ -22,15 +22,16 @@
 int main(int argc, char** argv) {
 	ResourceManager::SetExecutablePath(argv[0]);
 
-	ResourceManager::loadShaders("TestShaderProgram", "vert.spv", "frag.spv");
+	ResourceManager::loadJSONGameOjects("res/saves/GameObjects");
 #ifdef GLFW_INCLUDE_VULKAN
 	std::shared_ptr<Renderer> renderer = ResourceManager::makeResource<Renderer>("main");
+	ResourceManager::onAfterRenderInitialization();
 #endif
 	{
 		Input::init();
 		ImGuiManager::init();
 
-		ResourceManager::loadJSONGameOjects("res/saves/GameObjects");
+
 
 		/*ResourceManager::loadTexture("Desk", "Desk.png");
 		ResourceManager::loadTexture("Another", "Another.png");

@@ -2,44 +2,27 @@
 
 #include "../ExportPropety.h"
 
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
+#ifdef SHOWONBUILD
 #include <string>
-
-#include "../../internal/Renderer/src/Renderer.h"
-
+#else
+//namespace glm {
+//	struct vec2;
+//}
+#endif
+#include <glm/glm.hpp>
 
 class DLLEXPORT Casts
 {
 public:
-	static float castValueToNewRange(const float oldValue, const glm::vec2& oldRange, const glm::vec2& newRange)
-	{
-		return (((oldValue - oldRange.x) * (newRange.y - newRange.x)) / (oldRange.y - oldRange.x)) + newRange.x;
-	}
+	static float castValueToNewRange(const float oldValue, const glm::vec2& oldRange, const glm::vec2& newRange);
 
-	static float castFromFramebufferToNDCrange(const float& oldValue) {
-		return castValueToNewRange(oldValue, glm::vec2(0.0f, 1.0f), glm::vec2(-1.0f, 1.0f));
-	}
+	static float castFromFramebufferToNDCrange(const float& oldValue);
 
-	static std::wstring CharStoWstring(const char* str, int last)
-	{
-		return std::wstring(str[0], str[last]);
-	}
+	static std::wstring CharStoWstring(const char* str, int last);
 
-	static std::wstring CharStoWstring(const char* str)
-	{
-		std::string buf(str);
-		return std::wstring(buf.begin(), buf.end());
-	}
+	static std::wstring CharStoWstring(const char* str);
 
-	static std::wstring StringToWstring(const std::string& str)
-	{
-		return std::wstring(str.begin(), str.end());
-	}
+	static std::wstring StringToWstring(const std::string& str);
 
-	static char* wharTochar(const wchar_t* str) {
-		char* vOut = new char[wcslen(str) + 1];
-		wcstombs_s(NULL, vOut, wcslen(str) + 1, str, wcslen(str) + 1);
-		return vOut;
-	}
+	static char* wharTochar(const wchar_t* str);
 };

@@ -1,0 +1,23 @@
+{
+    "name": "Another",
+    "children": [],
+    "components": {
+        "Panels": [],
+        "Sprites": [
+            {
+                "name": "AnotherSprite"
+            }
+        ],
+        "LuaScripts": [],
+        "Transforms": [
+            {
+                "name": "Another"
+            }
+        ],
+        "Collider2Ds": [
+            {
+                "name": "Another"
+            }
+        ]
+    }
+}

@@ -79,6 +79,8 @@ void LuaScript::LoadScript(std::shared_ptr<sol::state> L)
 	(*L)["Update"] = nullptr;
 	(*L)["FixedUpdate"] = nullptr;
 	(*L)["LastUpdate"] = nullptr;
+
+	Awake();
 }
 
 void LuaScript::Awake() { m_Awake(); }

@@ -29,7 +29,15 @@ Component::~Component()
 	//gameObject = nullptr;
 }
 
-std::shared_ptr<GameObject> Component::GetGameObject() const
+std::shared_ptr<GameObject> Component::GetGameObject()
 {
 	return gameObject.lock();
 }
+
+ComponentView::ComponentView(std::shared_ptr<void> Data) : Data(Data) {}
+ComponentView::ComponentView(const ComponentView& componentView)
+	: Data(componentView.Data)
+{
+
+}
+ComponentView::~ComponentView() { Data = nullptr; }

@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef SCRIPTENGINE
+#define SCRIPTENGINE
+
 #include "API/ExportProperty.h"
 
 #include <sol/sol.hpp>
@@ -10,11 +13,11 @@ class Timer;
 
 class ClassRegistrator;
 
-class DLLEXPORT ScriptProcessor
+class ScriptProcessor
 {
 public:
 	//ScriptProcessor();
-	static sol::state& getL();
+	static std::shared_ptr<sol::state> getL();
 	static void init(char** argv);
 	static void FirstFrame();
 	static void render();
@@ -31,3 +34,4 @@ private:
 	static std::shared_ptr<Timer> GenTimer;
 	static std::shared_ptr<sol::state> L;
 };
+#endif

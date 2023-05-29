@@ -4,7 +4,7 @@
 #define RESOURCEMANAGER
 #include "../ExportPropety.h"
 
-
+#ifdef SHOWONBUILD
 #include "../../internal/Renderer/src/Window.h"
 
 #include "../../internal/Renderer/src/Sprite.h"
@@ -25,6 +25,7 @@
 #include "../../internal/Renderer/src/Vulkan/LogicalDevice.h"
 #include "../../internal/Renderer/src/Vulkan/PhysicalDevice.h"
 #include "../../internal/Renderer/src/Vulkan/RenderPipeline.h"
+#include "../../internal/Renderer/src/Vulkan/RenderPass.h"
 #include "../../internal/Renderer/src/Vulkan/SwapChain.h"
 #include "../../internal/Renderer/src/Vulkan/UniformBuffer.h"
 #include "../../internal/Renderer/src/Vulkan/SyncObjects.h"
@@ -39,32 +40,43 @@
 #include <unordered_map>
 #include <map>
 #include <functional>
-#include <string>
 #include <vector>
 #include <utility>
 #include <tuple>
+#else
+namespace rapidjson {
+	class Document;
+	class Value;
+}
+
+
+#endif
+
+#include <memory>
 #include <queue>
+#include <string>
+
 
 class Renderer;
 class Mesh;
+class Transform;
 
-
-class Resource {
+class DLLEXPORT Resource {
 public:
 	Resource(std::shared_ptr<void> data);
-	~Resource() {
-		data.reset();
-	}
+	Resource(const Resource& resource);
+	~Resource();
 	template<class T>
-	std::shared_ptr<T> getResource() {
-		return std::reinterpret_pointer_cast<T>(data);
-	}
+	std::shared_ptr<T> getResource();
 private:
 	std::shared_ptr<void> data;
 };
 
+class ClassRegistrator;
+
 class DLLEXPORT ResourceManager
 {
+	friend ClassRegistrator;
 public:
 	static void SetExecutablePath(const std::string& executablePath);
 	static void UnloadAllResources();
@@ -82,6 +94,7 @@ public:
 
 	static std::shared_ptr<Texture2D> loadTexture(const std::string& textureName, const std::string& texturePath);
 
+
 	static std::shared_ptr<Sprite> loadSprite(const std::string& spriteName,
 		const std::string& textureName,
 		const std::string& shaderName,
@@ -98,12 +111,20 @@ public:
 		const unsigned int subTextureHeight);
 	static std::string GetLuaScriptPath(const std::string& relativePath);
 
+	static void onBeforeRenderFrame();
+	static void onAfterRenderInitialization();
+
+	static void addOnBeforeRenderFrame(const std::string& name, const std::function<void()>& listener);
+	static void addOnAfterRenderInitialization(const std::string& name, const std::function<void()>& listener);
+	static void removeOnBeforeRenderInitialization(const std::string& name);
+	static void removeOnAfterRenderInitialization(const std::string& name);
+
 	static rapidjson::Document documentParse(const std::string& relativePath);
 
 	static std::shared_ptr<Mesh> loadMesh(const std::string& name, const std::string& relativePath);
 	static bool loadJSONScene(const std::string& relativePath);
 	static bool loadSave(const std::string relativePath);
-	static void loadSaveReal(const std::string& relativePath);
+	static void loadSaveReal();
 	static void loadExecute();
 	static std::vector<std::string> getDirectories(const std::string& relativePath);
 	[[nodiscard]] static bool loadJSONGameOjects(const std::string& relativePath);
@@ -134,10 +155,15 @@ public:
 	template<class ResourceType, class... Args>
 	static std::shared_ptr<ResourceType> makeResource(Args&&... args);
 private:
+#ifdef SHOWONBUILD
+	static std::unordered_map<std::string, std::function<void()>> onBeforeRenderFrameListeners;
+	static std::unordered_map<std::string, std::function<void() >> onAfterRenderInitializationListeners;
+#endif
+
 	static std::shared_ptr<sol::state> L;
 	static std::string getFileString(const std::string& relativeFilePath);
 
-	static std::unordered_map<std::string, std::unordered_map<std::string, Resource>> m_resources;
+	static inline std::unordered_map<std::string, std::unordered_map<std::string, Resource>> m_resources;
 
 	static std::string m_path;
 	static std::string relative_sprites;
@@ -147,7 +173,15 @@ private:
 	static std::string relative_main;
 	static std::queue<std::function<void(const std::string&, const std::string&, const std::string&)>> shaderLoaders;
 	static std::queue<std::tuple<std::string, std::string, std::string>> shaderLoaderParameters;
+	static std::queue<std::function<void()>> saveLoaders;
 };
+
+
+template<class T>
+std::shared_ptr<T> Resource::getResource() {
+	return std::reinterpret_pointer_cast<T>(data);
+}
+
 
 template<class ResourceType>
 void ResourceManager::addResource(ResourceType* resource) {
@@ -181,7 +215,9 @@ void ResourceManager::removeResource(const std::string& name) {
 
 		if (resource != resourcesByType->second.cend()) {
 			resourcesByType->second.erase(name);
-
+			if (ResourceType::type == Texture2D::type)
+				getResource<Renderer>("main")->removeTexture(name);
+				
 			return;
 		}
 	}
@@ -239,7 +275,11 @@ std::shared_ptr<ResourceType> ResourceManager::makeResource(Args&&... args) {
 	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
 	std::tuple<Args...> store(args...);
 	auto name = std::get<0>(store);
-	ResourceType* instance = new ResourceType(args...);
+	if (!getResource<ResourceType>(name)) {
+		ResourceType* instance = new ResourceType(args...);
+		instance = nullptr;
+	}
+		
 	return getResource<ResourceType>(name);
 }
 

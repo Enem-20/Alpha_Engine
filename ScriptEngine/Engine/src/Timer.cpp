@@ -1,6 +1,7 @@
 #include "Timer.h"
 
 	Timer::Timer() { UpdateEnd = 0; UpdateStart = 0; isStart = false; start = 0; end = 0; }
+	Timer::~Timer() {}
 	int Timer::GetTimeSec() const{ return clock() / CLK_TCK; }
 	int Timer::GetDeltaUpdateSec() const{ return (UpdateEnd - UpdateStart) / CLK_TCK; }
 	int Timer::GetDelta() const{ return (end - start) / CLK_TCK; }

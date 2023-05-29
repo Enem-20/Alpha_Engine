@@ -1,28 +1,30 @@
 #include "ClassRegistrator.h"
 
-#include "Components/LuaScript.h"
-#include "Components/Transform.h"
-//#include "Components/Component.h"
-#include "Renderer/Renderer.h"
-#include "Renderer/ShaderProgram.h"
-#include "Renderer/Sprite.h"
-#include "Renderer/Texture2D.h"
+#include <glm/glm.hpp>
+
+#include "Physics/src/Raycast.h"
+
+#include "ComponentSystem/src/Collider2D.h"
+#include "ComponentSystem/src/LuaScript.h"
+#include "ComponentSystem/src/Transform.h"
+
+#include "Renderer/src/Renderer.h"
+#include "Renderer/src/ShaderProgram.h"
+#include "Renderer/src/Sprite.h"
+#include "Renderer/src/Texture2D.h"
 #include "Resources/ResourceManager.h"
 #include "GameTypes/GameObject.h"
-#include "GLPref/GLPref.h"
+
 #include "Helpers/casts.h"
 #include "Helpers/StringFuncs.h"
-#include "Scene/Hierarchy.h"
-#include "UI/Button.h"
-#include "UI/UIelement.h"
-#include "UI/Window.h"
-#include "UI/WindowManager.h"
+#include "UI/src/Button.h"
+#include "UI/src/UIelement.h"
+#include "Renderer/src/Window.h"
+#include "Renderer/src/WindowManager.h"
 #include "Timer.h"
-#include "Input/Input.h"
+#include "Input/src/Input.h"
 
-//#include <glm/vec2.hpp>
-
-glm::dvec2 Renderer::ViewportSize = {};
+#include <memory>
 
 static GameObject GetData(std::shared_ptr<GameObject> gameObject)
 {
@@ -123,14 +125,14 @@ void ClassRegistrator::Reg_GLMMat4(sol::table* Lnamespace)
 
 void ClassRegistrator::Reg_ShaderProgram(sol::table* same)
 {
-	Reg_GLMMat4(same);
-	same->new_usertype<ShaderProgram>("ShaderProgram"
-		, sol::constructors<ShaderProgram(const std::string&, const std::string&)
-		, ShaderProgram(ShaderProgram&&)>()
+	//Reg_GLMMat4(same);
+	//same->new_usertype<ShaderProgram>("ShaderProgram"
+	//	, sol::constructors<ShaderProgram(const std::string&, const std::string&)
+	//	, ShaderProgram(ShaderProgram&&)>()
 
-		, "isCompiled", &ShaderProgram::isCompiled
-		, "use", &ShaderProgram::use
-		, "setInt", &ShaderProgram::setMatrix4);
+	//	, "isCompiled", &ShaderProgram::isCompiled
+	//	, "use", &ShaderProgram::use
+	//	, "setInt", &ShaderProgram::setMatrix4);
 }
 
 void ClassRegistrator::Reg_SubTexture2D(sol::table* LTexture2D)
@@ -146,7 +148,7 @@ void ClassRegistrator::Reg_Texture2D(sol::table* same)
 {
 	if (same != nullptr)
 	{
-		same->new_usertype<Texture2D>("Texture2D"
+		/*same->new_usertype<Texture2D>("Texture2D"
 			, sol::constructors<Texture2D(const GLuint, const GLuint
 				, const unsigned char*, const unsigned int, const GLenum, const GLenum)
 
@@ -159,13 +161,19 @@ void ClassRegistrator::Reg_Texture2D(sol::table* same)
 			, "bind", &Texture2D::bind
 			);
 
-		Reg_SubTexture2D(same);
+		Reg_SubTexture2D(same);*/
+
+		same->new_usertype<Texture2D>("Texture2D"
+			,"new" , &ResourceManager::loadTexture
+			, "getWidth", &Texture2D::getWidth
+			, "getHeight", &Texture2D::getHeight
+		);
 	}
 }
 
 void ClassRegistrator::Reg_Sprite(sol::table* object)
 {
-	object->new_usertype<Sprite>("Sprite"
+	/*object->new_usertype<Sprite>("Sprite"
 		, sol::constructors<Sprite(std::shared_ptr<Texture2D>,
 			std::string,
 			std::shared_ptr<ShaderProgram>,
@@ -178,7 +186,10 @@ void ClassRegistrator::Reg_Sprite(sol::table* object)
 		, "getSize", &Sprite::getSize
 		, "setSize", &Sprite::setSize
 		, "setRotation", &Sprite::setRotation
-		);
+		);*/
+	object->new_usertype<Sprite>("Sprite"
+		, "new", &ResourceManager::loadSprite
+	);
 }
 
 void ClassRegistrator::Reg_UIelement(sol::table* UIElement)
@@ -190,7 +201,6 @@ void ClassRegistrator::Reg_UIelement(sol::table* UIElement)
 void ClassRegistrator::Reg_Transform(sol::table* Lnamespace)
 {
 	Lnamespace->new_usertype<Transform>("Transform"
-		, sol::constructors<Transform(), Transform(std::string, std::shared_ptr<GameObject>), Transform(const Transform&)>()
 		, "position", &Transform::GetPosition
 		, "rotation", &Transform::GetRotation
 		, "scale", &Transform::GetScale
@@ -200,19 +210,27 @@ void ClassRegistrator::Reg_Transform(sol::table* Lnamespace)
 void ClassRegistrator::Reg_GameObject(sol::table* object)
 {
 	object->new_usertype<GameObject>("GameObject"
-		, sol::constructors<GameObject(std::string), GameObject(std::string, std::shared_ptr<Transform>, std::shared_ptr<Sprite>), GameObject(const GameObject&)>()
-
-		, "Translate", &GameObject::Translate
-		, "Teleport", &GameObject::Teleport
-		, "Rotate", &GameObject::Rotate
-		, "AddChild", &GameObject::AddChild
-		, "GetChild", &GameObject::GetChild
-		, "GetTransform", &GameObject::GetTransform
-		, "SetOnGrid", &GameObject::SetOnGrid
-
-		, "name", &GameObject::Name
-		, "onGrid", &GameObject::isGrided
+		, "create",		sol::factories(ResourceManager::makeResource<GameObject, const std::string&>)
+		, "remove",		&ResourceManager::removeResource<GameObject>
+		, "Translate",		&GameObject::Translate
+		, "Teleport",		&GameObject::Teleport
+		, "Rotate",		&GameObject::Rotate
+		, "AddChild",		&GameObject::AddChild
+		, "GetChild",		&GameObject::GetChild
+		, "Name",				&GameObject::Name
+		, "getScript",	&GameObject::getComponent<LuaScript>
+		, "getTransform", &GameObject::getComponent<Transform>
+		, "getCollider2D", &GameObject::getComponent<Collider2D>
+		, "getSprite",	&GameObject::getComponent<Sprite>
 		);
+}
+
+void ClassRegistrator::Reg_Collider2D(sol::table* object) {
+	object->new_usertype<Collider2D>("Collider2D"
+		, "create", sol::factories(ResourceManager::makeResource<Collider2D, const std::string&>)
+		, "getTransform", &Collider2D::getTransform
+		, "getGameObject", &Collider2D::GetGameObject
+	);
 }
 
 void ClassRegistrator::Reg_Timer(sol::table* Lnamespace)
@@ -229,40 +247,44 @@ void ClassRegistrator::Reg_Timer(sol::table* Lnamespace)
 
 void ClassRegistrator::Reg_Window(sol::table* Lnamespace)
 {
-	Lnamespace->new_usertype<Window>("Window"
-		, "GetUI", &Window::GetUI);
+	/*Lnamespace->new_usertype<Window>("Window"
+		, "GetUI", &Window::GetUI);*/
 }
 void ClassRegistrator::Reg_WindowManager(sol::table* Lnamespace)
 {
-	Lnamespace->new_usertype<WindowManager>("WindowManager"
-		, "GetCurrentWindow", &WindowManager::GetCurrentWindow);
+	/*Lnamespace->new_usertype<WindowManager>("WindowManager"
+		, "GetCurrentWindow", &WindowManager::GetCurrentWindow);*/
 }
 
 void ClassRegistrator::Reg_Hierarchy(sol::table* hierarchy)
 {
-	hierarchy->new_usertype<Hierarchy>("Hierarchy"
-		, "getObject", &Hierarchy::getOriginalObject
+	//hierarchy->new_usertype<Hierarchy>("Hierarchy"
+	//	, "getObject", &Hierarchy::getOriginalObject
 
-		, "removeObject", &Hierarchy::removeObject
-		, "getGridObject", &Hierarchy::getGridObject
-		, "addPoolObject", &Hierarchy::addPoolObject
-		, "getPoolObject", &Hierarchy::getPoolObject
-		, "removePoolObject", &Hierarchy::removePoolObject
-		, "addObject", &Hierarchy::addFromScriptObject
-		, "addGridObject", &Hierarchy::addGridObject);
+	//	, "removeObject", &Hierarchy::removeObject
+	//	, "getGridObject", &Hierarchy::getGridObject
+	//	, "addPoolObject", &Hierarchy::addPoolObject
+	//	, "getPoolObject", &Hierarchy::getPoolObject
+	//	, "removePoolObject", &Hierarchy::removePoolObject
+	//	, "addObject", &Hierarchy::addFromScriptObject
+	//	, "addGridObject", &Hierarchy::addGridObject);
 }
 
 void ClassRegistrator::Reg_ResourceManager(sol::table* Lnamespace)
 {
 	Lnamespace->new_usertype<ResourceManager>("ResourceManager"
-		, "loadScene", &ResourceManager::loadSave);
+		, "", sol::no_constructor
+		, "loadScene", &::ResourceManager::loadSave
+		, "getGameObject", &::ResourceManager::getResource<GameObject>
+		, "m_resources", sol::var(std::ref(ResourceManager::m_resources))
+	);
 }
 void ClassRegistrator::Reg_Input(sol::table* Lnamespace)
 {
 	Lnamespace->new_usertype<Input>("Input"
-		, "GetCell", &Input::GetCellReal
-		, "GetVectorCell", &Input::GetCell
-		, "AddListener", &Input::AddListener);
+		, "addOnClickListener", &Input::addMouseCallback
+		, "removeOnClickListener", &Input::removeMouseCallback
+		, "getNDCMousePosition", &Input::getNDCMousePosition);
 }
 
 void ClassRegistrator::Reg_StringFuncs(sol::table* Lnamespace)
@@ -275,7 +297,14 @@ void ClassRegistrator::Reg_StringFuncs(sol::table* Lnamespace)
 void ClassRegistrator::Reg_Casts(sol::table* Lnamespace)
 {
 	Lnamespace->new_usertype<Casts>("Casts"
-		, "CellToScreen", &Casts::CellToScreen);
+		, "castValueToNewRange", &Casts::castValueToNewRange);
+}
+
+void ClassRegistrator::Reg_Raycast(sol::table* Lnamespace) {
+	Lnamespace->new_usertype<Raycast>("Raycast"
+		, sol::constructors<Raycast()>()
+		, "closestBodyHit", &Raycast::closestBodyHit
+	);
 }
 
 int ClassRegistrator::Registration(sol::table* Lnamespace)
@@ -301,8 +330,10 @@ int ClassRegistrator::Registration(sol::table* Lnamespace)
 		Reg_Input(Lnamespace);
 		Reg_StringFuncs(Lnamespace);
 		Reg_Transform(Lnamespace);
+		Reg_Collider2D(Lnamespace);
 		Reg_ResourceManager(Lnamespace);
 		Reg_Casts(Lnamespace);
+		Reg_Raycast(Lnamespace);
 
 		return 0;
 	}

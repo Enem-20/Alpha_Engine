@@ -3,6 +3,8 @@
 #ifndef COMPONENT
 #define COMPONENT
 
+#include "../../src/ExportPropety.h"
+
 #include "../../src/Resources/ResourceBase.h"
 
 #include <string>
@@ -10,7 +12,7 @@
 
 class GameObject;
 
-class Component : public ResourceBase
+class DLLEXPORT Component : public ResourceBase
 {
 public:
 	Component(const std::string& name = "", const std::shared_ptr<GameObject>& gameObject = nullptr);
@@ -30,19 +32,23 @@ public:
 	//	: name(name)
 	//	, gameObject(gameObject)
 	//{}
-	std::shared_ptr<GameObject> GetGameObject() const;
+	std::shared_ptr<GameObject> GetGameObject();
 	std::weak_ptr<GameObject> gameObject;
 };
-#endif //COMPONENT
 
-
-struct ComponentView {
-	ComponentView(std::shared_ptr<void> Data) : Data(Data) {}
-	~ComponentView() { Data = nullptr; }
+struct DLLEXPORT ComponentView {
+	ComponentView(std::shared_ptr<void> Data);
+	ComponentView(const ComponentView& componentView);
+	~ComponentView();
 	template<class ComponentType>
-	std::shared_ptr<ComponentType> getComponentFromView() {
-		return std::reinterpret_pointer_cast<ComponentType>(Data);
-	}
+	std::shared_ptr<ComponentType> getComponentFromView();
 private:
 	std::shared_ptr<void> Data;
 };
+
+template<class ComponentType>
+std::shared_ptr<ComponentType> ComponentView::getComponentFromView() {
+	return std::reinterpret_pointer_cast<ComponentType>(Data);
+}
+
+#endif //COMPONENT

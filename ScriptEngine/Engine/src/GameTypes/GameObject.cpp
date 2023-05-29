@@ -6,7 +6,6 @@
 #include "../../internal/UI/src/Button.h"
 #include "../Helpers/StringFuncs.h"
 #include "../Logging/Clerk.h"
-#include "../Input/Input.h"
 
 #include <../glm/glm/vec2.hpp>
 #include <../glm/glm/vec3.hpp>
@@ -15,7 +14,7 @@
 
 size_t GameObject::counter = 0;
 
-GameObject::GameObject(std::string name)
+GameObject::GameObject(const std::string& name)
 	: ResourceBase(name)
 {
 #ifdef LOG_INFO
@@ -27,8 +26,8 @@ GameObject::GameObject(std::string name)
 	Clerk::Knowledge(41, __FILE__, FuncName, L"Choosing name");
 #endif
 	auto obj = ResourceManager::getResource<GameObject>(name);
-	if(obj)
-	 this->name = StringFuncs::RemoveNumbersEnd(obj->name) + std::to_string(ID = ++counter);
+	if (obj)
+		this->name = name + StringFuncs::RemoveNumbersEnd(obj->name) + std::to_string(ID = ++counter);
 	else if (name == "") {
 		this->name = std::to_string(ID = ++counter);
 	}
@@ -75,10 +74,10 @@ void GameObject::render(CommandBuffer& commandBuffer, RenderPipeline& renderPipe
 #endif
 
 	auto sprites = getComponentsWithType<Sprite>();
-
-	for (auto sprite : *sprites) {
-		sprite.second.getComponentFromView<Sprite>()->render(commandBuffer, renderPipeline, currentFrame);
-	}
+	if (sprites)
+		for (auto sprite : *sprites) {
+			sprite.second.getComponentFromView<Sprite>()->render(commandBuffer, renderPipeline, currentFrame);
+		}
 
 #ifdef LOG_INFO
 	Clerk::Knowledge(167, __FILE__, "GameObject::render() at " + name, L"Rendering childs...");
@@ -95,7 +94,7 @@ void GameObject::Translate(const glm::vec3& position)
 	//	Hierarchy::removeGridObject(Input::GetCell(transform->position));
 
 	getComponent<Transform>(name)->Translate(position);
-	
+
 	for (auto it : children)
 	{
 		it->Translate(position);
@@ -114,7 +113,7 @@ void GameObject::Teleport(const glm::vec3& position)
 	}
 }
 
-void GameObject::Rotate(glm::vec3 rotation)
+void GameObject::Rotate(const glm::vec3& rotation)
 {
 	getComponent<Transform>(name)->Rotate(rotation);
 
@@ -125,7 +124,7 @@ void GameObject::Rotate(glm::vec3 rotation)
 	}
 }
 
-void GameObject::Scale(glm::vec3 scale)
+void GameObject::Scale(const glm::vec3& scale)
 {
 	getComponent<Transform>(name)->Scale(scale);
 
@@ -135,13 +134,27 @@ void GameObject::Scale(glm::vec3 scale)
 	}
 }
 
+void GameObject::Start() {
+	auto scripts = getComponentsWithType<LuaScript>();
+	if (scripts)
+		for (auto sprite : *scripts) {
+			sprite.second.getComponentFromView<LuaScript>()->Start();
+		}
+}
+
 void GameObject::Update(uint32_t currentImage)
 {
-	auto componentsByType = components.find(Sprite::type);
+	auto scripts = getComponentsWithType<LuaScript>();
+	if (scripts)
+		for (auto sprite : *scripts) {
+			sprite.second.getComponentFromView<LuaScript>()->Update(currentImage);
+		}
 
-	for (auto sprite : componentsByType->second) {
-		sprite.second.getComponentFromView<Sprite>()->Update(currentImage);
-	}
+	auto sprites = getComponentsWithType<Sprite>();
+	if (sprites)
+		for (auto sprite : *sprites) {
+			sprite.second.getComponentFromView<Sprite>()->Update(currentImage);
+		}
 }
 
 void GameObject::AddChild(std::shared_ptr<GameObject> gameObject) {
@@ -173,6 +186,6 @@ GameObject::GameObject(size_t ID)
 //	return Null;
 //}
 
-const std::string& GameObject::Name() const {
+std::string& GameObject::Name(){
 	return name;
 }

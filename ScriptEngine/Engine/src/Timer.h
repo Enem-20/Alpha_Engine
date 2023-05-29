@@ -8,6 +8,7 @@ class DLLEXPORT Timer
 {
 public:
 	Timer();
+	~Timer();
 	int GetTimeSec() const;
 	int GetDeltaUpdateSec() const;
 	int GetDelta() const;

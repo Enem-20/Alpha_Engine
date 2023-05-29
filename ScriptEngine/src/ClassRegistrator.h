@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef CLASSREGISTRATOR
+#define CLASSREGISTRATOR
+
 #include <sol/sol.hpp>
 
 class GameObject;
@@ -7,7 +10,7 @@ class GameObject;
 #include "ExportPropety.h"
 
 
-class DLLEXPORT ClassRegistrator
+class ClassRegistrator
 {
 public:
 	ClassRegistrator() = delete;
@@ -35,6 +38,7 @@ private:
 	static void Reg_WindowManager(sol::table* Lnamespace);
 	static void Reg_Transform(sol::table* Lnamespace);
 	static void Reg_GameObject(sol::table* object);
+	static void Reg_Collider2D(sol::table* object);
 
 	static void Reg_Timer(sol::table* Lnamespace);
 	static void Reg_Hierarchy(sol::table* hierarchy);
@@ -42,7 +46,10 @@ private:
 	static void Reg_Input(sol::table* Lnamespace);
 	static void Reg_StringFuncs(sol::table* Lnamespace);
 	static void Reg_Casts(sol::table* Lnamespace);
+	static void Reg_Raycast(sol::table* Lnamespace);
 
 
 	inline static bool IsReg = false;
 };
+
+#endif

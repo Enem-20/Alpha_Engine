@@ -18,7 +18,7 @@ public:
 		return str1.find(str2) != (size_t)-1 ? true : false;
 	}
 
-	static std::string&& RemoveNumbersEnd(const std::string& str)
+	static std::string RemoveNumbersEnd(const std::string& str)
 	{
 		size_t i;
 		if (str.size() > 0)

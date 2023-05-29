@@ -3,10 +3,12 @@
 #ifndef UIELEMENT
 #define UIELEMENT
 
+#include "../../src/ExportPropety.h"
+
 #include "../../ComponentSystem/src/Component.h"
 
 #include <sol/sol.hpp>
-#include <glm/vec2.hpp>
+#include <glm/glm.hpp>
 
 #include <list>
 #include <memory>
@@ -14,7 +16,7 @@
 
 class GameObject;
 
-class UIelement : public Component
+class DLLEXPORT UIelement : public Component
 {
 public:
 	UIelement(const std::string& name, std::shared_ptr<GameObject> gameObject);
@@ -44,12 +46,12 @@ protected:
 	std::list<sol::protected_function> elements;
 	static size_t ID;
 
-#if defined(OGL) || defined(GLFW_INCLUDE_VULKAN)
+#if (defined(OGL) || defined(GLFW_INCLUDE_VULKAN)) && defined(SHOWONBUILD)
 	glm::vec2 position;
 #endif
 };
 
-struct UIelementView {
+struct DLLEXPORT UIelementView {
 	UIelementView(std::shared_ptr<void> Data) : Data(Data) {}
 	~UIelementView() { Data = nullptr; }
 	template<class UIelementType>

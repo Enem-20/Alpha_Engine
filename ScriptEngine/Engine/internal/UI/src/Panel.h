@@ -3,6 +3,8 @@
 #ifndef PANEL
 #define PANEL
 
+#include "../../src/ExportPropety.h"
+
 #include "../../src/Resources/ResourceManager.h"
 #include "../../src/Resources/ResourceBase.h"
 //#include "Button.h"
@@ -14,7 +16,7 @@
 
 class GameObject;
 
-class Panel : public UIelement {
+class DLLEXPORT Panel : public UIelement {
 public:
 	Panel(const std::string& name = "", std::shared_ptr<GameObject> gameObject = nullptr);
 	~Panel();
