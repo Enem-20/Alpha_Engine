@@ -18,12 +18,12 @@ void /*Input::*/mouse_button_callback(GLFWwindow* window, int button, int action
 {
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 		Input::executeMouseCallbacks();
-		auto mouseNDCPosition = Input::getNDCMousePosition();
-		std::cout << "position: (" << mouseNDCPosition.x << ',' << mouseNDCPosition.y << ')' << '\n';
-		Raycast ray;
-		auto collider = ray.closestBodyHit(glm::vec3(mouseNDCPosition, 0.0f), glm::vec3(mouseNDCPosition, 100.0f));
-		if(collider)
-			std::cout << "Collider name: " << collider->name << '\n';
+		//auto mouseNDCPosition = Input::getNDCMousePosition();
+		//std::cout << "position: (" << mouseNDCPosition.x << ',' << mouseNDCPosition.y << ')' << '\n';
+		//Raycast ray;
+		//auto collider = ray.closestBodyHit(glm::vec3(mouseNDCPosition, 0.0f), glm::vec3(mouseNDCPosition, 100.0f));
+		//if(collider)
+		//	std::cout << "Collider name: " << collider->name << '\n';
 	}
 		
 }
@@ -54,4 +54,8 @@ glm::vec2 Input::getNDCMousePosition() {
 	glfwGetWindowSize(WindowManager::CurrentWindow->GetRaw(), &width, &height);
 
 	return glm::vec2(Casts::castFromFramebufferToNDCrange(x/(float)width), Casts::castFromFramebufferToNDCrange(y/(float)height));
+}
+
+void Input::freeResources() {
+	mouseCallbacks.clear();
 }

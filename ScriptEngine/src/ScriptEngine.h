@@ -28,6 +28,8 @@ public:
 	static void FixedUpdate();
 	static void LastUpdate();
 
+	static void DestroyAll();
+
 	static void ScriptUpdates();
 	static std::shared_ptr<Timer>& GeneralTimer();
 private:

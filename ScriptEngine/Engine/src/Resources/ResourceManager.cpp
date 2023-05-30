@@ -82,6 +82,7 @@ void ResourceManager::UnloadAllResources()
 
 	Serializer::Serialize(m_path + "/res/saves");
 
+	L.reset();
 	m_resources.clear();
 	//Hierarchy::Clear();
 }

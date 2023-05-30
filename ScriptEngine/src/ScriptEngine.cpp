@@ -7,6 +7,7 @@
 #include "Resources/ResourceManager.h"
 #include "GameTypes/GameObject.h"
 #include "Input/src/Input.h"
+#include "Physics/src/Raycast.h"
 #include "Renderer/src/ImGui/ImGui.h"
 //#include "GLPref/GLPref.h"
 #include "Timer.h"
@@ -99,6 +100,12 @@ void ScriptProcessor::LastUpdate()
 	//}
 }
 
+void ScriptProcessor::DestroyAll() {
+	L->collect_garbage();
+	L.reset();
+	GenTimer.reset();
+}
+
 void ScriptProcessor::ScriptUpdates()
 {
 	ScriptProcessor::Update();
@@ -112,23 +119,30 @@ void main(int argc, char** argv) {
 
 
 	ResourceManager::SetExecutablePath(argv[0]);
-	ResourceManager::SetLuaState(ScriptProcessor::getL());
+	auto L = ScriptProcessor::getL();
+	ResourceManager::SetLuaState(L);
 
 	ScriptProcessor::init({});
 	ResourceManager::loadJSONGameOjects("res/saves/GameObjects");
-
+	
 	ScriptProcessor::Start();
+	//Raycast ray;
+	//ray.closestBodyHit(glm::vec3(), glm::vec3());
 	auto obj = ResourceManager::getResource<GameObject>("Another");
 	std::shared_ptr<Renderer> renderer = ResourceManager::makeResource<Renderer>("main");
 
 	Input::init();
 	ImGuiManager::init();
 
+
+
 	renderer/*.lock()*/->render();
-	ScriptProcessor::getL()->collect_garbage();
 
 	ResourceManager::UnloadAllResources();
+	Input::freeResources();
+	L.reset();
 	obj.reset();
+	ScriptProcessor::DestroyAll();
 
 	ImGuiManager::destroy();
 	renderer.reset();

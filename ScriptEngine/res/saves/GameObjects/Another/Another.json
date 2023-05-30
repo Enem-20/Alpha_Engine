@@ -8,7 +8,14 @@
                 "name": "AnotherSprite"
             }
         ],
-        "LuaScripts": [],
+        "LuaScripts": [
+            {
+                "name": "MoveManager"
+            },
+            {
+                "name": "Translation"
+            }
+        ],
         "Transforms": [
             {
                 "name": "Another"

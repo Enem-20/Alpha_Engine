@@ -93,7 +93,9 @@ void GameObject::Translate(const glm::vec3& position)
 	//if(onGrid)	
 	//	Hierarchy::removeGridObject(Input::GetCell(transform->position));
 
-	getComponent<Transform>(name)->Translate(position);
+	auto transform = getComponent<Transform>(name);
+	transform->Translate(position);
+	SetColliderTransform(transform);
 
 	for (auto it : children)
 	{
@@ -105,7 +107,9 @@ void GameObject::Translate(const glm::vec3& position)
 
 void GameObject::Teleport(const glm::vec3& position)
 {
-	getComponent<Transform>(name)->Teleport(position);
+	auto transform = getComponent<Transform>(name);
+	transform->Teleport(position);
+	SetColliderTransform(transform);
 
 	for (auto& it : children)
 	{
@@ -115,8 +119,9 @@ void GameObject::Teleport(const glm::vec3& position)
 
 void GameObject::Rotate(const glm::vec3& rotation)
 {
-	getComponent<Transform>(name)->Rotate(rotation);
-
+	auto transform = getComponent<Transform>(name);
+	transform->Rotate(rotation);
+	SetColliderTransform(transform);
 
 	for (auto it : children)
 	{
@@ -126,7 +131,9 @@ void GameObject::Rotate(const glm::vec3& rotation)
 
 void GameObject::Scale(const glm::vec3& scale)
 {
-	getComponent<Transform>(name)->Scale(scale);
+	auto transform = getComponent<Transform>(name);
+	transform->Scale(scale);
+	SetColliderTransform(transform);
 
 	for (auto it : children)
 	{
@@ -188,4 +195,9 @@ GameObject::GameObject(size_t ID)
 
 std::string& GameObject::Name(){
 	return name;
+}
+
+void GameObject::SetColliderTransform(std::shared_ptr<Transform> transform) {
+	auto collider = getComponent<Collider2D>(name);
+	collider->SetTransform(transform);
 }

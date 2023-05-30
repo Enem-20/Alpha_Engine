@@ -98,11 +98,15 @@ glm::vec3 Transform::GetScale() const
 }
 
 reactphysics3d::Transform Transform::ToPhysicsTransform() {
-	return reactphysics3d::Transform(FromGLMToPhysicsVector3(*position), FromGLMToPhysicsQuaternion(*rotation));
+	auto physicsTransform = reactphysics3d::Transform(FromGLMToPhysicsVector3(*position), FromGLMToPhysicsQuaternion(*rotation));
+	physicsTransform.setPosition(reactphysics3d::Vector3(physicsTransform.getPosition().x, physicsTransform.getPosition().y * -1, physicsTransform.getPosition().z));
+	return physicsTransform;
 }
 
 std::shared_ptr<Transform> Transform::ToTransformFromPhysicsTransform(reactphysics3d::Transform physicsTransform, glm::vec3 scale) {
-	return std::make_shared<Transform>(FromPhysicsVector3ToGLM(physicsTransform.getPosition()), FromPhysicsQuaternionToGLM(physicsTransform.getOrientation()), scale);
+	auto EngineTransform = std::make_shared<Transform>(FromPhysicsVector3ToGLM(physicsTransform.getPosition()), FromPhysicsQuaternionToGLM(physicsTransform.getOrientation()), scale);
+	EngineTransform->position->y *= -1;
+	return EngineTransform;
 }
 
 reactphysics3d::Vector3 Transform::FromGLMToPhysicsVector3(const glm::vec3& vec) {

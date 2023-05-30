@@ -64,7 +64,7 @@ void ClassRegistrator::Reg_GLMivec2(sol::table* Lnamespace)
 void ClassRegistrator::Reg_GLMvec3(sol::table* Lnamespace)
 {
 	Lnamespace->new_usertype<glm::vec3>("vec3"
-		, sol::constructors<glm::vec3(), glm::vec3(float, float, float), glm::vec3(glm::vec2, float), glm::vec3(float, glm::vec2), glm::vec3(glm::vec3)>()
+		, sol::constructors<glm::vec3(), glm::vec3(float, float, float), glm::vec3(const glm::vec2&, float), glm::vec3(float, const glm::vec2&), glm::vec3(const glm::vec3&)>()
 
 		, sol::meta_function::addition, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator+)
 		, sol::meta_function::subtraction, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator-)
@@ -334,6 +334,7 @@ int ClassRegistrator::Registration(sol::table* Lnamespace)
 		Reg_ResourceManager(Lnamespace);
 		Reg_Casts(Lnamespace);
 		Reg_Raycast(Lnamespace);
+
 
 		return 0;
 	}

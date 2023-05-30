@@ -97,6 +97,7 @@ public:
 	GENERATETYPE(GameObject)
 protected:
 	static size_t counter;
+	void SetColliderTransform(std::shared_ptr<Transform> transform);
 private:
 
 	GameObject(size_t ID);

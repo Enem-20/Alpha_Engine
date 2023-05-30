@@ -15,16 +15,20 @@ target_compile_features(ScriptEngine PRIVATE cxx_std_20)
 target_compile_definitions(ScriptEngine PRIVATE GLFW_INCLUDE_VULKAN  GLM_FORCE_DEPTH_ZERO_TO_ONE GLM_FORCE_RADIANS)
 target_compile_definitions(ScriptEngine PUBLIC  _DISABLE_VECTOR_ANNOTATION _DISABLE_STRING_ANNOTATION)
 
-add_compile_options(-fsanitize=address)
-
-add_subdirectory(Engine/)
-
 if (MSVC)
 	if(NOT NDEBUG)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
 	endif()
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
+
+if(NOT NDEBUG)
+add_compile_options(-fsanitize=address)
+endif()
+
+add_subdirectory(Engine/)
+
+
 
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
 

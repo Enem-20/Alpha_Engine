@@ -22,7 +22,7 @@ set(OtherSRC
 	src/Timer.h
 	src/Timer.cpp
 	src/ExportPropety.h
-	src/main.cpp
+	#src/main.cpp
 )
 
 set(Scene

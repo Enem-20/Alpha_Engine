@@ -41,9 +41,9 @@ public:
 	static glm::vec2 getNDCMousePosition();
 	//void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
-#ifdef SHOWONBUILD
+	static void freeResources();
+
 	static std::unordered_map<std::string, sol::function> mouseCallbacks;
-#endif
 };
 
 #endif // !INPUT

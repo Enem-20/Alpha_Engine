@@ -28,21 +28,13 @@ public:
 	void* toVoidPointer();
 	std::string* colliderNameFromVoidPointer(void* data);
 
-	virtual void Awake() {
+	virtual void Awake();
+	virtual void Start();
+	virtual void Update(uint32_t currentImage);
+	virtual void FixedUpdate();
+	virtual void LastUpdate();
 
-	}
-	virtual void Start() {
-
-	}
-	virtual void Update(uint32_t currentImage) {
-
-	}
-	virtual void FixedUpdate() {
-
-	}
-	virtual void LastUpdate() {
-
-	}
+	void SetTransform(std::shared_ptr<Transform> transform);
 
 	std::shared_ptr<Transform> getTransform();
 
