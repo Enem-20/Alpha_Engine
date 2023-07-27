@@ -2,7 +2,6 @@
 
 #include "Serializer.h"
 
-//#include "../Scene/Hierarchy.h"
 
 #include "../GameTypes/GameObject.h"
 
@@ -10,8 +9,6 @@
 #include "Mesh.h"
 
 
-//#include "../Renderer/AnimatedSprite.h"
-//#include "../../../src/ScriptEngine.h"
 #include "../../internal/UI/src/Panel.h"
 #include "../../internal/UI/src/Button.h"
 #include "../../internal/ComponentSystem/src/Transform.h"
@@ -28,7 +25,8 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
-#include <filesystem>					 
+#include <filesystem>		
+#include <stdlib.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
@@ -36,7 +34,7 @@
 #include "stb_image.h"
 
 
-//std::unordered_map<std::string, std::unordered_map<std::string, Resource>> ResourceManager::m_resources = {};
+std::unordered_map<std::string, std::unordered_map<std::string, Resource>>* ResourceManager::m_resources = new std::unordered_map<std::string, std::unordered_map<std::string, Resource>>;
 
 std::unordered_map<std::string, std::function<void()>> ResourceManager::onBeforeRenderFrameListeners;
 std::unordered_map<std::string, std::function<void()>> ResourceManager::onAfterRenderInitializationListeners;
@@ -46,7 +44,6 @@ std::queue<std::tuple<std::string, std::string, std::string>> ResourceManager::s
 
 std::queue<std::function<void()>> ResourceManager::saveLoaders;
 
-//std::shared_ptr<std::pair<const std::string, std::function<void(const std::string)>>> ResourceManager::loader;
 std::string ResourceManager::m_path;
 std::shared_ptr<sol::state> ResourceManager::L;
 
@@ -69,22 +66,20 @@ Resource::~Resource() {
 
 void ResourceManager::SetExecutablePath(const std::string& executablePath)
 {
-	//TODO: Serializer::Init();
 
 	Serializer::Init();
 	size_t found = executablePath.find_last_of("/\\");
 	m_path = executablePath.substr(0, found);
+	std::string buf = "LUA_PATH=" + m_path + "/res/saves/GameObjects/?.lua";
+	putenv(buf.c_str());
 }
 
 void ResourceManager::UnloadAllResources()
 {
-	//TODO: Serializer::Serialize(m_path + "/res/scene.json");
-
 	Serializer::Serialize(m_path + "/res/saves");
 
 	L.reset();
-	m_resources.clear();
-	//Hierarchy::Clear();
+	m_resources->clear();
 }
 
 std::string ResourceManager::getFileString(const std::string& relativeFilePath)
@@ -167,7 +162,6 @@ void ResourceManager::loadShadersReal() {
 		auto currentLoader = shaderLoaders.front();
 		auto currentLoaderParameters = shaderLoaderParameters.front();
 		auto shaderName = std::get<0>(currentLoaderParameters);
-		//ResourceManager::removeResource<ShaderProgram>(shaderName);
 		std::apply(currentLoader, currentLoaderParameters);
 
 		shaderLoaders.pop();
@@ -220,24 +214,10 @@ std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textu
 	auto texture = makeResource<Texture2D>(textureName, texturePath, width, height, channels, pixels, *getResource<SwapChain>("TestSwapChain"), *getResource<PhysicalDevice>("TestPhysicalDevice"), *getResource<LogicalDevice>("TestLogicalDevice"), *getResource<CommandPool>("TestCommandPool"));
 	ResourceManager::getResource<Renderer>("main")->addTexture(texture);
 	
-	//m_textures.emplace(textureName, newTexture);
-	
 	stbi_image_free(pixels);
 	return texture;
 }
 #endif
-
-//std::shared_ptr<Texture2D> ResourceManager::getTexture(const std::string& textureName)
-//{
-//	TexturesMap::const_iterator it = m_textures.find(textureName);
-//	if (it != m_textures.end())
-//	{
-//		return it->second;
-//	}
-//	std::cerr << "Can't find the texture " << textureName << std::endl;
-//	system("pause");
-//	return nullptr;
-//}
 
 std::shared_ptr<Sprite> ResourceManager::loadSprite(const std::string& spriteName,
 	const std::string& textureName,
@@ -382,7 +362,7 @@ std::shared_ptr<Mesh> ResourceManager::loadMesh(const std::string& name, const s
 				1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
 			};
 
-			vertex.color = { 1.0f, 1.0f, 1.0f };
+			vertex.color = { 1.0f, 1.0f, 1.0f, 0.0f };
 			//vertices.push_back(vertex);
 
 			if (uniqueVertices.count(vertex) == 0) {
@@ -416,14 +396,10 @@ void ResourceManager::loadSaveReal()
 		saveLoaders.front()();
 		saveLoaders.pop();
 	}
-
-	//loader = nullptr;
 }
 
 void ResourceManager::loadExecute()
 {
-	//if (loader)
-	//	loader->second(loader->first);
 }
 
 std::vector<std::string> ResourceManager::getDirectories(const std::string& relativePath) {
@@ -476,34 +452,6 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 
 
 		}
-		//gameObjectsChildren.emplace(name, children);
-
-		//auto jsonComponents = d.FindMember("components")->value.GetObject();
-
-		//for (const auto& panel : jsonComponents.FindMember((Panel::type + 's').c_str())->value.GetArray()) {
-		//	components[Panel::type].push_back(panel.FindMember("name")->value.GetString());
-
-
-		//}
-
-
-
-		//for (const auto& sprite : jsonComponents.FindMember((Sprite::type + 's').c_str())->value.GetArray()) {
-		//	components[Sprite::type].push_back(sprite.FindMember("name")->value.GetString());
-
-
-		//}
-
-
-		//for (const auto& luascript : jsonComponents.FindMember((LuaScript::type + 's').c_str())->value.GetArray()) {
-		//	components[Sprite::type].push_back(luascript.FindMember("name")->value.GetString());
-		//}
-
-		//for (const auto& transform : jsonComponents.FindMember((Transform::type + 's').c_str())->value.GetArray()) {
-
-
-		//	components[Sprite::type].push_back(transform.FindMember("name")->value.GetString());
-		//}
 
 		const std::string panelsDirectoryPath = directories[i] + "/Components/" + Panel::type + 's';
 		const std::string scriptsDirectoryPath = directories[i] + "/Components/" + LuaScript::type + 's';
@@ -767,3 +715,7 @@ bool ResourceManager::loadJSONShaders(const std::string& relativePath)
 }
 
 std::string ResourceManager::GetPath() { return m_path; }
+
+std::unordered_map<std::string, std::unordered_map<std::string, Resource>>* ResourceManager::getAllResources() {
+	return m_resources;
+}

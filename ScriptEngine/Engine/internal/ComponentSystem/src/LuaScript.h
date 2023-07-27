@@ -8,14 +8,8 @@
 #include "Script.h"
 #include "Component.h"
 
-#ifdef SHOWONBUILD
-
 #include <sol/sol.hpp>
 #include <string>
-#else // SHOWONBUILD
-class Script;
-class Component;
-#endif
 
 class GameObject;
 

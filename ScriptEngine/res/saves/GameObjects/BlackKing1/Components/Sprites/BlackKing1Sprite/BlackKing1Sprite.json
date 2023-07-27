@@ -1,0 +1,9 @@
+{
+    "name": "BlackKing1Sprite",
+    "textureName": "BlackKing",
+    "shaderProgramName": "TestShaderProgram",
+    "meshName": "SpriteMesh",
+    "width": 177.0,
+    "height": 177.0,
+    "subTextureName": "default"
+}

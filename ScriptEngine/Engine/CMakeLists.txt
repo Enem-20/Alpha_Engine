@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.16.0 FATAL_ERROR)
 
 set(PROJECT_NAME Engine)
 
+set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
+
 #set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 project(${PROJECT_NAME})
@@ -78,7 +80,7 @@ source_group("Physics" 			FILES ${Physics})
 source_group("Helpers" 			FILES ${HelpersSRC})
 source_group("Logging" 			FILES ${LoggingSRC})
 
-target_compile_definitions(Engine PUBLIC  _DISABLE_VECTOR_ANNOTATION _DISABLE_STRING_ANNOTATION)
+#target_compile_definitions(Engine PUBLIC  _DISABLE_VECTOR_ANNOTATION _DISABLE_STRING_ANNOTATION)
 target_compile_definitions(Engine PRIVATE SHOWONBUILD GLFW_INCLUDE_VULKAN  GLM_FORCE_DEPTH_ZERO_TO_ONE GLM_FORCE_RADIANS)
 #target_compile_definitions(Engine PRIVATE OGL)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)

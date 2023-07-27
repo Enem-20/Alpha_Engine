@@ -11,7 +11,7 @@
 #include <vector>
 #include <string>
 
-struct DLLEXPORT Mesh : ResourceBase{
+struct DLLEXPORT Mesh : public ResourceBase{
 	Mesh(const std::string& name, const std::string& path);
 	Mesh(const std::string& name, const std::string& path, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
 	Mesh(std::string&& name, std::string&& path, std::vector<Vertex>&& vertices, std::vector<uint32_t>&& indices) noexcept;

@@ -17,7 +17,6 @@ Panel::Panel(const std::string& name, std::shared_ptr<GameObject> gameObject)
 }
 
 Panel::~Panel() {
-	//ResourceManager::removeResource<Panel>(name);
 }
 
 void Panel::Awake() {
@@ -49,12 +48,3 @@ void Panel::translate(const glm::vec2& newPos) {
 	ImGui::SetWindowPos({ GetGameObject()->getComponent<Transform>(name)->position->x, (GetGameObject()->getComponent<Transform>(name)->position->y - WindowManager::CurrentWindow->size.y) * -1 });
 	ImGui::End();
 }
-
-//void Panel::addChild(std::shared_ptr<UIelement> ui) {
-//	if (uis.contains(ui->name)) {
-//		std::cout << ui->name + " alreay exists" << '\n';
-//		return;
-//	}
-//	ui->parent = gameObject.lock()->getComponent<Panel>(name);
-//	uis.emplace(ui->name, ui);
-//}

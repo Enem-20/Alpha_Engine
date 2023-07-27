@@ -20,8 +20,6 @@
 #include <functional>
 #include <filesystem>
 
-#include <glm/glm.hpp>
-
 template<class ComponentType>
 void RecordAnyComponentInfo(std::shared_ptr<ComponentType> component, prettywriter* writer) {
 	static_assert(std::is_base_of_v<Component, ComponentType>, "isn't derived from Component");

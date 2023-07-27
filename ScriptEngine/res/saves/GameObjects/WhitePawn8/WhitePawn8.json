@@ -1,0 +1,23 @@
+{
+    "name": "WhitePawn8",
+    "children": [],
+    "components": {
+        "Panels": [],
+        "Sprites": [
+            {
+                "name": "WhitePawn8Sprite"
+            }
+        ],
+        "LuaScripts": [],
+        "Transforms": [
+            {
+                "name": "WhitePawn8"
+            }
+        ],
+        "Collider2Ds": [
+            {
+                "name": "WhitePawn8"
+            }
+        ]
+    }
+}

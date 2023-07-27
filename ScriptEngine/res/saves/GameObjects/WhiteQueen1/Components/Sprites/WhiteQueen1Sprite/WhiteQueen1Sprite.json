@@ -1,0 +1,9 @@
+{
+    "name": "WhiteQueen1Sprite",
+    "textureName": "WhiteQueen",
+    "shaderProgramName": "TestShaderProgram",
+    "meshName": "SpriteMesh",
+    "width": 177.0,
+    "height": 177.0,
+    "subTextureName": "default"
+}

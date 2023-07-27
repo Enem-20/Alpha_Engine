@@ -63,8 +63,23 @@ GameObject::~GameObject()
 	Clerk::Knowledge(148, __FILE__, "GameObject::~GameObject at " + name, L"Clear all data...");
 #endif
 	children.clear();
+	auto sprites = getComponentsWithType<Sprite>();
+	if(sprites)
+	for (auto sprite : *sprites) {
+		ResourceManager::removeResource<Sprite>(sprite.second.getComponentFromView<Sprite>()->name);
+	}
+	auto panels = getComponentsWithType<Panel>();
+	if (panels)
+	for (auto panel : *panels) {
+		ResourceManager::removeResource<Panel>(panel.second.getComponentFromView<Panel>()->name);
+	}
+
+	auto colliders = getComponentsWithType<Collider2D>();
+	if(colliders)
+	for (auto collider : *colliders) {
+		ResourceManager::removeResource<Collider2D>(collider.second.getComponentFromView<Collider2D>()->name);
+	}
 	components.clear();
-	//ResourceManager::removeResource<GameObject>(name);
 }
 
 void GameObject::render(CommandBuffer& commandBuffer, RenderPipeline& renderPipeline, uint32_t currentFrame)
@@ -90,9 +105,6 @@ void GameObject::render(CommandBuffer& commandBuffer, RenderPipeline& renderPipe
 
 void GameObject::Translate(const glm::vec3& position)
 {
-	//if(onGrid)	
-	//	Hierarchy::removeGridObject(Input::GetCell(transform->position));
-
 	auto transform = getComponent<Transform>(name);
 	transform->Translate(position);
 	SetColliderTransform(transform);
@@ -101,8 +113,6 @@ void GameObject::Translate(const glm::vec3& position)
 	{
 		it->Translate(position);
 	}
-	//if(onGrid)
-	//	Hierarchy::addGridObject(this->name);
 }
 
 void GameObject::Teleport(const glm::vec3& position)
@@ -172,26 +182,11 @@ std::shared_ptr<GameObject> GameObject::GetChild(int i) {
 	return children[i];
 }
 
-GameObject& GameObject::toNull(GameObject& gameObject) {
-	gameObject.children.clear();
-	gameObject.ID = -1;
-	gameObject.name = "Null";
-	gameObject.components.clear();
-
-	return gameObject;
-}
-
 GameObject::GameObject(size_t ID)
 	: ResourceBase("GameObject")
 {
 	this->ID = ID;
 }
-
-//GameObject GameObject::SetNull()
-//{
-//	Null = GameObject(-1);
-//	return Null;
-//}
 
 std::string& GameObject::Name(){
 	return name;
@@ -199,5 +194,6 @@ std::string& GameObject::Name(){
 
 void GameObject::SetColliderTransform(std::shared_ptr<Transform> transform) {
 	auto collider = getComponent<Collider2D>(name);
-	collider->SetTransform(transform);
+	if(collider)
+		collider->SetTransform(transform);
 }

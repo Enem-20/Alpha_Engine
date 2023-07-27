@@ -12,16 +12,16 @@
                 "name": "DeskSprite"
             }
         ],
-        "LuaScripts": [],
+        "LuaScripts": [
+            {
+                "name": "Desk"
+            }
+        ],
         "Transforms": [
             {
                 "name": "Desk"
             }
         ],
-        "Collider2Ds": [
-            {
-                "name": "Desk"
-            }
-        ]
+        "Collider2Ds": []
     }
 }

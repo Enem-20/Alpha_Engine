@@ -1,6 +1,7 @@
 #include "ScriptEngine.h"
 #include "ClassRegistrator.h"
 
+#include "ComponentSystem/src/Collider2D.h"
 #include "ComponentSystem/src/LuaScript.h"
 #include "Renderer/src/WindowManager.h"
 #include "Renderer/src/Renderer.h"
@@ -45,9 +46,10 @@ void ScriptProcessor::init(char** argv)
 	auto dbgMsg = DebugMessanger::getDbgMsgInstance();*/
 
 	GeneralTimer() = std::make_shared<Timer>();
-	L->open_libraries(sol::lib::base);
+	L->open_libraries(sol::lib::package, sol::lib::base, sol::lib::math);
 	GeneralTimer();
 	sol::table Lobject = (*L)["Engine"].get_or_create<sol::table>();
+	
 	std::thread th(ClassRegistrator::Registration, &Lobject);
 	th.join();
 
@@ -58,11 +60,12 @@ void ScriptProcessor::Start() {
 	auto gameObjects = ResourceManager::getResourcesWithType<GameObject>();
 	if(gameObjects)
 		for (auto gameObject : *gameObjects) {
-			auto scripts = gameObject.second.getResource<GameObject>()->getComponentsWithType<LuaScript>();
-			if (scripts)
-				for (auto sprite : *scripts) {
-					sprite.second.getComponentFromView<LuaScript>()->Start();
-				}
+			//auto scripts = gameObject.second.getResource<GameObject>()->getComponentsWithType<LuaScript>();
+			//if (scripts)
+			//	for (auto sprite : *scripts) {
+			//		sprite.second.getComponentFromView<LuaScript>()->Start();
+			//	}
+			gameObject.second.getResource<GameObject>()->Start();
 		}
 
 
@@ -116,8 +119,6 @@ void ScriptProcessor::ScriptUpdates()
 
 
 void main(int argc, char** argv) {
-
-
 	ResourceManager::SetExecutablePath(argv[0]);
 	auto L = ScriptProcessor::getL();
 	ResourceManager::SetLuaState(L);
@@ -125,23 +126,19 @@ void main(int argc, char** argv) {
 	ScriptProcessor::init({});
 	ResourceManager::loadJSONGameOjects("res/saves/GameObjects");
 	
-	ScriptProcessor::Start();
-	//Raycast ray;
-	//ray.closestBodyHit(glm::vec3(), glm::vec3());
-	auto obj = ResourceManager::getResource<GameObject>("Another");
 	std::shared_ptr<Renderer> renderer = ResourceManager::makeResource<Renderer>("main");
 
 	Input::init();
 	ImGuiManager::init();
 
 
-
+	ScriptProcessor::Start();
 	renderer/*.lock()*/->render();
 
 	ResourceManager::UnloadAllResources();
 	Input::freeResources();
 	L.reset();
-	obj.reset();
+	//obj.reset();
 	ScriptProcessor::DestroyAll();
 
 	ImGuiManager::destroy();

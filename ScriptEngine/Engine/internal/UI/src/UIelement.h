@@ -33,13 +33,8 @@ public:
 	virtual void FixedUpdate() = 0;
 	virtual void LastUpdate() = 0;
 
-	//void setParamCollider();
-	//virtual void OnExecute() = 0;
-
 	virtual void translate(const glm::vec2& newPos) = 0;
-	//virtual void render(glm::mat4 model) = 0;
 
-	//std::shared_ptr<Physics::Collider> collider;
 	std::weak_ptr<UIelement> parent;
 protected:
 	

@@ -1,0 +1,7 @@
+function Awake()
+    
+
+    desk = {
+        
+    }
+end

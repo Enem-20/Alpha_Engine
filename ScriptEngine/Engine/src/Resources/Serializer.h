@@ -11,14 +11,10 @@
 #include <memory>
 #include <vector>
 #include <string>
-//#include <fstream>
+
 #include <unordered_map>
 
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
-#include <glm/mat3x3.hpp>
-#include <glm/mat4x4.hpp>
+#include <glm/glm.hpp>
 
 typedef rapidjson::PrettyWriter<rapidjson::StringBuffer> prettywriter;
 typedef rapidjson::Reader reader;
@@ -51,8 +47,6 @@ public:
 	static const rapidjson::StringBuffer Serialize(glm::vec4   _vec4, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
 	static const rapidjson::StringBuffer Serialize(glm::mat3   _mat3, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
 	static const rapidjson::StringBuffer Serialize(glm::mat4   _mat4, prettywriter* writer = nullptr, std::string name = "", std::string path = "");
-
-	//static Hierarchy* Deserialize(std::string path);
 private:
 	inline static std::vector<std::string> names;
 };

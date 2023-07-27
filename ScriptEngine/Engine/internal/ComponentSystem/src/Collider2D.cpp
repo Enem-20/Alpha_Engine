@@ -24,7 +24,7 @@ Collider2D::Collider2D(const std::string& name, std::shared_ptr<Transform> trans
 }
 
 Collider2D::~Collider2D() {
-	//ResourceManager::removeResource<Collider2D>(name);
+	Physics::getWorld()->destroyCollisionBody(collisionBody);
 }
 
 void* Collider2D::toVoidPointer() {

@@ -19,8 +19,6 @@ Button::Button(const std::string& name, std::shared_ptr<GameObject> gameObject)
 {
 	state = States::Idle;
 	if (name == "") { this->name = "someUI" + std::to_string(ID); }
-
-	//ResourceManager::addResource<Button>(this);
 }
 
 void Button::Awake()
@@ -53,7 +51,6 @@ void Button::LastUpdate() {
 
 Button::~Button()
 {
-	//ResourceManager::removeResource<Button>(name);
 }
 
 void Button::translate(const glm::vec2& newPos)

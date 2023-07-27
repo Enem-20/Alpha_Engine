@@ -5,11 +5,6 @@ InitializeEventsInterface::InitializeEventsInterface(const std::vector<std::func
 	, OnAfterInitializelisteners(onAfterListeners)
 {}
 
-//template<class ClassType, class... Args>
-//std::shared_ptr<ClassType> InitializeEventsInterface::make(const std::vector<std::function<void()>>& onBeforeListeners, const std::vector<std::function<void()>>& onAfterListeners, Args... args) {
-//	
-//}
-
 void InitializeEventsInterface::OnBeforeInitialize() {
 	for (auto it : OnBeforeInitializelisteners) {
 		it();

@@ -3,17 +3,16 @@
 #ifndef INITIALIZEEVENTSINTERFACE
 #define INITIALIZEEVENTSINTERFACE
 
+#include "../../src/ExportPropety.h"
+
 #include <vector>
 #include <functional>
 #include <string>
 #include <memory>
 
-class InitializeEventsInterface {
+class DLLEXPORT InitializeEventsInterface {
 public:
 	InitializeEventsInterface(const std::vector<std::function<void()>>& onBeforeListeners, const std::vector<std::function<void()>>& onAfterListeners);
-
-	/*template<class ClassType, class... Args>
-	std::shared_ptr<ClassType> make(const std::vector<std::function<void()>>& onBeforeListeners, const std::vector<std::function<void()>>& onAfterListeners, Args... args);*/
 protected:
 	virtual void OnBeforeInitialize();
 	virtual void OnAfterInitialize();

@@ -26,7 +26,6 @@ Component::Component(const Component& component)
 
 Component::~Component()
 {
-	//gameObject = nullptr;
 }
 
 std::shared_ptr<GameObject> Component::GetGameObject()

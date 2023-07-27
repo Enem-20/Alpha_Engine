@@ -2,13 +2,8 @@
 
 #include "../ExportPropety.h"
 
-#ifdef SHOWONBUILD
 #include <string>
-#else
-//namespace glm {
-//	struct vec2;
-//}
-#endif
+
 #include <glm/glm.hpp>
 
 class DLLEXPORT Casts

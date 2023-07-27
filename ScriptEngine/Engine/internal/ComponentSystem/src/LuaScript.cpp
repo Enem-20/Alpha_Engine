@@ -8,7 +8,6 @@ LuaScript::LuaScript(sol::protected_function& Awake, sol::protected_function& St
 	, m_Update(Update)
 	, m_FixedUpdate(FixedUpdate)
 	, m_LastUpdate(LastUpdate)
-	/*, Component(*this)*/
 	, Script(*this)
 {}
 LuaScript::LuaScript(std::string name, std::string path, std::shared_ptr<sol::state> L, std::shared_ptr<GameObject> gameObject)

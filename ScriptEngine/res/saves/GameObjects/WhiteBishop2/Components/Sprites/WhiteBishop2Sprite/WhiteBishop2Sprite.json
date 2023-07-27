@@ -1,0 +1,9 @@
+{
+    "name": "WhiteBishop2Sprite",
+    "textureName": "WhiteBishop",
+    "shaderProgramName": "TestShaderProgram",
+    "meshName": "SpriteMesh",
+    "width": 177.0,
+    "height": 177.0,
+    "subTextureName": "default"
+}

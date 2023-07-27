@@ -5,9 +5,9 @@
 
 #include "../ExportPropety.h"
 
-#ifdef SHOWONBUILD
 #include "../Resources/ResourceManager.h"
 
+#include "../../internal/UI/src/Panel.h"
 #include "../../internal/ComponentSystem/src/Component.h"
 #include "../Resources/ResourceBase.h"
 
@@ -19,12 +19,8 @@
 #include <typeinfo>
 #include <string>
 #include <memory>
-#else
-//namespace glm {
-//	struct vec3;
-//}
-struct ComponentView;
-#endif
+
+
 #include <glm/glm.hpp>
 
 
@@ -35,23 +31,14 @@ class Button;
 class RenderPipeline;
 class CommandBuffer;
 
+
 class DLLEXPORT GameObject : public ResourceBase
 {
 	friend class Serializer;
 	friend class DeserializerObject;
 public:
-	static GameObject& toNull(GameObject& gameObject);
-	//static GameObject SetNull();
-	//static GameObject Null;
 public:
 	GameObject(const GameObject& gameObject);
-	//GameObject(GameObject&&) = default;
-	//GameObject(std::string name = "",
-	//	std::shared_ptr<Transform> transform = nullptr,
-	//	std::shared_ptr<Sprite> sprite = nullptr,
-	//	std::unordered_map<std::string, std::shared_ptr<LuaScript>> scripts = std::unordered_map<std::string, std::shared_ptr<LuaScript>>(),
-	//	std::unordered_map<std::string, std::shared_ptr<Button>> buttons = std::unordered_map<std::string, std::shared_ptr<Button>>(),
-	//	int render_priority = 0);
 	GameObject(const std::string& name);
 	void operator=(const GameObject& gameObject);
 	GameObject(GameObject&&) = delete;
@@ -84,8 +71,6 @@ public:
 	template<class ComponentType>
 	std::unordered_map<std::string, ComponentView>* getComponentsWithType();
 public:
-	//std::unordered_map<std::string, ComponentView> components;
-
 	std::unordered_map<std::string, std::unordered_map<std::string, ComponentView>> components;
 
 	std::vector<std::shared_ptr<GameObject>> children;

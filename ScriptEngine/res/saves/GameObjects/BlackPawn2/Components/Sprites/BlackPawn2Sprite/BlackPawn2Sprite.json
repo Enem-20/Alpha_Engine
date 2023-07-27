@@ -1,0 +1,9 @@
+{
+    "name": "BlackPawn2Sprite",
+    "textureName": "BlackPawn",
+    "shaderProgramName": "TestShaderProgram",
+    "meshName": "SpriteMesh",
+    "width": 177.0,
+    "height": 177.0,
+    "subTextureName": "default"
+}

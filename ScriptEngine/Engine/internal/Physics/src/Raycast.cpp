@@ -30,14 +30,13 @@ reactphysics3d::decimal Raycast::notifyRaycastHit(const reactphysics3d::RaycastI
 		info.worldPoint.z << ')' <<
 		std::endl;
 
-	if (currentColliderName.empty()) {
-		currentColliderName = *reinterpret_cast<std::string*>(info.body->getUserData());
+		auto userData = info.body->getUserData();
+		if (userData)
+			currentColliderName = *reinterpret_cast<std::string*>(info.body->getUserData());
+		else
+			currentColliderName = "";
+
 		currentPosition = info.worldPoint;
-	}	
-	else if ((info.worldPoint.z - ray->point1.z) < (currentPosition.z - ray->point1.z)) {
-		currentPosition = info.worldPoint;
-		currentColliderName = *reinterpret_cast<std::string*>(info.body->getUserData());
-	}
 
 	currentHitFraction = info.hitFraction;
 	

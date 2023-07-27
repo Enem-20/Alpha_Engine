@@ -28,10 +28,6 @@ public:
 	virtual void FixedUpdate() = 0;
 	virtual void LastUpdate() = 0;
 
-	//Component(std::string&& name, std::shared_ptr<GameObject>&& gameObject)
-	//	: name(name)
-	//	, gameObject(gameObject)
-	//{}
 	std::shared_ptr<GameObject> GetGameObject();
 	std::weak_ptr<GameObject> gameObject;
 };

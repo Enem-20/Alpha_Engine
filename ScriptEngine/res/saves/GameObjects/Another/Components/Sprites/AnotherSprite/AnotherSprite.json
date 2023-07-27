@@ -1,9 +1,0 @@
-{
-    "name": "AnotherSprite",
-    "textureName": "Another",
-    "shaderProgramName": "TestShaderProgram",
-    "meshName": "SpriteMesh",
-    "width": 723.0,
-    "height": 673.0,
-    "subTextureName": "default"
-}

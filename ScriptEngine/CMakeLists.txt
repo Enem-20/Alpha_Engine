@@ -1,6 +1,8 @@
 project(ScriptEngine)
 #set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
+set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
+set(ENV{LUA_PATH} ${CMAKE_BINARY_DIR}/bin/)
 
 add_executable(${PROJECT_NAME} #SHARED
 			src/ScriptEngine.h
@@ -13,7 +15,7 @@ add_executable(${PROJECT_NAME} #SHARED
 target_compile_features(ScriptEngine PRIVATE cxx_std_20)
 
 target_compile_definitions(ScriptEngine PRIVATE GLFW_INCLUDE_VULKAN  GLM_FORCE_DEPTH_ZERO_TO_ONE GLM_FORCE_RADIANS)
-target_compile_definitions(ScriptEngine PUBLIC  _DISABLE_VECTOR_ANNOTATION _DISABLE_STRING_ANNOTATION)
+#target_compile_definitions(ScriptEngine PUBLIC  _DISABLE_VECTOR_ANNOTATION _DISABLE_STRING_ANNOTATION)
 
 if (MSVC)
 	if(NOT NDEBUG)
@@ -23,7 +25,7 @@ if (MSVC)
 endif()
 
 if(NOT NDEBUG)
-add_compile_options(-fsanitize=address)
+#add_compile_options(-fsanitize=address)
 endif()
 
 add_subdirectory(Engine/)
@@ -50,6 +52,6 @@ external/sol2/include
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-					COMMAND ${CMAKE_COMMAND} -E copy_directory
-					${CMAKE_SOURCE_DIR}/res $<TARGET_FILE_DIR:${PROJECT_NAME}>/res)
+#add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+#					COMMAND ${CMAKE_COMMAND} -E copy_directory
+#					${CMAKE_SOURCE_DIR}/res $<TARGET_FILE_DIR:${PROJECT_NAME}>/res)

@@ -4,8 +4,9 @@
 #define RESOURCEMANAGER
 #include "../ExportPropety.h"
 
-#ifdef SHOWONBUILD
 #include "../../internal/Renderer/src/Window.h"
+
+#include "../../internal/Renderer/src/Renderer.h"
 
 #include "../../internal/Renderer/src/Sprite.h"
 #include "../../internal/ComponentSystem/src/Collider2D.h"
@@ -43,14 +44,6 @@
 #include <vector>
 #include <utility>
 #include <tuple>
-#else
-namespace rapidjson {
-	class Document;
-	class Value;
-}
-
-
-#endif
 
 #include <memory>
 #include <queue>
@@ -155,15 +148,14 @@ public:
 	template<class ResourceType, class... Args>
 	static std::shared_ptr<ResourceType> makeResource(Args&&... args);
 private:
-#ifdef SHOWONBUILD
 	static std::unordered_map<std::string, std::function<void()>> onBeforeRenderFrameListeners;
 	static std::unordered_map<std::string, std::function<void() >> onAfterRenderInitializationListeners;
-#endif
 
 	static std::shared_ptr<sol::state> L;
 	static std::string getFileString(const std::string& relativeFilePath);
 
-	static inline std::unordered_map<std::string, std::unordered_map<std::string, Resource>> m_resources;
+	static std::unordered_map<std::string, std::unordered_map<std::string, Resource>>* m_resources;
+	static std::unordered_map<std::string, std::unordered_map<std::string, Resource>>* getAllResources();
 
 	static std::string m_path;
 	static std::string relative_sprites;
@@ -176,7 +168,6 @@ private:
 	static std::queue<std::function<void()>> saveLoaders;
 };
 
-
 template<class T>
 std::shared_ptr<T> Resource::getResource() {
 	return std::reinterpret_pointer_cast<T>(data);
@@ -186,13 +177,12 @@ std::shared_ptr<T> Resource::getResource() {
 template<class ResourceType>
 void ResourceManager::addResource(ResourceType* resource) {
 	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
-	auto resourcesByType = m_resources.find(ResourceType::type);
-	if (resourcesByType != m_resources.end()) {
+	auto resourcesByType = getAllResources()->find(ResourceType::type);
+	if (resourcesByType != getAllResources()->end()) {
 		if (!resourcesByType->second.contains(resource->name)) {
 			std::shared_ptr<ResourceType> toShared(resource);
 			resourcesByType->second.emplace(resource->name, Resource{ std::reinterpret_pointer_cast<void>(toShared) });
 		}
-			
 		else {
 			std::cout << "Resource with type " << ResourceType::type << " and name " << resource->name << " already exists and can't be overwritten" << '\n';
 			delete resource;
@@ -200,37 +190,37 @@ void ResourceManager::addResource(ResourceType* resource) {
 	}
 	else {
 		std::shared_ptr<ResourceType> toShared(resource);
-		m_resources[ResourceType::type].emplace(resource->name, Resource{ std::reinterpret_pointer_cast<void>(toShared) });
+		(*getAllResources())[ResourceType::type].emplace(resource->name, Resource{ std::reinterpret_pointer_cast<void>(toShared) });
 	}
 }
 
 template<class ResourceType>
 void ResourceManager::removeResource(const std::string& name) {
 	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
-	
-	auto resourcesByType = m_resources.find(ResourceType::type);
 
-	if (resourcesByType != m_resources.end()) {
+	auto resourcesByType = getAllResources()->find(ResourceType::type);
+
+	if (resourcesByType != getAllResources()->end()) {
 		auto resource = resourcesByType->second.find(name);
 
 		if (resource != resourcesByType->second.cend()) {
 			resourcesByType->second.erase(name);
 			if (ResourceType::type == Texture2D::type)
 				getResource<Renderer>("main")->removeTexture(name);
-				
+
 			return;
 		}
 	}
 
-	std::cerr << "Error: this resource type doesn't exist" << '\n';
+	//std::cerr << "Error: this resource type doesn't exist" << '\n';
 }
 
 template<class ResourceType>
 void ResourceManager::freeResource(const std::string& name) {
 	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
-	auto resourcesByType = m_resources.find(ResourceType::type);
+	auto resourcesByType = getAllResources()->find(ResourceType::type);
 
-	if (resourcesByType != m_resources.end()) {
+	if (resourcesByType != getAllResources()->end()) {
 		auto resource = resourcesByType->second.find(name);
 
 		if (resource != resourcesByType->second.cend()) {
@@ -240,33 +230,33 @@ void ResourceManager::freeResource(const std::string& name) {
 		}
 	}
 
-	std::cerr << "Error: this resource type doesn't exist" << '\n';
+	//std::cerr << "Error: this resource type doesn't exist" << '\n';
 }
 
 template<class ResourceType>
 std::shared_ptr<ResourceType> ResourceManager::getResource(const std::string& name) {
 	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
-	auto resourcesByType = m_resources.find(ResourceType::type);
-	if (resourcesByType != m_resources.cend()) {
+	auto resourcesByType = getAllResources()->find(ResourceType::type);
+	if (resourcesByType != getAllResources()->cend()) {
 		auto resource = resourcesByType->second.find(name);
 
 		if (resource != resourcesByType->second.cend()) {
 			return resource->second.getResource<ResourceType>();
 		}
 	}
-	std::cerr << "Error: this resource type doesn't exist" << '\n';
+	//std::cerr << "Error: this resource type doesn't exist" << '\n';
 	return nullptr;
 }
 
 template<class ResourceType>
 std::unordered_map<std::string, Resource>* ResourceManager::getResourcesWithType() {
 	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
-	auto resourcesByType = m_resources.find(ResourceType::type);
-	if (resourcesByType != m_resources.cend()) {
+	auto resourcesByType = getAllResources()->find(ResourceType::type);
+	if (resourcesByType != getAllResources()->cend()) {
 		return &(resourcesByType->second);
 	}
 
-	std::cerr << "Error: this resource type doesn't exist" << '\n';
+	//std::cerr << "Error: this resource type doesn't exist" << '\n';
 	return nullptr;
 }
 
@@ -279,8 +269,7 @@ std::shared_ptr<ResourceType> ResourceManager::makeResource(Args&&... args) {
 		ResourceType* instance = new ResourceType(args...);
 		instance = nullptr;
 	}
-		
+
 	return getResource<ResourceType>(name);
 }
-
 #endif // !RESOURCEMANAGER

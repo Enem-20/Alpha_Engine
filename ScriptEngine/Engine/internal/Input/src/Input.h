@@ -5,21 +5,8 @@
 
 #include "../../src/ExportPropety.h"
 
-#ifdef SHOWONBUILD
-
-#include <glfw/glfw3.h>
-
-
 #include <string>
-#else
-//namespace glm {
-//	struct vec2;
-//}
 
-//namespace sol {
-//	class function;
-//}
-#endif
 
 #include <sol/sol.hpp>
 #include <glm/glm.hpp>
@@ -39,7 +26,6 @@ public:
 	static void removeMouseCallback(const std::string& name);
 
 	static glm::vec2 getNDCMousePosition();
-	//void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
 	static void freeResources();
 

@@ -14,6 +14,7 @@
 #include "Renderer/src/Texture2D.h"
 #include "Resources/ResourceManager.h"
 #include "GameTypes/GameObject.h"
+#include "Resources/Mesh.h"
 
 #include "Helpers/casts.h"
 #include "Helpers/StringFuncs.h"
@@ -25,6 +26,71 @@
 #include "Input/src/Input.h"
 
 #include <memory>
+
+//template<class ResourceType>
+//void DLLEXPORT ResourceManager::addResource<GameObject>(ResourceType* resource);
+//template<class ResourceType>
+//void DLLEXPORT ResourceManager::removeResource<GameObject>(const std::string& name);
+//template<class ResourceType>
+//void DLLEXPORT ResourceManager::freeResource<GameObject>(const std::string& name);
+//template<class ResourceType>
+//std::shared_ptr<ResourceType> DLLEXPORT ResourceManager::getResource<GameObject>(const std::string& name);
+//template<class ResourceType>
+//std::unordered_map<std::string, Resource>* DLLEXPORT ResourceManager::getResourcesWithType<GameObject>();
+//template<class ResourceType, class... Args>
+//std::shared_ptr<ResourceType> DLLEXPORT ResourceManager::makeResource<GameObject>(Args&&... args);
+//
+//template<class ResourceType>
+//void DLLEXPORT ResourceManager::addResource<Collider2D>(ResourceType* resource);
+//template<class ResourceType>
+//void DLLEXPORT ResourceManager::removeResource<Collider2D>(const std::string& name);
+//template<class ResourceType>
+//void DLLEXPORT ResourceManager::freeResource<Collider2D>(const std::string& name);
+//template<class ResourceType>
+//std::shared_ptr<ResourceType> DLLEXPORT ResourceManager::getResource<Collider2D>(const std::string& name);
+//template<class ResourceType>
+//std::unordered_map<std::string, Resource>* DLLEXPORT ResourceManager::getResourcesWithType<Collider2D>();
+//template<class ResourceType, class... Args>
+//std::shared_ptr<ResourceType> DLLEXPORT ResourceManager::makeResource<Collider2D>(Args&&... args);
+//
+//template<class ResourceType>
+//void DLLEXPORT ResourceManager::addResource<Panel>(ResourceType* resource);
+//template<class ResourceType>
+//void DLLEXPORT ResourceManager::removeResource<Panel>(const std::string& name);
+//template<class ResourceType>
+//void DLLEXPORT ResourceManager::freeResource<Panel>(const std::string& name);
+//template<class ResourceType>
+//std::shared_ptr<ResourceType> DLLEXPORT ResourceManager::getResource<Panel>(const std::string& name);
+//template<class ResourceType>
+//std::unordered_map<std::string, Resource>* DLLEXPORT ResourceManager::getResourcesWithType<Panel>();
+//template<class ResourceType, class... Args>
+//std::shared_ptr<ResourceType> DLLEXPORT ResourceManager::makeResource<Panel>(Args&&... args);
+//
+//template<class ResourceType>
+//void DLLEXPORT ResourceManager::addResource<Sprite>(ResourceType* resource);
+//template<class ResourceType>
+//void DLLEXPORT ResourceManager::removeResource<Sprite>(const std::string& name);
+//template<class ResourceType>
+//void DLLEXPORT ResourceManager::freeResource<Sprite>(const std::string& name);
+//template<class ResourceType>
+//std::shared_ptr<ResourceType> DLLEXPORT ResourceManager::getResource<Sprite>(const std::string& name);
+//template<class ResourceType>
+//std::unordered_map<std::string, Resource>* DLLEXPORT ResourceManager::getResourcesWithType<Sprite>();
+//template<class ResourceType, class... Args>
+//std::shared_ptr<ResourceType> DLLEXPORT ResourceManager::makeResource<Sprite>(Args&&... args);
+//
+//template<class ResourceType>
+//void DLLEXPORT ResourceManager::addResource<Renderer>(ResourceType* resource);
+//template<class ResourceType>
+//void DLLEXPORT ResourceManager::removeResource<Renderer>(const std::string& name);
+//template<class ResourceType>
+//void DLLEXPORT ResourceManager::freeResource<Renderer>(const std::string& name);
+//template<class ResourceType>
+//std::shared_ptr<ResourceType> DLLEXPORT ResourceManager::getResource<Renderer>(const std::string& name);
+//template<class ResourceType>
+//std::unordered_map<std::string, Resource>* DLLEXPORT ResourceManager::getResourcesWithType<Renderer>();
+//template<class ResourceType, class... Args>
+//std::shared_ptr<ResourceType> DLLEXPORT ResourceManager::makeResource<Renderer>(Args&&... args);
 
 static GameObject GetData(std::shared_ptr<GameObject> gameObject)
 {
@@ -43,7 +109,7 @@ void ClassRegistrator::Reg_GLMvec2(sol::table* Lnamespace)
 
 		, "x", &glm::vec2::x
 		, "y", &glm::vec2::y
-		);
+	);
 }
 
 void ClassRegistrator::Reg_GLMivec2(sol::table* Lnamespace)
@@ -58,7 +124,7 @@ void ClassRegistrator::Reg_GLMivec2(sol::table* Lnamespace)
 
 		, "x", &glm::ivec2::x
 		, "y", &glm::ivec2::y
-		);
+	);
 }
 
 void ClassRegistrator::Reg_GLMvec3(sol::table* Lnamespace)
@@ -74,7 +140,7 @@ void ClassRegistrator::Reg_GLMvec3(sol::table* Lnamespace)
 		, "x", &glm::vec3::x
 		, "y", &glm::vec3::y
 		, "z", &glm::vec3::z
-		);
+	);
 }
 
 void ClassRegistrator::Reg_GLMvec4(sol::table* Lnamespace)
@@ -96,7 +162,7 @@ void ClassRegistrator::Reg_GLMvec4(sol::table* Lnamespace)
 		, "y", &glm::vec4::y
 		, "z", &glm::vec4::z
 		, "w", &glm::vec4::w
-		);
+	);
 }
 
 void ClassRegistrator::Reg_GLMMat3(sol::table* Lnamespace)
@@ -108,7 +174,7 @@ void ClassRegistrator::Reg_GLMMat3(sol::table* Lnamespace)
 		, sol::meta_function::subtraction, sol::resolve<glm::mat3(const glm::mat3&, const glm::mat3&)>(glm::operator-)
 		, sol::meta_function::multiplication, sol::resolve<glm::mat3(const glm::mat3&, const glm::mat3&)>(glm::operator*)
 		, sol::meta_function::division, sol::resolve<glm::mat3(const glm::mat3&, const glm::mat3&)>(glm::operator/)
-		);
+	);
 }
 
 void ClassRegistrator::Reg_GLMMat4(sol::table* Lnamespace)
@@ -120,19 +186,16 @@ void ClassRegistrator::Reg_GLMMat4(sol::table* Lnamespace)
 		, sol::meta_function::subtraction, sol::resolve<glm::mat4(const glm::mat4&, const glm::mat4&)>(glm::operator-)
 		, sol::meta_function::multiplication, sol::resolve<glm::mat4(const glm::mat4&, const glm::mat4&)>(glm::operator*)
 		, sol::meta_function::division, sol::resolve<glm::mat4(const glm::mat4&, const glm::mat4&)>(glm::operator/)
-		);
+	);
 }
 
 void ClassRegistrator::Reg_ShaderProgram(sol::table* same)
 {
 	//Reg_GLMMat4(same);
-	//same->new_usertype<ShaderProgram>("ShaderProgram"
-	//	, sol::constructors<ShaderProgram(const std::string&, const std::string&)
-	//	, ShaderProgram(ShaderProgram&&)>()
-
-	//	, "isCompiled", &ShaderProgram::isCompiled
-	//	, "use", &ShaderProgram::use
-	//	, "setInt", &ShaderProgram::setMatrix4);
+	same->new_usertype<ShaderProgram>("ShaderProgram"
+		, "new", sol::factories(&ResourceManager::loadShaders)
+		//, "name", &ShaderProgram::name
+	);
 }
 
 void ClassRegistrator::Reg_SubTexture2D(sol::table* LTexture2D)
@@ -141,7 +204,7 @@ void ClassRegistrator::Reg_SubTexture2D(sol::table* LTexture2D)
 		, sol::constructors<Texture2D::SubTexture2D(), Texture2D::SubTexture2D(const glm::vec2, const glm::vec2)>()
 		, "leftBottomUV", &Texture2D::SubTexture2D::getLeftBottomUV
 		, "rightTopUV", &Texture2D::SubTexture2D::getRightTopUV
-		);
+	);
 }
 
 void ClassRegistrator::Reg_Texture2D(sol::table* same)
@@ -164,31 +227,19 @@ void ClassRegistrator::Reg_Texture2D(sol::table* same)
 		Reg_SubTexture2D(same);*/
 
 		same->new_usertype<Texture2D>("Texture2D"
-			,"new" , &ResourceManager::loadTexture
+			, "new", sol::factories(&ResourceManager::loadTexture)
 			, "getWidth", &Texture2D::getWidth
 			, "getHeight", &Texture2D::getHeight
+			, "name", &Texture2D::name
 		);
 	}
 }
 
 void ClassRegistrator::Reg_Sprite(sol::table* object)
 {
-	/*object->new_usertype<Sprite>("Sprite"
-		, sol::constructors<Sprite(std::shared_ptr<Texture2D>,
-			std::string,
-			std::shared_ptr<ShaderProgram>,
-			const glm::vec2& position,
-			const glm::vec3& rotation,
-			const glm::vec2& size)>()
-
-		, "render", &Sprite::render
-		, "setPosition", &Sprite::setPosition
-		, "getSize", &Sprite::getSize
-		, "setSize", &Sprite::setSize
-		, "setRotation", &Sprite::setRotation
-		);*/
 	object->new_usertype<Sprite>("Sprite"
-		, "new", &ResourceManager::loadSprite
+		, "new", sol::factories(&ResourceManager::loadSprite)
+		, "name", &Sprite::name
 	);
 }
 
@@ -201,35 +252,66 @@ void ClassRegistrator::Reg_UIelement(sol::table* UIElement)
 void ClassRegistrator::Reg_Transform(sol::table* Lnamespace)
 {
 	Lnamespace->new_usertype<Transform>("Transform"
-		, "position", &Transform::GetPosition
-		, "rotation", &Transform::GetRotation
-		, "scale", &Transform::GetScale
-		, "GetPosition", &Transform::GetVec2Position);
+		, "new", sol::factories([](const std::string& name, const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale) {
+			auto shared = std::make_shared<Transform>(position, rotation, scale); shared->name = name;
+			return shared;
+			})
+		, "getPosition", &Transform::GetPosition
+		, "getRotation", &Transform::GetRotation
+		, "getScale", &Transform::GetScale
+		, "name", &Transform::name
+		);
 }
 
 void ClassRegistrator::Reg_GameObject(sol::table* object)
 {
 	object->new_usertype<GameObject>("GameObject"
-		, "create",		sol::factories(ResourceManager::makeResource<GameObject, const std::string&>)
-		, "remove",		&ResourceManager::removeResource<GameObject>
-		, "Translate",		&GameObject::Translate
-		, "Teleport",		&GameObject::Teleport
-		, "Rotate",		&GameObject::Rotate
-		, "AddChild",		&GameObject::AddChild
-		, "GetChild",		&GameObject::GetChild
-		, "Name",				&GameObject::Name
-		, "getScript",	&GameObject::getComponent<LuaScript>
+		, "new", sol::factories(&ResourceManager::makeResource<GameObject, const std::string&>)
+		, "remove", &ResourceManager::removeResource<GameObject>
+		, "Translate", &GameObject::Translate
+		, "Teleport", &GameObject::Teleport
+		, "Rotate", &GameObject::Rotate
+		, "AddChild", &GameObject::AddChild
+		, "GetChild", &GameObject::GetChild
+		, "name", &GameObject::name
+		, "getLuaScript", &GameObject::getComponent<LuaScript>
 		, "getTransform", &GameObject::getComponent<Transform>
 		, "getCollider2D", &GameObject::getComponent<Collider2D>
-		, "getSprite",	&GameObject::getComponent<Sprite>
-		);
+		, "getSprite", &GameObject::getComponent<Sprite>
+		, "getPanel", &GameObject::getComponent<Panel>
+		, "addLuaScript", &GameObject::addComponent<LuaScript>
+		, "addTransform", &GameObject::addComponent<Transform>
+		, "addCollider2D", &GameObject::addComponent<Collider2D>
+		, "addSprite", &GameObject::addComponent<Sprite>
+		, "addPanel", &GameObject::addComponent<Panel>
+	);
 }
 
 void ClassRegistrator::Reg_Collider2D(sol::table* object) {
 	object->new_usertype<Collider2D>("Collider2D"
-		, "create", sol::factories(ResourceManager::makeResource<Collider2D, const std::string&>)
+		, "new", sol::factories(&ResourceManager::makeResource <Collider2D, const std::string&>, 
+			[](const std::string& name, std::shared_ptr<Transform> transform){
+				return ResourceManager::makeResource<Collider2D>(name, transform);
+			})
 		, "getTransform", &Collider2D::getTransform
 		, "getGameObject", &Collider2D::GetGameObject
+		, "name", &Collider2D::name
+	);
+}
+
+void ClassRegistrator::Reg_Mesh(sol::table* object) {
+	object->new_usertype<Mesh>("Mesh"
+		, "new", sol::factories(&ResourceManager::loadMesh)
+		, "name", &Mesh::name
+	);
+}	
+
+void ClassRegistrator::Reg_LuaScript(sol::table* object) {
+	object->new_usertype<LuaScript>("LuaScript"
+		, "new", sol::factories([](const std::string& name, const std::string& path, std::shared_ptr<sol::state> L){
+			std::make_shared<LuaScript>(name, path, L);
+		})
+		, "name", &LuaScript::name
 	);
 }
 
@@ -275,9 +357,14 @@ void ClassRegistrator::Reg_ResourceManager(sol::table* Lnamespace)
 	Lnamespace->new_usertype<ResourceManager>("ResourceManager"
 		, "", sol::no_constructor
 		, "loadScene", &::ResourceManager::loadSave
+		, "removeGameObject", &ResourceManager::removeResource<GameObject>
 		, "getGameObject", &::ResourceManager::getResource<GameObject>
-		, "m_resources", sol::var(std::ref(ResourceManager::m_resources))
-	);
+		, "getTexture", &ResourceManager::getResource<Texture2D>
+		, "getSprite", &ResourceManager::getResource<Sprite>
+		, "getCollider2D", &ResourceManager::getResource<Collider2D>
+		, "getShaderProgram", &ResourceManager::getResource<ShaderProgram>
+		, "getMesh", &ResourceManager::getResource<Mesh>
+		, "getLuaScript", &ResourceManager::getResource<LuaScript>);
 }
 void ClassRegistrator::Reg_Input(sol::table* Lnamespace)
 {
@@ -334,7 +421,8 @@ int ClassRegistrator::Registration(sol::table* Lnamespace)
 		Reg_ResourceManager(Lnamespace);
 		Reg_Casts(Lnamespace);
 		Reg_Raycast(Lnamespace);
-
+		Reg_Mesh(Lnamespace);
+		Reg_LuaScript(Lnamespace);
 
 		return 0;
 	}

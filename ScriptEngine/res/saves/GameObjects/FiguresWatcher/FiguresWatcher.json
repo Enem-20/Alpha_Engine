@@ -1,0 +1,19 @@
+{
+    "name": "FiguresWatcher",
+    "children": [],
+    "components": {
+        "Panels": [],
+        "Sprites": [],
+        "LuaScripts": [
+            {
+                "name": "FiguresWatcher"
+            }
+        ],
+        "Transforms": [
+            {
+                "name": "FiguresWatcher"
+            }
+        ],
+        "Collider2Ds": []
+    }
+}

@@ -39,6 +39,8 @@ private:
 	static void Reg_Transform(sol::table* Lnamespace);
 	static void Reg_GameObject(sol::table* object);
 	static void Reg_Collider2D(sol::table* object);
+	static void Reg_Mesh(sol::table* object);
+	static void Reg_LuaScript(sol::table* object);
 
 	static void Reg_Timer(sol::table* Lnamespace);
 	static void Reg_Hierarchy(sol::table* hierarchy);

@@ -1,0 +1,23 @@
+{
+    "name": "BlackQueen1",
+    "children": [],
+    "components": {
+        "Panels": [],
+        "Sprites": [
+            {
+                "name": "BlackQueen1Sprite"
+            }
+        ],
+        "LuaScripts": [],
+        "Transforms": [
+            {
+                "name": "BlackQueen1"
+            }
+        ],
+        "Collider2Ds": [
+            {
+                "name": "BlackQueen1"
+            }
+        ]
+    }
+}
