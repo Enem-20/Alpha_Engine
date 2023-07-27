@@ -1,62 +1,144 @@
 #pragma once
 
-#include "../Components/Components.pch"
-#include "../UI/Button.h"
+#ifndef GAMEOBJECT
+#define GAMEOBJECT
+
+#include "../ExportPropety.h"
+
+#include "../Resources/ResourceManager.h"
+
+#include "../../internal/UI/src/Panel.h"
+#include "../../internal/ComponentSystem/src/Component.h"
+#include "../Resources/ResourceBase.h"
 
 
+#include <type_traits>
+#include <list>
 #include <vector>
 #include <unordered_map>
+#include <typeinfo>
+#include <string>
+#include <memory>
 
-namespace RenderEngine
-{
-	class Sprite;
-}
 
-class GameObject
+#include <glm/glm.hpp>
+
+
+class Transform;
+class LuaScript;
+class Sprite;
+class Button;
+class RenderPipeline;
+class CommandBuffer;
+
+
+class DLLEXPORT GameObject : public ResourceBase
 {
 	friend class Serializer;
 	friend class DeserializerObject;
 public:
-	GameObject() = delete;
+public:
 	GameObject(const GameObject& gameObject);
-	//GameObject(GameObject&&) = default;
-	GameObject(std::string name = "",
-		std::shared_ptr<Components::Transform> transform = nullptr,
-		std::shared_ptr<RenderEngine::Sprite> sprite = nullptr,
-		std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts = std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>>(),
-		std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons = std::unordered_map<std::string, std::shared_ptr<UI::Button>>(),
-		int render_priority = 0);
+	GameObject(const std::string& name);
+	void operator=(const GameObject& gameObject);
 	GameObject(GameObject&&) = delete;
 	virtual ~GameObject();
+
+
 	void Translate(const glm::vec3& position);
 	void Teleport(const glm::vec3& position);
-	void Rotate(glm::vec3 rotation);
-	void Scale(glm::vec3 scale);
-	void Update();
+	void Rotate(const glm::vec3& rotation);
+	void Scale(const glm::vec3& scale);
 
-	Components::Transform& GetTransform() { return *transform; }
-	void SetOnGrid(const bool& onGridNew) { onGrid = onGridNew; }
-	virtual void render();
+	void Start();
+	void Update(uint32_t currentImage);
 
-	std::shared_ptr<GameObject> testShared(GameObject gameObject) { return std::make_shared<GameObject>(gameObject); }
+	std::string& Name();
+	virtual void render(CommandBuffer& commandBuffer, RenderPipeline& renderPipeline, uint32_t currentFrame);
 
-	void AddChild(const GameObject& gameObject);
-	GameObject& GetChild(int i) const;
+	void AddChild(std::shared_ptr<GameObject> gameObject);
+	std::shared_ptr<GameObject> GetChild(int i);
 
-	virtual std::shared_ptr<RenderEngine::Sprite> GetSprite() const;
-	size_t ID;
+	template<class ComponentType>
+	void addComponent(std::shared_ptr<ComponentType> component);
+
+	template<class ComponentType>
+	void removeComponent(const std::string& name);
+
+	template<class ComponentType>
+	std::shared_ptr<ComponentType> getComponent(const std::string& name);
+
+	template<class ComponentType>
+	std::unordered_map<std::string, ComponentView>* getComponentsWithType();
 public:
-	std::shared_ptr<Components::Transform> transform;
-
-	std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts;
-	std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons;
+	std::unordered_map<std::string, std::unordered_map<std::string, ComponentView>> components;
 
 	std::vector<std::shared_ptr<GameObject>> children;
 
-	std::string name;
-	int render_priority;
-	bool onGrid;
+	std::weak_ptr<GameObject> parent;
+
+	size_t ID;
+
+	GENERATETYPE(GameObject)
 protected:
 	static size_t counter;
-	std::shared_ptr<RenderEngine::Sprite> sprite;
+	void SetColliderTransform(std::shared_ptr<Transform> transform);
+private:
+
+	GameObject(size_t ID);
 };
+
+template<class ComponentType>
+void GameObject::addComponent(std::shared_ptr<ComponentType> component) {
+	static_assert(std::is_base_of<Component, ComponentType>::value || std::is_same<Component, ComponentType>::value, "ComponentType must inherit from Component or be a Component");
+	component->gameObject = ResourceManager::template getResource<GameObject>(this->name);
+
+	auto componentsByType = components.find(ComponentType::type);
+	if (componentsByType != components.end()) {
+		componentsByType->second.emplace(component->name, ComponentView{ std::reinterpret_pointer_cast<void>(component) });
+	}
+	else {
+		components[ComponentType::type].emplace(component->name, ComponentView{ std::reinterpret_pointer_cast<void>(component) });
+	}
+}
+
+template<class ComponentType>
+void GameObject::removeComponent(const std::string& name) {
+	size_t currentIndex = 0;
+
+	auto componentsByType = components.find(ComponentType::type);
+
+	if (componentsByType != components.end())
+		componentsByType->second.erase(name);
+}
+
+template<class ComponentType>
+std::shared_ptr<ComponentType> GameObject::getComponent(const std::string& name) {
+	static_assert(std::is_base_of<Component, ComponentType>::value || std::is_same<Component, ComponentType>::value, "ComponentType must inherit from Component or be a Component");
+	auto componentsByType = components.find(ComponentType::type);
+
+	if (componentsByType != components.end()) {
+		auto component = componentsByType->second.find(name);
+
+		if (component != componentsByType->second.end()) {
+			return component->second.getComponentFromView<ComponentType>();
+		}
+	}
+		
+	return nullptr;
+}
+
+template<class ComponentType>
+std::unordered_map<std::string, ComponentView>* GameObject::getComponentsWithType() {
+	static_assert(std::is_base_of<Component, ComponentType>::value || std::is_same<Component, ComponentType>::value, "ComponentType must inherit from Component or be a Component");
+
+	auto componentsByType = components.find(ComponentType::type);
+
+	if (componentsByType != components.end()) {
+		return &componentsByType->second;
+	}
+
+	return nullptr;
+}
+
+#endif // !GAMEOBJECT

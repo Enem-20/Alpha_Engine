@@ -1,0 +1,9 @@
+{
+    "name": "WhiteKing1Sprite",
+    "textureName": "WhiteKing",
+    "shaderProgramName": "TestShaderProgram",
+    "meshName": "SpriteMesh",
+    "width": 177.0,
+    "height": 177.0,
+    "subTextureName": "default"
+}

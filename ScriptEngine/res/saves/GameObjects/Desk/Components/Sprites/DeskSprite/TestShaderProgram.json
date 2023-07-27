@@ -1,0 +1,5 @@
+{
+    "name": "TestShaderProgram",
+    "vertexPath": "res/shaders/vert.spv",
+    "fragmentPath": "res/shaders/frag.spv"
+}

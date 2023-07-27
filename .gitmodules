@@ -7,15 +7,33 @@
 [submodule "ScriptEngine/Engine/external/rapidjson"]
 	path = ScriptEngine/Engine/external/rapidjson
 	url = https://github.com/Tencent/rapidjson.git
+[submodule "external/sol2"]
+	path = external/sol2
+	url = https://github.com/ThePhD/sol2.git
+[submodule "ScriptEngine/Engine/external/P7"]
+	path = ScriptEngine/Engine/external/P7
+	url = https://github.com/Enem-20/P7.git
 [submodule "ScriptEngine/Engine/external/Lua"]
 	path = ScriptEngine/Engine/external/Lua
 	url = https://github.com/walterschell/Lua.git
 [submodule "ScriptEngine/external/Lua"]
 	path = ScriptEngine/external/Lua
 	url = https://github.com/walterschell/Lua.git
-[submodule "external/sol2"]
-	path = external/sol2
-	url = https://github.com/ThePhD/sol2.git
 [submodule "ScriptEngine/Engine/external/imguiLibrary/imgui"]
 	path = ScriptEngine/Engine/external/imguiLibrary/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "ScriptEngine/Engine/external/VulkanHpp"]
+	path = ScriptEngine/Engine/external/VulkanHpp
+	url = https://github.com/KhronosGroup/Vulkan-Hpp.git
+[submodule "ScriptEngine/Engine/internal/Renderer"]
+	path = ScriptEngine/Engine/internal/Renderer
+	url = https://github.com/Enem-20/Renderer.git
+[submodule "ScriptEngine/Engine/external/tinyobjloader"]
+	path = ScriptEngine/Engine/external/tinyobjloader
+	url = https://github.com/tinyobjloader/tinyobjloader.git
+[submodule "ScriptEngine/Engine/external/reactphysics3d"]
+	path = ScriptEngine/Engine/external/reactphysics3d
+	url = https://github.com/DanielChappuis/reactphysics3d.git
+[submodule "ScriptEngine/Engine/external/obj-io"]
+	path = ScriptEngine/Engine/external/obj-io
+	url = https://github.com/thinks/obj-io.git

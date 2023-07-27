@@ -1,0 +1,23 @@
+{
+    "name": "BlackPawn3",
+    "children": [],
+    "components": {
+        "Panels": [],
+        "Sprites": [
+            {
+                "name": "BlackPawn3Sprite"
+            }
+        ],
+        "LuaScripts": [],
+        "Transforms": [
+            {
+                "name": "BlackPawn3"
+            }
+        ],
+        "Collider2Ds": [
+            {
+                "name": "BlackPawn3"
+            }
+        ]
+    }
+}

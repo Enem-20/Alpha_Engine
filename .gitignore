@@ -1,2 +1,4 @@
 build
 .vcxproj
+.vs
+*.bak

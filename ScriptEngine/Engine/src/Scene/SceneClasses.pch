@@ -1,6 +1,0 @@
-#pragma once
-
-#include "Camera.h"
-#include "Hierarchy.h"
-#include "Scene.h"
-#include "SceneManager.h"

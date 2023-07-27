@@ -1,0 +1,23 @@
+{
+    "name": "BlackCastle1",
+    "children": [],
+    "components": {
+        "Panels": [],
+        "Sprites": [
+            {
+                "name": "BlackCastle1Sprite"
+            }
+        ],
+        "LuaScripts": [],
+        "Transforms": [
+            {
+                "name": "BlackCastle1"
+            }
+        ],
+        "Collider2Ds": [
+            {
+                "name": "BlackCastle1"
+            }
+        ]
+    }
+}

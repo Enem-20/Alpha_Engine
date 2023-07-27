@@ -1,0 +1,9 @@
+{
+    "name": "BlackQueen1Sprite",
+    "textureName": "BlackQueen",
+    "shaderProgramName": "TestShaderProgram",
+    "meshName": "SpriteMesh",
+    "width": 177.0,
+    "height": 177.0,
+    "subTextureName": "default"
+}

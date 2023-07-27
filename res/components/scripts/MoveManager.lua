@@ -54,6 +54,7 @@ function Start()
 end
     
 function GetUnit()
+print("get unit function")
     local cell = GetCell()
 
     if selectedObject == nil then

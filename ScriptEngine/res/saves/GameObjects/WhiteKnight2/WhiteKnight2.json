@@ -1,0 +1,23 @@
+{
+    "name": "WhiteKnight2",
+    "children": [],
+    "components": {
+        "Panels": [],
+        "Sprites": [
+            {
+                "name": "WhiteKnight2Sprite"
+            }
+        ],
+        "LuaScripts": [],
+        "Transforms": [
+            {
+                "name": "WhiteKnight2"
+            }
+        ],
+        "Collider2Ds": [
+            {
+                "name": "WhiteKnight2"
+            }
+        ]
+    }
+}

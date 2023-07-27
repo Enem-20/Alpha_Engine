@@ -1,0 +1,13 @@
+{
+    "name": "panel",
+    "uis": {
+        "Buttons": [
+            {
+                "name": "Button"
+            },
+            {
+                "name": "Button2"
+            }
+        ]
+    }
+}

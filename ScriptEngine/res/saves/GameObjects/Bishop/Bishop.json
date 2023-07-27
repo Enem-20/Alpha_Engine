@@ -1,0 +1,22 @@
+{
+    "name": "Bishop",
+    "children": [],
+    "components": {
+        "Panels": [],
+        "Sprites": [],
+        "LuaScripts": [
+            {
+                "name": "MoveManager"
+            },
+            {
+                "name": "Translation"
+            }
+        ],
+        "Transforms": [
+            {
+                "name": "Bishop"
+            }
+        ],
+        "Collider2Ds": []
+    }
+}

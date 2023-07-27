@@ -1,33 +1,39 @@
 #pragma once
 
-#include <sol/sol.hpp>
+#ifndef SCRIPTENGINE
+#define SCRIPTENGINE
 
-namespace Components
-{
-	class LuaScript;
-}
+#include "API/ExportProperty.h"
+
+#include <sol/sol.hpp>
+#include <memory>
 
 class Timer;
 
-namespace ScriptEngine
+
+class ClassRegistrator;
+
+class ScriptProcessor
 {
-	class ClassRegistrator;
+public:
+	//ScriptProcessor();
+	static std::shared_ptr<sol::state> getL();
+	static void init(char** argv);
+	static void FirstFrame();
+	static void render();
 
-	class ScriptProcessor
-	{
-	public:
-		//ScriptProcessor();
-		inline static sol::state L;
-		static void init();
+	static void Awake();
+	static void Start();
+	static void Update();
+	static void FixedUpdate();
+	static void LastUpdate();
 
-		static void Awake();
-		static void Start();
-		static void Update();
-		static void FixedUpdate();
-		static void LastUpdate();
+	static void DestroyAll();
 
-		inline static std::shared_ptr<Timer> GeneralTimer;
-	private:
-		
-	};
-}
+	static void ScriptUpdates();
+	static std::shared_ptr<Timer>& GeneralTimer();
+private:
+	static std::shared_ptr<Timer> GenTimer;
+	static std::shared_ptr<sol::state> L;
+};
+#endif

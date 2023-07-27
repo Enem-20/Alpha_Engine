@@ -1,8 +1,11 @@
 #include "GameObject.h"
 
-#include "../Renderer/Sprite.h"
-#include "../Scene/Hierarchy.h"
-#include "../UI/Button.h"
+#include "../../internal/ComponentSystem/src/LuaScript.h"
+#include "../../internal/ComponentSystem/src/Transform.h"
+#include "../../internal/Renderer/src/Sprite.h"
+#include "../../internal/UI/src/Button.h"
+#include "../Helpers/StringFuncs.h"
+#include "../Logging/Clerk.h"
 
 #include <../glm/glm/vec2.hpp>
 #include <../glm/glm/vec3.hpp>
@@ -11,180 +14,186 @@
 
 size_t GameObject::counter = 0;
 
-GameObject::GameObject(std::string name,
-	std::shared_ptr<Components::Transform> transform,
-	std::shared_ptr<RenderEngine::Sprite> sprite,
-	std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts,
-	std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons,
-	int render_priority)
-	: transform(transform)
-	, sprite(sprite)
-	, scripts(scripts)
-	, buttons(buttons)
-	, render_priority(render_priority)
+GameObject::GameObject(const std::string& name)
+	: ResourceBase(name)
 {
-	onGrid = false;
-	if (Hierarchy::getObject(name))
-	{
-		ID = counter ? ++counter : counter;
-		this->name = name + std::to_string(ID);
-	}
-	else
-	{
-		ID = 0;
-		this->name = name;
-	}
-	//transform->Translate(glm::vec3(0.f));
-	//transform->Rotate(glm::vec3(0.f));
-	if (this->transform != nullptr)
-	{
-		if (sprite) { this->transform->scale = glm::vec3(sprite->getSize(), 0.f); }
-		this->transform->Scale(glm::vec3(0.f));
-	}
-	else
-	{
-		this->transform = std::make_shared<Components::Transform>(this->name);
-		this->transform->Scale(glm::vec3(0.f));
-	}
-	this->render_priority = render_priority;
+#ifdef LOG_INFO
+	std::string FuncName("GameObject::GameObject(std::string name, std::shared_ptr<Components::Transform> transform, std::shared_ptr<RenderEngine::Sprite> sprite, std::unordered_map<std::string, std::shared_ptr<Components::LuaScript>> scripts, std::unordered_map<std::string, std::shared_ptr<UI::Button>> buttons, int render_priority)" + name);
+	Clerk::Knowledge(28, __FILE__, FuncName, L"Begin of constructor");
+#endif
 
-
-
-	Hierarchy::addObject(*this);
-	if(onGrid)//Костыль
-		Hierarchy::addGridObject(this->name);
-	for (auto itScripts : scripts)
-	{
-		itScripts.second->gameObject = Hierarchy::getObject(this->name);
-		itScripts.second->Awake();
+#ifdef LOG_INFO
+	Clerk::Knowledge(41, __FILE__, FuncName, L"Choosing name");
+#endif
+	auto obj = ResourceManager::getResource<GameObject>(name);
+	if (obj)
+		this->name = name + StringFuncs::RemoveNumbersEnd(obj->name) + std::to_string(ID = ++counter);
+	else if (name == "") {
+		this->name = std::to_string(ID = ++counter);
 	}
-	for (auto button : buttons)
-	{
-		button.second->gameObject = Hierarchy::getObject(this->name);
-		//button.second.setParamCollider();
-	}
+	ResourceManager::addResource<GameObject>(this);
 }
 
 GameObject::GameObject(const GameObject& gameObject)
-	: scripts(gameObject.scripts)
-	, buttons(gameObject.buttons)
-	, onGrid(gameObject.onGrid)
+	: components(gameObject.components)
+	, children(gameObject.children)
+	, ResourceBase(gameObject.name)
 {
-	this->sprite = gameObject.sprite;
-	this->transform = std::make_shared<Components::Transform>(gameObject.transform->position, gameObject.transform->rotation, glm::vec3(0.f));
-	if(sprite)
-		this->transform->scale = glm::vec3(sprite->getSize(), 0.f);
-	this->transform->Scale(glm::vec3(0.f));
+#ifdef LOG_INFO
+	Clerk::Knowledge(102, __FILE__, "GameObject copy constructor", L"Begin of constructor");
+#endif
 
-	ID = 0;
-	if (Hierarchy::getObject(gameObject.name))
-	{
-		while (Hierarchy::getObject(gameObject.name + std::to_string(ID)))
-		{
-			++ID;
-		}
-		this->name = gameObject.name + std::to_string(ID);
-	}
-	else
-	{
-		this->name = gameObject.name;
-	}
+	this->name = StringFuncs::RemoveNumbersEnd(gameObject.name) + std::to_string(ID = ++counter);
 
-	this->render_priority = gameObject.render_priority;
+	ResourceManager::addResource<GameObject>(this);
+}
+
+void GameObject::operator=(const GameObject& gameObject)
+{
+	children = gameObject.children;
+	ID = ++counter;
+	this->name = StringFuncs::RemoveNumbersEnd(gameObject.name) + std::to_string(ID);
+
+	components = gameObject.components;
 }
 
 GameObject::~GameObject()
 {
-	scripts.clear();
-	buttons.clear();
-	sprite.reset();
-	transform.reset();
+#ifdef LOG_INFO
+	Clerk::Knowledge(148, __FILE__, "GameObject::~GameObject at " + name, L"Clear all data...");
+#endif
 	children.clear();
-}
-
-void GameObject::render()
-{
-	if (sprite)
-	{
-		sprite->render(transform->GetModel());
+	auto sprites = getComponentsWithType<Sprite>();
+	if(sprites)
+	for (auto sprite : *sprites) {
+		ResourceManager::removeResource<Sprite>(sprite.second.getComponentFromView<Sprite>()->name);
+	}
+	auto panels = getComponentsWithType<Panel>();
+	if (panels)
+	for (auto panel : *panels) {
+		ResourceManager::removeResource<Panel>(panel.second.getComponentFromView<Panel>()->name);
 	}
 
+	auto colliders = getComponentsWithType<Collider2D>();
+	if(colliders)
+	for (auto collider : *colliders) {
+		ResourceManager::removeResource<Collider2D>(collider.second.getComponentFromView<Collider2D>()->name);
+	}
+	components.clear();
+}
+
+void GameObject::render(CommandBuffer& commandBuffer, RenderPipeline& renderPipeline, uint32_t currentFrame)
+{
+#ifdef LOG_INFO
+	Clerk::Knowledge(159, __FILE__, "GameObject::render() at " + name, L"Rendering sprites...");
+#endif
+
+	auto sprites = getComponentsWithType<Sprite>();
+	if (sprites)
+		for (auto sprite : *sprites) {
+			sprite.second.getComponentFromView<Sprite>()->render(commandBuffer, renderPipeline, currentFrame);
+		}
+
+#ifdef LOG_INFO
+	Clerk::Knowledge(167, __FILE__, "GameObject::render() at " + name, L"Rendering childs...");
+#endif
 	for (auto it : children)
 	{
-		it->render();
+		it->render(commandBuffer, renderPipeline, currentFrame);
 	}
 }
 
 void GameObject::Translate(const glm::vec3& position)
 {
-	if(onGrid)	//Костыль
-		Hierarchy::removeGridObject(Input::GetCell(transform->position));
+	auto transform = getComponent<Transform>(name);
 	transform->Translate(position);
+	SetColliderTransform(transform);
+
 	for (auto it : children)
 	{
 		it->Translate(position);
 	}
-	if(onGrid)//Костыль
-		Hierarchy::addGridObject(this->name);
-	Update();
 }
 
 void GameObject::Teleport(const glm::vec3& position)
 {
-	if(onGrid)//Костыль
-		Hierarchy::removeGridObject(Input::GetCell(transform->position));
+	auto transform = getComponent<Transform>(name);
 	transform->Teleport(position);
+	SetColliderTransform(transform);
+
 	for (auto& it : children)
 	{
 		it->Teleport(position);
 	}
-	if(onGrid)//Костыль
-		Hierarchy::addGridObject(this->name);
-	Update();
 }
 
-void GameObject::Rotate(glm::vec3 rotation)
+void GameObject::Rotate(const glm::vec3& rotation)
 {
-	transform->Rotate(std::move(rotation));
+	auto transform = getComponent<Transform>(name);
+	transform->Rotate(rotation);
+	SetColliderTransform(transform);
+
 	for (auto it : children)
 	{
 		it->Rotate(rotation);
 	}
-
-	Update();
 }
 
-void GameObject::Scale(glm::vec3 scale)
+void GameObject::Scale(const glm::vec3& scale)
 {
-	transform->Scale(std::move(scale));
+	auto transform = getComponent<Transform>(name);
+	transform->Scale(scale);
+	SetColliderTransform(transform);
+
 	for (auto it : children)
 	{
 		it->Scale(scale);
 	}
-
-	Update();
 }
 
-void GameObject::Update()
-{
-	for (auto& it : buttons)
-	{
-		it.second->translate(transform->position);
-	}
-
-	//Teleport(transform->position);
+void GameObject::Start() {
+	auto scripts = getComponentsWithType<LuaScript>();
+	if (scripts)
+		for (auto sprite : *scripts) {
+			sprite.second.getComponentFromView<LuaScript>()->Start();
+		}
 }
 
-std::shared_ptr<RenderEngine::Sprite> GameObject::GetSprite() const
+void GameObject::Update(uint32_t currentImage)
 {
-	return sprite;
+	auto scripts = getComponentsWithType<LuaScript>();
+	if (scripts)
+		for (auto sprite : *scripts) {
+			sprite.second.getComponentFromView<LuaScript>()->Update(currentImage);
+		}
+
+	auto sprites = getComponentsWithType<Sprite>();
+	if (sprites)
+		for (auto sprite : *sprites) {
+			sprite.second.getComponentFromView<Sprite>()->Update(currentImage);
+		}
 }
 
-void GameObject::AddChild(const GameObject& gameObject)
-{
-	children.push_back(std::make_shared<GameObject>(gameObject));
+void GameObject::AddChild(std::shared_ptr<GameObject> gameObject) {
+	gameObject->parent = ResourceManager::getResource<GameObject>(name);
+	children.push_back(gameObject);
 }
-GameObject& GameObject::GetChild(int i) const
+std::shared_ptr<GameObject> GameObject::GetChild(int i) {
+	return children[i];
+}
+
+GameObject::GameObject(size_t ID)
+	: ResourceBase("GameObject")
 {
-	return *children[i];
+	this->ID = ID;
+}
+
+std::string& GameObject::Name(){
+	return name;
+}
+
+void GameObject::SetColliderTransform(std::shared_ptr<Transform> transform) {
+	auto collider = getComponent<Collider2D>(name);
+	if(collider)
+		collider->SetTransform(transform);
 }
