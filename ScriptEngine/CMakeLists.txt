@@ -7,8 +7,6 @@ set(ENV{LUA_PATH} ${CMAKE_BINARY_DIR}/bin/)
 add_executable(${PROJECT_NAME} #SHARED
 			src/ScriptEngine.h
 			src/ScriptEngine.cpp
-			# src/LuaParser.h
-			# src/LuaParser.cpp
 			src/ClassRegistrator.h
 			src/ClassRegistrator.cpp
 			)
@@ -38,13 +36,10 @@ add_compile_definitions(SCRIPT_ENGINE_EXPORTS)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
  Engine
- #glad
- #glfw
  lua_static
  )
 
 target_include_directories(${PROJECT_NAME} PRIVATE 
-#Engine/external/imguiLibrary
 Engine/src
 Engine/internal
 external/sol2/include

@@ -41,7 +41,7 @@ protected:
 	std::list<sol::protected_function> elements;
 	static size_t ID;
 
-#if (defined(OGL) || defined(GLFW_INCLUDE_VULKAN)) && defined(SHOWONBUILD)
+#if (defined(OGL) || defined(GLFW_INCLUDE_VULKAN))
 	glm::vec2 position;
 #endif
 };
