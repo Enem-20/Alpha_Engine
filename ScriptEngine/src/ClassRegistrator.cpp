@@ -2,11 +2,11 @@
 
 #include <glm/glm.hpp>
 
-#include "Physics/src/Raycast.h"
+#include "Physics/Raycast.h"
 
-#include "ComponentSystem/src/Collider2D.h"
-#include "ComponentSystem/src/LuaScript.h"
-#include "ComponentSystem/src/Transform.h"
+#include "ComponentSystem/Collider2D.h"
+#include "ComponentSystem/LuaScript.h"
+#include "ComponentSystem/Transform.h"
 
 #include "Renderer/src/Renderer.h"
 #include "Renderer/src/ShaderProgram.h"
@@ -18,12 +18,12 @@
 
 #include "Helpers/casts.h"
 #include "Helpers/StringFuncs.h"
-#include "UI/src/Button.h"
-#include "UI/src/UIelement.h"
+#include "UI/Button.h"
+#include "UI/UIelement.h"
 #include "Renderer/src/Window.h"
 #include "Renderer/src/WindowManager.h"
 #include "Timer.h"
-#include "Input/src/Input.h"
+#include "Input/Input.h"
 
 #include <memory>
 

@@ -3,13 +3,13 @@
 #ifndef GAMEOBJECT
 #define GAMEOBJECT
 
-#include "../ExportPropety.h"
+#include "API/ExportPropety.h"
 
-#include "../Resources/ResourceManager.h"
+#include "Resources/ResourceManager.h"
 
 #include "UI/Panel.h"
 #include "ComponentSystem/Component.h"
-#include "../Resources/ResourceBase.h"
+#include "Resources/ResourceBase.h"
 
 
 #include <type_traits>

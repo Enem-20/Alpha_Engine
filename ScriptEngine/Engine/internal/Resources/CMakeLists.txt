@@ -1,5 +1,4 @@
-project(Input)
-
+project(Resources)
 add_library(${PROJECT_NAME} INTERFACE)
 
 FILE(GLOB_RECURSE headers "*.h")

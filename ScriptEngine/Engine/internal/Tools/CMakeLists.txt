@@ -1,4 +1,6 @@
-project(Input)
+cmake_minimum_required(VERSION 3.8.0 FATAL_ERROR)
+
+project(Tools)
 
 add_library(${PROJECT_NAME} INTERFACE)
 

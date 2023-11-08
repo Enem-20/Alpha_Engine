@@ -1,22 +1,13 @@
 project(UI)
 
-set(UILibrary
-	src/UIelement.h
-	src/UIelement.cpp
-	src/Button.h
-	src/Button.cpp
-	src/Panel.h
-	src/Panel.cpp
-	src/Canvas.h
-	src/Canvas.cpp
+add_library(${PROJECT_NAME} INTERFACE)
+
+FILE(GLOB_RECURSE headers "*.h")
+FILE(GLOB_RECURSE sources "*.cpp")
+
+target_sources(${PROJECT_NAME} INTERFACE
+	${headers}
+	${sources}
 )
 
-add_library(UI INTERFACE)
-
-target_sources(UI INTERFACE
-	${UILibrary}
-)
-
-source_group(UI FILES ${UILibrary})
-
-target_compile_features(UI INTERFACE cxx_std_20)
+target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)

@@ -1,22 +1,13 @@
 project(ComponentSystemLibrary)
 
-set(ComponentSystemSRC 
-	src/Component.h
-	src/Component.cpp
-	src/ComponentFabric.h
-	src/ComponentFabric.cpp
-	src/Collider2D.h
-	src/Collider2D.cpp
-	src/Script.h
-	src/Script.cpp
-	src/LuaScript.h
-	src/LuaScript.cpp
-	src/Transform.h
-	src/Transform.cpp
-)
+add_library(${PROJECT_NAME} INTERFACE)
 
-add_library(ComponentSystemLibrary INTERFACE)
+FILE(GLOB_RECURSE headers "*.h")
+FILE(GLOB_RECURSE sources "*.cpp")
 
-target_sources(ComponentSystemLibrary INTERFACE
-	${ComponentSystemSRC}
+message(STATUS ${headers})
+
+target_sources(${PROJECT_NAME} INTERFACE
+	${headers}
+	${sources}
 )

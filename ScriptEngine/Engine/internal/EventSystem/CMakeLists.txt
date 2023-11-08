@@ -1,5 +1,11 @@
 project(EventSystem)
 
-add_library(EventSystem INTERFACE)
+add_library(${PROJECT_NAME} INTERFACE)
 
-target_sources(EventSystem INTERFACE src/InitializeEventsInterface.h src/InitializeEventsInterface.cpp)
+FILE(GLOB_RECURSE headers "*.h")
+FILE(GLOB_RECURSE sources "*.cpp")
+
+target_sources(${PROJECT_NAME} INTERFACE
+	${headers}
+	${sources}
+)

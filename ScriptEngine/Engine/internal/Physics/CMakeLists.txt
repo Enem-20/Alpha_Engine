@@ -1,10 +1,11 @@
 project(Physics)
 
-add_library(Physics INTERFACE)
+add_library(${PROJECT_NAME} INTERFACE)
 
-target_sources(Physics INTERFACE
-	src/Physics.h
-	src/Physics.cpp
-	src/Raycast.h
-	src/Raycast.cpp
-	)
+FILE(GLOB_RECURSE headers "*.h")
+FILE(GLOB_RECURSE sources "*.cpp")
+
+target_sources(${PROJECT_NAME} INTERFACE
+	${headers}
+	${sources}
+)

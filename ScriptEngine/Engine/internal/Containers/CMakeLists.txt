@@ -1,8 +1,10 @@
 project(Containers)
+add_library(${PROJECT_NAME} INTERFACE)
 
-add_library(Containers INTERFACE)
+FILE(GLOB_RECURSE headers "*.h")
+FILE(GLOB_RECURSE sources "*.cpp")
 
-target_sources(Containers INTERFACE 
-	UniversalDictionaryInterface.h
-	UniversalDictionaryInterface.cpp
+target_sources(${PROJECT_NAME} INTERFACE
+	${headers}
+	${sources}
 )
