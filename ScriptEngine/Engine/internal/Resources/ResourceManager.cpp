@@ -5,7 +5,7 @@
 
 #include "GameTypes/GameObject.h"
 
-#include "Renderer/src/Renderer.h"
+#include "Renderer/src/Vulkan/VulkanRenderer.h"
 #include "Mesh.h"
 
 
@@ -212,7 +212,7 @@ std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textu
 	}
 
 	auto texture = makeResource<Texture2D>(textureName, texturePath, width, height, channels, pixels, *getResource<SwapChain>("TestSwapChain"), *getResource<PhysicalDevice>("TestPhysicalDevice"), *getResource<LogicalDevice>("TestLogicalDevice"), *getResource<CommandPool>("TestCommandPool"));
-	ResourceManager::getResource<Renderer>("main")->addTexture(texture);
+	ResourceManager::getResource<VulkanRenderer>("main")->addTexture(texture);
 	
 	stbi_image_free(pixels);
 	return texture;
@@ -433,7 +433,7 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 	auto panels = ResourceManager::getResourcesWithType<Panel>();
 	if (panels)panels->clear();
 
-	auto directories = getDirectories(relativePath);
+	const auto& directories = getDirectories(relativePath);
 
 	std::unordered_map<std::string, std::vector<std::string>> gameObjectsChildren;
 

@@ -4,7 +4,7 @@
 #include "ComponentSystem/Collider2D.h"
 #include "ComponentSystem/LuaScript.h"
 #include "Renderer/src/WindowManager.h"
-#include "Renderer/src/Renderer.h"
+#include "Renderer/src/Vulkan/VulkanRenderer.h"
 #include "Resources/ResourceManager.h"
 #include "GameTypes/GameObject.h"
 #include "Input/Input.h"
@@ -126,14 +126,19 @@ void main(int argc, char** argv) {
 	ScriptProcessor::init({});
 	ResourceManager::loadJSONGameOjects("res/saves/GameObjects");
 	
-	std::shared_ptr<Renderer> renderer = ResourceManager::makeResource<Renderer>("main");
+	std::shared_ptr<BaseRenderer> renderer = ResourceManager::makeResource<VulkanRenderer>("main");
 
 	Input::init();
 	ImGuiManager::init();
 
 
 	ScriptProcessor::Start();
-	renderer/*.lock()*/->render();
+
+	while (renderer->windowShouldClose()) {
+		renderer->render();
+	}
+
+	//renderer/*.lock()*/->render();
 
 	ResourceManager::UnloadAllResources();
 	Input::freeResources();
