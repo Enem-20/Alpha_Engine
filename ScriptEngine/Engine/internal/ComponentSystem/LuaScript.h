@@ -17,7 +17,7 @@ class DLLEXPORT LuaScript : public Component, public Script
 {
 public:
 	LuaScript(sol::protected_function& Awake, sol::protected_function& Start, sol::protected_function& Update, sol::protected_function& FixedUpdate, sol::protected_function& LastUpdate);
-	LuaScript(std::string name, std::string path, std::shared_ptr<sol::state> L, std::shared_ptr<GameObject> gameObject = nullptr);
+	LuaScript(std::string_view name, std::string_view path, std::shared_ptr<sol::state> L, std::shared_ptr<GameObject> gameObject = nullptr);
 	LuaScript(LuaScript&& script) noexcept;
 	LuaScript(const LuaScript& script);
 	void SetAwake(const sol::protected_function& Awake);
@@ -30,7 +30,7 @@ public:
 
 	void Awake();
 	void Start();
-	void Update(uint32_t currentImage);
+	void Update(uint32_t currentFrame);
 	void FixedUpdate();
 	void LastUpdate();
 

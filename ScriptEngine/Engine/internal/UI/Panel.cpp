@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <iostream>
 
-Panel::Panel(const std::string& name, std::shared_ptr<GameObject> gameObject)
+Panel::Panel(std::string_view name, std::shared_ptr<GameObject> gameObject)
 	: UIelement(name, gameObject)
 {
 	ResourceManager::addResource<Panel>(this);
@@ -25,11 +25,11 @@ void Panel::Awake() {
 void Panel::Start() {
 
 }
-void Panel::Update(uint32_t currentImage) {
+void Panel::Update(uint32_t currentFrame) {
 	if (ImGui::Begin(name.c_str())) {
 		for (auto types : m_uis) {
 			for (auto uiElement : types.second) {
-				uiElement.second.getUIFromView<UIelement>()->Update(currentImage);
+				uiElement.second.getUIFromView<UIelement>()->Update(currentFrame);
 			}
 		}
 	}

@@ -1,13 +1,16 @@
 #include "ResourceBase.h"
 
+#include "ResourceManager.h"
 
-
-ResourceBase::ResourceBase(const std::string& name) 
+//template<class Derived>
+ResourceBase/*<Derived>*/::ResourceBase(std::string_view name/*, Derived* whatShouldBeStored*/)
 	: name(name)
-{}
-ResourceBase::ResourceBase(const ResourceBase& resourceBase) 
-	: name(resourceBase.name)
-{}
-ResourceBase::ResourceBase(ResourceBase&& resourceBase) noexcept 
-	: name(std::move(resourceBase.name))
-{}
+{
+	/*ResourceManager::addResource<Derived>(whatShouldBeStored);
+	derived = ResourceManager::getResource(name);*/
+}
+
+//template<class Derived>
+ResourceBase/*<Derived>*/::~ResourceBase() {
+	/*ResourceManager::removeResource<Derived>(name);*/
+}

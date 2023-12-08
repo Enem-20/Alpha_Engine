@@ -43,7 +43,7 @@ template<class R,class ... Args>
 void SerializeInSubdirectory(const std::string& path, std::function<R(Args...)>& serializeInSubdirectoryFunction, Args... args) {
 	std::string directory = "";
 	const size_t last_slash_idx = path.rfind('/');
-	if (std::string::npos != last_slash_idx)
+	if (std::string_view::npos != last_slash_idx)
 	{
 		directory = path.substr(0, last_slash_idx);
 	}
@@ -51,7 +51,7 @@ void SerializeInSubdirectory(const std::string& path, std::function<R(Args...)>&
 	if(!std::filesystem::exists(directory))
 		std::filesystem::create_directory(directory);
 
-	std::ofstream f(path);
+	std::ofstream f(path.data());
 
 	rapidjson::StringBuffer buffer = serializeInSubdirectoryFunction(args...);
 	buffer.Flush();
@@ -64,14 +64,14 @@ void SerializeInSubdirectory(const std::string& path, std::function<R(Args...)>&
 
 void CreateSubDirectories(const std::string& root, const std::vector<std::string> newDirectoryNames) {
 	for (auto directoryName : newDirectoryNames) {
-		if(!std::filesystem::exists(root + '/' + directoryName))
+		if (!std::filesystem::exists(root + '/' + directoryName))
 			std::filesystem::create_directory(root + '/' + directoryName);
 	}
 }
 
 void Serializer::Serialize(const std::string& directory)
 {
-	const std::string gameObjectsDirectory = directory + '/' + GameObject::type + 's';
+	const std::string gameObjectsDirectory = directory + '/' + std::string(GameObject::type) + 's';
 	std::filesystem::create_directories(gameObjectsDirectory);
 
 	auto gameObjects = ResourceManager::getResourcesWithType<GameObject>();
@@ -105,11 +105,11 @@ void Serializer::Serialize(const std::string& directory)
 			if(!std::filesystem::exists(componentsDirectory))
 			std::filesystem::create_directory(componentsDirectory);
 
-			const std::string panelsDirectory = componentsDirectory + '/' + Panel::type + 's';
-			const std::string spritesDirectory = componentsDirectory + '/' + Sprite::type + 's';
-			const std::string scriptsDirectory = componentsDirectory + '/' + LuaScript::type + 's';
-			const std::string transformsDirectory = componentsDirectory + '/' + Transform::type + 's';
-			const std::string collider2DsDirectory = componentsDirectory + '/' + Collider2D::type + 's';
+			std::string panelsDirectory = componentsDirectory + '/' + Panel::type + 's';
+			std::string spritesDirectory = componentsDirectory + '/' + Sprite::type + 's';
+			std::string scriptsDirectory = componentsDirectory + '/' + LuaScript::type + 's';
+			std::string transformsDirectory = componentsDirectory + '/' + Transform::type + 's';
+			std::string collider2DsDirectory = componentsDirectory + '/' + Collider2D::type + 's';
 
 			std::vector<std::string> compDirs = { Panel::type + 's', Sprite::type + 's', LuaScript::type + 's', Transform::type + 's', Collider2D::type + 's'};
 
@@ -145,9 +145,9 @@ void Serializer::Serialize(const std::string& directory)
 					writer.Key((Button::type + 's').c_str());
 					writer.StartArray();
 
-					const std::string buttonsDirectory = panelDirectory + '/' + Button::type + 's';
+					std::string buttonsDirectory = panelDirectory + '/' + Button::type + 's';
 
-					std::vector<std::string> uiDirs = { Button::type + 's' };
+					std::vector<std::string> uiDirs = { Button::type + 's'};
 
 					CreateSubDirectories(panelDirectory, uiDirs);
 
@@ -165,7 +165,7 @@ void Serializer::Serialize(const std::string& directory)
 
 						writer.EndObject();
 
-						auto buttonDirectory = buttonsDirectory + '/' + buttonIt.second.getUIFromView<Button>()->name.c_str();
+						auto buttonDirectory = buttonsDirectory + '/' + buttonIt.second.getUIFromView<Button>()->name;
 
 						auto buttonSerializer = std::function<rapidjson::StringBuffer()>([&]() {
 							rapidjson::StringBuffer sb;
@@ -179,7 +179,7 @@ void Serializer::Serialize(const std::string& directory)
 
 
 							writer.Key("type");
-							writer.String(std::string(Button::type + 's').c_str());
+							writer.String((Button::type + 's').c_str());
 
 							writer.EndObject();
 
@@ -447,15 +447,15 @@ void Serializer::Serialize(const std::string& directory)
 	}
 }
 
-void Serializer::Serialize(std::shared_ptr<Transform> transform, prettywriter* writer, std::string name, std::string path) {
+void Serializer::Serialize(std::shared_ptr<Transform> transform, prettywriter* writer, std::string_view name, const std::string& path) {
 
 	writer->StartObject();
 
 	writer->Key("name");
 	if (name != "")
-		writer->String(name.c_str());
+		writer->String(name.data());
 	else
-		writer->String(Transform::type.c_str());
+		writer->String(Transform::type.data());
 
 	Serialize(transform->GetPosition(), writer, "position");
 	Serialize(transform->GetRotation(), writer, "rotation");
@@ -464,13 +464,13 @@ void Serializer::Serialize(std::shared_ptr<Transform> transform, prettywriter* w
 	writer->EndObject();
 }
 
-const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec2 _ivec2, prettywriter* writer, std::string name, std::string path)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec2 _ivec2, prettywriter* writer, std::string_view name, const std::string& path)
 {
 	rapidjson::StringBuffer sb;
 
 	if (writer && name != "")
 	{
-		writer->Key(name.c_str());
+		writer->Key(name.data());
 	}
 	else
 	{
@@ -490,13 +490,13 @@ const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec2 _ivec2, prettywr
 
 	return sb;
 }
-const rapidjson::StringBuffer  Serializer::Serialize(glm::vec2   _vec2, prettywriter* writer, std::string name, std::string path)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::vec2   _vec2, prettywriter* writer, std::string_view name, const std::string& path)
 {
 	rapidjson::StringBuffer sb;
 
 	if (writer && name != "")
 	{
-		writer->Key(name.c_str());
+		writer->Key(name.data());
 	}
 	else
 	{
@@ -515,13 +515,13 @@ const rapidjson::StringBuffer  Serializer::Serialize(glm::vec2   _vec2, prettywr
 
 	return sb;
 }
-const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec3 _ivec3, prettywriter* writer, std::string name, std::string path)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec3 _ivec3, prettywriter* writer, std::string_view name, const std::string& path)
 {
 	rapidjson::StringBuffer sb;
 
 	if (writer && name != "")
 	{
-		writer->Key(name.c_str());
+		writer->Key(name.data());
 	}
 	else
 	{
@@ -540,13 +540,13 @@ const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec3 _ivec3, prettywr
 
 	return sb;
 }
-const rapidjson::StringBuffer  Serializer::Serialize(glm::vec3   _vec3, prettywriter* writer, std::string name, std::string path)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::vec3   _vec3, prettywriter* writer, std::string_view name, const std::string& path)
 {
 	rapidjson::StringBuffer sb;
 
 	if (writer && name != "")
 	{
-		writer->Key(name.c_str());
+		writer->Key(name.data());
 	}
 	else
 	{
@@ -565,13 +565,13 @@ const rapidjson::StringBuffer  Serializer::Serialize(glm::vec3   _vec3, prettywr
 
 	return sb;
 }
-const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec4 _ivec4, prettywriter* writer, std::string name, std::string path)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec4 _ivec4, prettywriter* writer, std::string_view name, const std::string& path)
 {
 	rapidjson::StringBuffer sb;
 
 	if (writer && name != "")
 	{
-		writer->Key(name.c_str());
+		writer->Key(name.data());
 	}
 	else
 	{
@@ -590,13 +590,13 @@ const rapidjson::StringBuffer  Serializer::Serialize(glm::ivec4 _ivec4, prettywr
 
 	return sb;
 }
-const rapidjson::StringBuffer  Serializer::Serialize(glm::vec4   _vec4, prettywriter* writer, std::string name, std::string path)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::vec4   _vec4, prettywriter* writer, std::string_view name, const std::string& path)
 {
 	rapidjson::StringBuffer sb;
 
 	if (writer && name != "")
 	{
-		writer->Key(name.c_str());
+		writer->Key(name.data());
 	}
 	else
 	{
@@ -615,13 +615,13 @@ const rapidjson::StringBuffer  Serializer::Serialize(glm::vec4   _vec4, prettywr
 
 	return sb;
 }
-const rapidjson::StringBuffer  Serializer::Serialize(glm::mat3   _mat3, prettywriter* writer, std::string name, std::string path)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::mat3   _mat3, prettywriter* writer, std::string_view name, const std::string& path)
 {
 	rapidjson::StringBuffer sb;
 
 	if (writer && name != "")
 	{
-		writer->Key(name.c_str());
+		writer->Key(name.data());
 	}
 	else
 	{
@@ -638,13 +638,13 @@ const rapidjson::StringBuffer  Serializer::Serialize(glm::mat3   _mat3, prettywr
 
 	return sb;
 }
-const rapidjson::StringBuffer  Serializer::Serialize(glm::mat4   _mat4, prettywriter* writer, std::string name, std::string path)
+const rapidjson::StringBuffer  Serializer::Serialize(glm::mat4   _mat4, prettywriter* writer, std::string_view name, const std::string& path)
 {
 	rapidjson::StringBuffer sb;
 
 	if (writer && name != "")
 	{
-		writer->Key(name.c_str());
+		writer->Key(name.data());
 	}
 	else
 	{

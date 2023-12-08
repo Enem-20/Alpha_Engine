@@ -43,7 +43,7 @@ void Collider2D::Start() {
 
 }
 
-void Collider2D::Update(uint32_t currentImage) {
+void Collider2D::Update(uint32_t currentFrame) {
 
 }
 

@@ -3,7 +3,7 @@
 #ifndef INITIALIZEEVENTSINTERFACE
 #define INITIALIZEEVENTSINTERFACE
 
-#include "../../src/ExportPropety.h"
+#include "API/ExportPropety.h"
 
 #include <vector>
 #include <functional>

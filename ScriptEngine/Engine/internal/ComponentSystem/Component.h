@@ -15,7 +15,7 @@ class GameObject;
 class DLLEXPORT Component : public ResourceBase
 {
 public:
-	Component(const std::string& name = "", const std::shared_ptr<GameObject>& gameObject = nullptr);
+	Component(std::string_view name = "", const std::shared_ptr<GameObject>& gameObject = nullptr);
 	Component(std::string&& name, std::shared_ptr<GameObject>&& gameObject) noexcept;
 	Component(Component&& component) noexcept;
 	Component(const Component& component);
@@ -24,7 +24,7 @@ public:
 
 	virtual void Awake() = 0;
 	virtual void Start() = 0;
-	virtual void Update(uint32_t currentImage) = 0;
+	virtual void Update(uint32_t currentFrame) = 0;
 	virtual void FixedUpdate() = 0;
 	virtual void LastUpdate() = 0;
 

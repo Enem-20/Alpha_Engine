@@ -65,6 +65,7 @@ target_link_libraries(Engine PUBLIC
 target_link_libraries(Engine PRIVATE
 	ComponentSystemLibrary
 	Containers
+	DependencyResolvers
 	EventSystem
 	GameTypes
 	Input

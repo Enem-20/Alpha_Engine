@@ -19,7 +19,7 @@ class GameObject;
 class DLLEXPORT UIelement : public Component
 {
 public:
-	UIelement(const std::string& name, std::shared_ptr<GameObject> gameObject);
+	UIelement(std::string_view name, std::shared_ptr<GameObject> gameObject);
 	UIelement(const UIelement& uiElement);
 	UIelement(UIelement&& uiElement) noexcept;
 
@@ -29,7 +29,7 @@ public:
 
 	virtual void Awake() = 0;
 	virtual void Start() = 0;
-	virtual void Update(uint32_t currentImage) = 0;
+	virtual void Update(uint32_t currentFrame) = 0;
 	virtual void FixedUpdate() = 0;
 	virtual void LastUpdate() = 0;
 

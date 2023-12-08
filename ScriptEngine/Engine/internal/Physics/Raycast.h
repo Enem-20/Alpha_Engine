@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../src/ExportPropety.h"
+#include "API/ExportPropety.h"
 
 #include <reactphysics3d/reactphysics3d.h>
 

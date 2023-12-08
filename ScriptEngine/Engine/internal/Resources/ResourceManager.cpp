@@ -5,7 +5,6 @@
 
 #include "GameTypes/GameObject.h"
 
-#include "Renderer/src/Vulkan/VulkanRenderer.h"
 #include "Mesh.h"
 
 
@@ -34,12 +33,12 @@
 #include "stb_image.h"
 
 
-std::unordered_map<std::string, std::unordered_map<std::string, Resource>>* ResourceManager::m_resources = new std::unordered_map<std::string, std::unordered_map<std::string, Resource>>;
+std::unordered_map<size_t, std::unordered_map<std::string, Resource>>* ResourceManager::m_resources = new std::unordered_map<size_t, std::unordered_map<std::string, Resource>>;
 
 std::unordered_map<std::string, std::function<void()>> ResourceManager::onBeforeRenderFrameListeners;
 std::unordered_map<std::string, std::function<void()>> ResourceManager::onAfterRenderInitializationListeners;
 
-std::queue<std::function<void(const std::string&, const std::string&, const std::string&)>> ResourceManager::shaderLoaders;
+std::queue<std::function<void(std::string, std::string, std::string)>> ResourceManager::shaderLoaders;
 std::queue<std::tuple<std::string, std::string, std::string>> ResourceManager::shaderLoaderParameters;
 
 std::queue<std::function<void()>> ResourceManager::saveLoaders;
@@ -66,8 +65,6 @@ Resource::~Resource() {
 
 void ResourceManager::SetExecutablePath(const std::string& executablePath)
 {
-
-	Serializer::Init();
 	size_t found = executablePath.find_last_of("/\\");
 	m_path = executablePath.substr(0, found);
 	std::string buf = "LUA_PATH=" + m_path + "/res/saves/GameObjects/?.lua";
@@ -89,7 +86,7 @@ std::string ResourceManager::getFileString(const std::string& relativeFilePath)
 	f.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	try
 	{
-		f.open(m_path + "/" + relativeFilePath.c_str(), std::ios::in | std::ios::binary);
+		f.open(m_path + "/" + relativeFilePath, std::ios::in | std::ios::binary);
 
 	}
 	catch (std::exception exp)
@@ -125,20 +122,15 @@ static std::vector<char> readFile(const std::string& filename) {
 	return buffer;
 }
 
-void ResourceManager::loadShaders(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath)
+void ResourceManager::loadShaders(std::string_view shaderName, const std::string& vertexPath, const std::string& fragmentPath)
 {
-	shaderLoaders.push(loadShaderProgram);
-	shaderLoaderParameters.push({ shaderName, vertexPath, fragmentPath });
-
-	//auto renderer = ResourceManager::getResource<Renderer>("main");
-	//auto shaderProgram = ResourceManager::getResource<ShaderProgram>(shaderName);
-	//if (renderer && shaderProgram) {
-	//	auto onBefore = std::vector<std::function<void()>>{ []() {loadShadersReal(); } };
-	//	renderer->recreatePipeline(shaderName, onBefore, {});
-	//}
+	/*shaderLoaders.push(loadShaderProgram);
+	shaderLoaderParameters.push({ std::string(shaderName), vertexPath, fragmentPath });*/
+	RendererManager::loadShaderProgram(shaderName, vertexPath, fragmentPath);
 }
 
-void ResourceManager::loadShaderProgram(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath) {
+template<class ShaderProgramType>
+void ResourceManager::loadShaderProgram(std::string_view shaderName, const std::string& vertexPath, const std::string& fragmentPath) {
 	std::string vertexString = getFileString(vertexPath);
 	if (vertexString.empty())
 	{
@@ -154,23 +146,11 @@ void ResourceManager::loadShaderProgram(const std::string& shaderName, const std
 		return;
 	}
 
-	makeResource<ShaderProgram>(shaderName, vertexPath, fragmentPath, vertexString, fragmentString);
-}
-
-void ResourceManager::loadShadersReal() {
-	while (!shaderLoaders.empty()) {
-		auto currentLoader = shaderLoaders.front();
-		auto currentLoaderParameters = shaderLoaderParameters.front();
-		auto shaderName = std::get<0>(currentLoaderParameters);
-		std::apply(currentLoader, currentLoaderParameters);
-
-		shaderLoaders.pop();
-		shaderLoaderParameters.pop();
-	}
+	makePolymorphicResource<BaseShaderProgram, ShaderProgramType>(shaderName, vertexPath, fragmentPath, vertexString, fragmentString);
 }
 
 #ifdef OGL
-std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textureName, const std::string& texturePath)
+std::shared_ptr<Texture2D> ResourceManager::loadTexture(std::string_view textureName, std::string_view texturePath)
 {
 	int channels = 0;
 	int width = 0;
@@ -197,12 +177,12 @@ std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textu
 }
 
 #elif GLFW_INCLUDE_VULKAN
-std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textureName, const std::string& texturePath) {
+std::shared_ptr<BaseTexture2D> ResourceManager::loadTexture(std::string_view textureName, const std::string& texturePath) {
 	int channels = 0;
 	int width = 0;
 	int height = 0;
 
-	unsigned char* pixels = stbi_load(std::string(m_path + "/" + texturePath).c_str(), &width, &height, &channels, STBI_rgb_alpha);
+	unsigned char* pixels = stbi_load((m_path + '/' + texturePath).c_str(), &width, &height, &channels, STBI_rgb_alpha);
 
 	if (!pixels)
 	{
@@ -211,23 +191,22 @@ std::shared_ptr<Texture2D> ResourceManager::loadTexture(const std::string& textu
 		return nullptr;
 	}
 
-	auto texture = makeResource<Texture2D>(textureName, texturePath, width, height, channels, pixels, *getResource<SwapChain>("TestSwapChain"), *getResource<PhysicalDevice>("TestPhysicalDevice"), *getResource<LogicalDevice>("TestLogicalDevice"), *getResource<CommandPool>("TestCommandPool"));
-	ResourceManager::getResource<VulkanRenderer>("main")->addTexture(texture);
+	auto texture = RendererManager::getRenderer().createTexture(textureName, texturePath, width, height, pixels, channels);
 	
 	stbi_image_free(pixels);
 	return texture;
 }
 #endif
 
-std::shared_ptr<Sprite> ResourceManager::loadSprite(const std::string& spriteName,
-	const std::string& textureName,
-	const std::string& shaderName,
-	const std::string& meshName,
+std::shared_ptr<BaseSprite> ResourceManager::loadSprite(std::string_view spriteName,
+	std::string_view textureName,
+	std::string_view shaderName,
+	std::string_view meshName,
 	const unsigned int spriteWidth,
 	const unsigned int spriteHeight,
-	const std::string& subTextureName)
+	std::string_view subTextureName)
 {
-	auto Texture = getResource<Texture2D>(textureName);
+	auto Texture = getResource<BaseTexture2D>(textureName);
 
 	if (!Texture)
 	{
@@ -236,7 +215,7 @@ std::shared_ptr<Sprite> ResourceManager::loadSprite(const std::string& spriteNam
 		return nullptr;
 	}
 
-	auto Shader = getResource<ShaderProgram>(shaderName);
+	auto Shader = getResource<BaseShaderProgram>(shaderName);
 
 	if (!Shader)
 	{
@@ -246,12 +225,12 @@ std::shared_ptr<Sprite> ResourceManager::loadSprite(const std::string& spriteNam
 	}
 
 
-	return makeResource<Sprite>(spriteName, std::shared_ptr<GameObject>(nullptr), Texture, subTextureName, Shader,
+	return makeResource<BaseSprite>(spriteName, std::shared_ptr<GameObject>(nullptr), Texture, subTextureName, Shader,
 		getResource<Mesh>(meshName), glm::vec3(0.f, 0.f, 1.0f), glm::vec3(1.f), glm::vec2(spriteWidth, spriteHeight));
 }
 
-std::shared_ptr<Texture2D> ResourceManager::loadTextureAtlas(std::string textureName,
-	std::string texturePath,
+std::shared_ptr<BaseTexture2D> ResourceManager::loadTextureAtlas(std::string_view textureName,
+	const std::string& texturePath,
 	std::vector<std::string> subTextures,
 	const unsigned int subTextureWidth,
 	const unsigned int subTextureHeight)
@@ -284,7 +263,7 @@ std::shared_ptr<Texture2D> ResourceManager::loadTextureAtlas(std::string texture
 
 std::string ResourceManager::GetLuaScriptPath(const std::string& relativePath)
 {
-	return m_path + "/" + relativePath;
+	return m_path + '/' + relativePath;
 }
 
 void ResourceManager::onBeforeRenderFrame() {
@@ -303,25 +282,25 @@ void ResourceManager::onAfterRenderInitialization() {
 	onAfterRenderInitializationListeners.clear();
 }
 
-void ResourceManager::addOnBeforeRenderFrame(const std::string& name, const std::function<void()>& listener) {
+void ResourceManager::addOnBeforeRenderFrame(std::string_view name, const std::function<void()>& listener) {
 	onBeforeRenderFrameListeners.emplace(name, listener);
 }
 
-void ResourceManager::addOnAfterRenderInitialization(const std::string& name, const std::function<void()>& listener) {
+void ResourceManager::addOnAfterRenderInitialization(std::string_view name, const std::function<void()>& listener) {
 	onAfterRenderInitializationListeners.emplace(name, listener);
 }
 
-void ResourceManager::removeOnBeforeRenderInitialization(const std::string& name) {
-	onBeforeRenderFrameListeners.erase(name);
+void ResourceManager::removeOnBeforeRenderInitialization(std::string_view name) {
+	onBeforeRenderFrameListeners.erase(std::string(name));
 }
 
-void ResourceManager::removeOnAfterRenderInitialization(const std::string& name) {
-	onAfterRenderInitializationListeners.erase(name);
+void ResourceManager::removeOnAfterRenderInitialization(std::string_view name) {
+	onAfterRenderInitializationListeners.erase(std::string(name));
 }
 
 rapidjson::Document ResourceManager::documentParse(const std::string& relativePath)
 {
-	const std::string JSONstring = getFileString(relativePath);
+	std::string JSONstring = getFileString(relativePath);
 
 	rapidjson::Document d;
 	rapidjson::ParseResult parseScene = d.Parse(JSONstring.c_str());
@@ -334,7 +313,7 @@ rapidjson::Document ResourceManager::documentParse(const std::string& relativePa
 	return d;
 }
 
-std::shared_ptr<Mesh> ResourceManager::loadMesh(const std::string& name, const std::string& relativePath) {
+std::shared_ptr<Mesh> ResourceManager::loadMesh(std::string_view name, const std::string& relativePath) {
 	std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 	std::vector<Vertex> vertices;
 	std::vector<uint32_t> indices;
@@ -383,7 +362,7 @@ bool ResourceManager::loadJSONScene(const std::string& relativePath)
 	return true;
 }
 
-bool ResourceManager::loadSave(const std::string relativePath)
+bool ResourceManager::loadSave(const std::string& relativePath)
 {
 	saveLoaders.push([relativePath]() {loadJSONGameOjects(relativePath); });
 	
@@ -405,11 +384,11 @@ void ResourceManager::loadExecute()
 std::vector<std::string> ResourceManager::getDirectories(const std::string& relativePath) {
 	std::vector<std::string> directories;
 
-	auto path = m_path + '/' + relativePath;
+	std::string path = m_path + '/' + relativePath;
 	for (auto& entry : std::filesystem::directory_iterator(path)) {
-		auto absolute = Casts::wharTochar(entry.path().c_str());
-		auto relative = Casts::wharTochar(std::filesystem::relative(absolute, path).c_str());
-		directories.push_back({ relativePath + '/' + relative});
+		std::string absolute = Casts::wharTochar(entry.path().c_str());
+		std::string relative = Casts::wharTochar(std::filesystem::relative(absolute, path).c_str());
+		directories.push_back(relativePath + '/' + relative);
 	}
 
 	return directories;
@@ -422,7 +401,7 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 	if (gameObjects)gameObjects->clear();
 	auto sprites = ResourceManager::getResourcesWithType<Sprite>();
 	if (sprites)sprites->clear();
-	auto textures = ResourceManager::getResourcesWithType<Texture2D>();
+	auto textures = ResourceManager::getResourcesWithType<BaseTexture2D>();
 	if (textures)textures->clear();
 	auto meshs = ResourceManager::getResourcesWithType<Mesh>();
 	if (meshs)meshs->clear();
@@ -438,7 +417,7 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 	std::unordered_map<std::string, std::vector<std::string>> gameObjectsChildren;
 
 	for (size_t i = 0; i < directories.size(); ++i) {
-		auto gameObjectFilename = std::filesystem::path{ directories[i] }.filename().string() + ".json";
+		std::string gameObjectFilename = std::filesystem::path{ directories[i] }.filename().string() + ".json";
 		rapidjson::Document d = documentParse(directories[i] + '/' + gameObjectFilename);
 		std::string name = d.FindMember("name")->value.GetString();
 		std::shared_ptr<GameObject> gameObject = makeResource<GameObject>(name);
@@ -449,15 +428,13 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 		std::vector<std::string> children;
 		for (const auto& child : d.FindMember("children")->value.GetArray()) {
 			children.push_back(child.GetString());
-
-
 		}
 
-		const std::string panelsDirectoryPath = directories[i] + "/Components/" + Panel::type + 's';
-		const std::string scriptsDirectoryPath = directories[i] + "/Components/" + LuaScript::type + 's';
-		const std::string spritesDirectoryPath = directories[i] + "/Components/" + Sprite::type + 's';
-		const std::string transformsDirectoryPath = directories[i] + "/Components/" + Transform::type + 's';
-		const std::string colliderDirectoryPath = directories[i] + "/Components/" + Collider2D::type + 's';
+		std::string panelsDirectoryPath = directories[i] + "/Components/" + Panel::type + 's';
+		std::string scriptsDirectoryPath = directories[i] + "/Components/" + LuaScript::type + 's';
+		std::string spritesDirectoryPath = directories[i] + "/Components/" + BaseSprite::type + 's';
+		std::string transformsDirectoryPath = directories[i] + "/Components/" + Transform::type + 's';
+		std::string colliderDirectoryPath = directories[i] + "/Components/" + Collider2D::type + 's';
 
 		auto panelDirectories = getDirectories(panelsDirectoryPath);
 		for (size_t i = 0; i < panelDirectories.size(); ++i) {
@@ -469,7 +446,8 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 			std::shared_ptr<Panel> panel = makeResource<Panel>(panelName);
 			gameObject->addComponent<Panel>(panel);
 			auto uis = panelDocument.FindMember("uis")->value.GetObject();
-			auto jsonButtons = uis.FindMember(std::string(Button::type + 's').c_str());
+			std::string buf = Button::type.c_str();
+			auto jsonButtons = uis.FindMember((Button::type + 's').c_str());
 
 			for (const auto& button : jsonButtons->value.GetArray()) {
 				panel->addChild(std::make_shared<Button>(button.FindMember("name")->value.GetString()));
@@ -497,7 +475,7 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 			auto shaderDocument = documentParse(spriteDirectories[i] + '/' + shaderProgramName + ".json");
 			auto meshDocument = documentParse(spriteDirectories[i] + '/' + meshName + ".json");
 
-			if(!getResource<ShaderProgram>(shaderProgramName))
+			if(!getResource<BaseShaderProgram>(shaderProgramName))
 				ResourceManager::loadShaders(shaderDocument.FindMember("name")->value.GetString(), shaderDocument.FindMember("vertexPath")->value.GetString(), shaderDocument.FindMember("fragmentPath")->value.GetString());
 
 			const std::string texturePath = textureDocument.FindMember("path")->value.GetString();
@@ -506,7 +484,7 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 				auto texture = loadTexture(textureName, texturePath);
 				auto mesh = ResourceManager::loadMesh(meshName, meshPath);
 				auto originalGameObject = ResourceManager::getResource<GameObject>(gameObject->name);
-				originalGameObject->addComponent<Sprite>(ResourceManager::loadSprite(spriteName, textureName, shaderProgramName, meshName, width, height, subTextureName));
+				originalGameObject->addComponent<BaseSprite>(ResourceManager::loadSprite(spriteName, textureName, shaderProgramName, meshName, width, height, subTextureName));
 			});
 
 		}
@@ -602,7 +580,7 @@ void ResourceManager::loadJSONComponents(const rapidjson::Value& it, std::shared
 
 bool ResourceManager::loadJSONSprites(const std::string& relativePath) //correct
 {
-	rapidjson::Document d = documentParse(std::move(relativePath));
+	rapidjson::Document d = documentParse(relativePath);
 
 	auto it = d.Begin();
 
@@ -716,6 +694,6 @@ bool ResourceManager::loadJSONShaders(const std::string& relativePath)
 
 std::string ResourceManager::GetPath() { return m_path; }
 
-std::unordered_map<std::string, std::unordered_map<std::string, Resource>>* ResourceManager::getAllResources() {
+std::unordered_map<size_t, std::unordered_map<std::string, Resource>>* ResourceManager::getAllResources() {
 	return m_resources;
 }

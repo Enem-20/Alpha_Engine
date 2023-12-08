@@ -34,7 +34,7 @@ void Button::Start()
 	ImGui::End();
 }
 
-void Button::Update(uint32_t currentImage)
+void Button::Update(uint32_t currentFrame)
 {
 	if (ImGui::Button(name.c_str()))
 			executeOnClicks();

@@ -10,7 +10,7 @@ LuaScript::LuaScript(sol::protected_function& Awake, sol::protected_function& St
 	, m_LastUpdate(LastUpdate)
 	, Script(*this)
 {}
-LuaScript::LuaScript(std::string name, std::string path, std::shared_ptr<sol::state> L, std::shared_ptr<GameObject> gameObject)
+LuaScript::LuaScript(std::string_view name, std::string_view path, std::shared_ptr<sol::state> L, std::shared_ptr<GameObject> gameObject)
 	: Component(name, gameObject)
 	, Script(*this)
 	, m_path(path)
@@ -66,7 +66,7 @@ void LuaScript::SetLastUpdate(const sol::protected_function& LastUpdate)
 
 void LuaScript::LoadScript(std::shared_ptr<sol::state> L)
 {
-	L->script_file(ResourceManager::GetLuaScriptPath(m_path));
+	L->script_file(std::string(ResourceManager::GetLuaScriptPath(m_path)));
 
 	m_Awake = (*L)["Awake"];
 	m_Start = (*L)["Start"];
@@ -84,6 +84,6 @@ void LuaScript::LoadScript(std::shared_ptr<sol::state> L)
 
 void LuaScript::Awake() { m_Awake(); }
 void LuaScript::Start() { m_Start(); }
-void LuaScript::Update(uint32_t currentImage) { m_Update(); }
+void LuaScript::Update(uint32_t currentFrame) { m_Update(); }
 void LuaScript::FixedUpdate() { m_FixedUpdate(); }
 void LuaScript::LastUpdate() { m_LastUpdate(); }

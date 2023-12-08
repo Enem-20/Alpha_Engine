@@ -3,7 +3,7 @@
 #ifndef BUTTON
 #define BUTTON
 
-#include "../../src/ExportPropety.h"
+#include "API/ExportPropety.h"
 
 #include "UIelement.h"
 
@@ -24,7 +24,7 @@ public:
 
 	void Awake() override;
 	void Start() override;
-	void Update(uint32_t currentImage) override;
+	void Update(uint32_t currentFrame) override;
 	void FixedUpdate() override;
 	void LastUpdate() override;
 

@@ -2,14 +2,14 @@
 
 #include "ResourceManager.h"
 
-Mesh::Mesh(const std::string& name, const std::string& path) 
+Mesh::Mesh(std::string_view name, std::string_view path) 
 	: ResourceBase(name)
 	, path(path)
 {
 	ResourceManager::addResource<Mesh>(this);
 }
 
-Mesh::Mesh(const std::string& name, const std::string& path, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
+Mesh::Mesh(std::string_view name, std::string_view path, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
 	: vertices(vertices)
 	, indices(indices)
 	, path(path)

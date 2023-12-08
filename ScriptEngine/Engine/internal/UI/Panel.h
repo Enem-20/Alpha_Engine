@@ -3,10 +3,10 @@
 #ifndef PANEL
 #define PANEL
 
-#include "../../src/ExportPropety.h"
+#include "API/ExportPropety.h"
 
-#include "../../src/Resources/ResourceManager.h"
-#include "../../src/Resources/ResourceBase.h"
+#include "Resources/ResourceManager.h"
+#include "Resources/ResourceBase.h"
 #include "UIelement.h"
 
 #include <memory>
@@ -17,12 +17,12 @@ class GameObject;
 
 class DLLEXPORT Panel : public UIelement {
 public:
-	Panel(const std::string& name = "", std::shared_ptr<GameObject> gameObject = nullptr);
+	Panel(std::string_view name = "", std::shared_ptr<GameObject> gameObject = nullptr);
 	~Panel();
 
 	virtual void Awake() override;
 	virtual void Start() override;
-	virtual void Update(uint32_t currentImage) override;
+	virtual void Update(uint32_t currentFrame) override;
 	virtual void FixedUpdate() override;
 	virtual void LastUpdate() override;
 
@@ -32,10 +32,10 @@ public:
 	void addChild(std::shared_ptr<UIelementType> ui);
 
 	template<class UIelementType>
-	void removeChild(const std::string& name);
+	void removeChild(std::string_view name);
 
 	template<class UIelementType>
-	std::shared_ptr<UIelementType> getChild(const std::string& name);
+	std::shared_ptr<UIelementType> getChild(std::string_view name);
 
 	template<class UIelementType>
 	std::unordered_map<std::string, UIelementView>* getChildrenWithType();
@@ -44,7 +44,7 @@ public:
 private:
 	std::unordered_map<std::string, std::shared_ptr<UIelement>> uis;
 
-	std::unordered_map<std::string, std::unordered_map<std::string, UIelementView>> m_uis;
+	std::unordered_map<std::string_view, std::unordered_map<std::string, UIelementView>> m_uis;
 };
 
 template<class UIelementType>
@@ -62,7 +62,7 @@ void Panel::addChild(std::shared_ptr<UIelementType> ui) {
 }
 
 template<class UIelementType>
-void Panel::removeChild(const std::string& name) {
+void Panel::removeChild(std::string_view name) {
 	static_assert(std::is_base_of<UIelement, UIelementType>::value || std::is_same<UIelement, UIelementType>::value, "UIelementType must inherit from UIelement or be a UIelement");
 	size_t currentIndex = 0;
 
@@ -73,7 +73,7 @@ void Panel::removeChild(const std::string& name) {
 }
 
 template<class UIelementType>
-std::shared_ptr<UIelementType> Panel::getChild(const std::string& name) {
+std::shared_ptr<UIelementType> Panel::getChild(std::string_view name) {
 	static_assert(std::is_base_of<UIelement, UIelementType>::value || std::is_same<UIelement, UIelementType>::value, "UIelementType must inherit from UIelement or be a UIelement");
 	auto uisByType = m_uis.find(UIelementType::type);
 

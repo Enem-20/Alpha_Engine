@@ -3,7 +3,7 @@
 #ifndef COLLIDER2D
 #define COLLIDER2D
 
-#include "../../src/ExportPropety.h"
+#include "API/ExportPropety.h"
 
 #include "Component.h"
 
@@ -30,7 +30,7 @@ public:
 
 	virtual void Awake();
 	virtual void Start();
-	virtual void Update(uint32_t currentImage);
+	virtual void Update(uint32_t currentFrame);
 	virtual void FixedUpdate();
 	virtual void LastUpdate();
 

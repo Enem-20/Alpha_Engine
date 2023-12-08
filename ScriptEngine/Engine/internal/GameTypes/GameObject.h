@@ -39,7 +39,7 @@ class DLLEXPORT GameObject : public ResourceBase
 public:
 public:
 	GameObject(const GameObject& gameObject);
-	GameObject(const std::string& name);
+	GameObject(std::string_view name);
 	void operator=(const GameObject& gameObject);
 	GameObject(GameObject&&) = delete;
 	virtual ~GameObject();
@@ -51,7 +51,7 @@ public:
 	void Scale(const glm::vec3& scale);
 
 	void Start();
-	void Update(uint32_t currentImage);
+	void Update(uint32_t currentFrame);
 
 	std::string& Name();
 	virtual void render(CommandBuffer& commandBuffer, RenderPipeline& renderPipeline, uint32_t currentFrame);
@@ -63,15 +63,15 @@ public:
 	void addComponent(std::shared_ptr<ComponentType> component);
 
 	template<class ComponentType>
-	void removeComponent(const std::string& name);
+	void removeComponent(std::string_view name);
 
 	template<class ComponentType>
-	std::shared_ptr<ComponentType> getComponent(const std::string& name);
+	std::shared_ptr<ComponentType> getComponent(std::string_view name);
 
 	template<class ComponentType>
 	std::unordered_map<std::string, ComponentView>* getComponentsWithType();
 public:
-	std::unordered_map<std::string, std::unordered_map<std::string, ComponentView>> components;
+	std::unordered_map<std::string_view, std::unordered_map<std::string, ComponentView>> components;
 
 	std::vector<std::shared_ptr<GameObject>> children;
 
@@ -103,22 +103,22 @@ void GameObject::addComponent(std::shared_ptr<ComponentType> component) {
 }
 
 template<class ComponentType>
-void GameObject::removeComponent(const std::string& name) {
+void GameObject::removeComponent(std::string_view name) {
 	size_t currentIndex = 0;
 
 	auto componentsByType = components.find(ComponentType::type);
 
 	if (componentsByType != components.end())
-		componentsByType->second.erase(name);
+		componentsByType->second.erase(std::string(name));
 }
 
 template<class ComponentType>
-std::shared_ptr<ComponentType> GameObject::getComponent(const std::string& name) {
+std::shared_ptr<ComponentType> GameObject::getComponent(std::string_view name) {
 	static_assert(std::is_base_of<Component, ComponentType>::value || std::is_same<Component, ComponentType>::value, "ComponentType must inherit from Component or be a Component");
 	auto componentsByType = components.find(ComponentType::type);
 
 	if (componentsByType != components.end()) {
-		auto component = componentsByType->second.find(name);
+		auto component = componentsByType->second.find(std::string(name));
 
 		if (component != componentsByType->second.end()) {
 			return component->second.getComponentFromView<ComponentType>();

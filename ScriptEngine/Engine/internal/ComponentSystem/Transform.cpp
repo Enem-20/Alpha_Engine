@@ -2,7 +2,7 @@
 
 #include "GameTypes/GameObject.h"
 
-Transform::Transform(std::string name, std::shared_ptr<GameObject> gameObject)
+Transform::Transform(std::string_view name, std::shared_ptr<GameObject> gameObject)
 	: position(std::make_shared<glm::vec3>(0.f))
 	, rotation(std::make_shared<glm::vec3>(0.f))
 	, scale(std::make_shared<glm::vec3>(1.f))

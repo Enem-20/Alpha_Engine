@@ -14,7 +14,7 @@
 
 size_t GameObject::counter = 0;
 
-GameObject::GameObject(const std::string& name)
+GameObject::GameObject(std::string_view name)
 	: ResourceBase(name)
 {
 #ifdef LOG_INFO
@@ -27,7 +27,7 @@ GameObject::GameObject(const std::string& name)
 #endif
 	auto obj = ResourceManager::getResource<GameObject>(name);
 	if (obj)
-		this->name = name + StringFuncs::RemoveNumbersEnd(obj->name) + std::to_string(ID = ++counter);
+		this->name = name.data() + StringFuncs::RemoveNumbersEnd(obj->name) + std::to_string(ID = ++counter);
 	else if (name == "") {
 		this->name = std::to_string(ID = ++counter);
 	}
@@ -63,10 +63,10 @@ GameObject::~GameObject()
 	Clerk::Knowledge(148, __FILE__, "GameObject::~GameObject at " + name, L"Clear all data...");
 #endif
 	children.clear();
-	auto sprites = getComponentsWithType<Sprite>();
+	auto sprites = getComponentsWithType<BaseSprite>();
 	if(sprites)
 	for (auto sprite : *sprites) {
-		ResourceManager::removeResource<Sprite>(sprite.second.getComponentFromView<Sprite>()->name);
+		ResourceManager::removeResource<BaseSprite>(sprite.second.getComponentFromView<BaseSprite>()->name);
 	}
 	auto panels = getComponentsWithType<Panel>();
 	if (panels)
@@ -88,10 +88,10 @@ void GameObject::render(CommandBuffer& commandBuffer, RenderPipeline& renderPipe
 	Clerk::Knowledge(159, __FILE__, "GameObject::render() at " + name, L"Rendering sprites...");
 #endif
 
-	auto sprites = getComponentsWithType<Sprite>();
+	auto sprites = getComponentsWithType<BaseSprite>();
 	if (sprites)
 		for (auto sprite : *sprites) {
-			sprite.second.getComponentFromView<Sprite>()->render(commandBuffer, renderPipeline, currentFrame);
+			sprite.second.getComponentFromView<BaseSprite>()->render();
 		}
 
 #ifdef LOG_INFO
@@ -159,18 +159,18 @@ void GameObject::Start() {
 		}
 }
 
-void GameObject::Update(uint32_t currentImage)
+void GameObject::Update(uint32_t currentFrame)
 {
 	auto scripts = getComponentsWithType<LuaScript>();
 	if (scripts)
 		for (auto sprite : *scripts) {
-			sprite.second.getComponentFromView<LuaScript>()->Update(currentImage);
+			sprite.second.getComponentFromView<LuaScript>()->Update(currentFrame);
 		}
 
 	auto sprites = getComponentsWithType<Sprite>();
 	if (sprites)
 		for (auto sprite : *sprites) {
-			sprite.second.getComponentFromView<Sprite>()->Update(currentImage);
+			sprite.second.getComponentFromView<BaseSprite>()->Update(currentFrame);
 		}
 }
 

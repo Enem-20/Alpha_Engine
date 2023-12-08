@@ -11,18 +11,18 @@
 #include "Renderer/src/Renderer.h"
 #include "Renderer/src/ShaderProgram.h"
 #include "Renderer/src/Sprite.h"
-#include "Renderer/src/Texture2D.h"
+#include "Renderer/src/BaseTexture2D.h"
 #include "Resources/ResourceManager.h"
 #include "GameTypes/GameObject.h"
 #include "Resources/Mesh.h"
 
-#include "Helpers/casts.h"
-#include "Helpers/StringFuncs.h"
+#include "Tools/casts.h"
+#include "Tools/StringFuncs.h"
 #include "UI/Button.h"
 #include "UI/UIelement.h"
 #include "Renderer/src/Window.h"
 #include "Renderer/src/WindowManager.h"
-#include "Timer.h"
+#include "Tools/Timer.h"
 #include "Input/Input.h"
 
 #include <memory>
@@ -200,10 +200,10 @@ void ClassRegistrator::Reg_ShaderProgram(sol::table* same)
 
 void ClassRegistrator::Reg_SubTexture2D(sol::table* LTexture2D)
 {
-	LTexture2D->new_usertype<Texture2D::SubTexture2D>("SubTexture2D"
-		, sol::constructors<Texture2D::SubTexture2D(), Texture2D::SubTexture2D(const glm::vec2, const glm::vec2)>()
-		, "leftBottomUV", &Texture2D::SubTexture2D::getLeftBottomUV
-		, "rightTopUV", &Texture2D::SubTexture2D::getRightTopUV
+	LTexture2D->new_usertype<BaseTexture2D::SubTexture2D>("SubTexture2D"
+		, sol::constructors<BaseTexture2D::SubTexture2D(), BaseTexture2D::SubTexture2D(const glm::vec2, const glm::vec2)>()
+		, "leftBottomUV", &BaseTexture2D::SubTexture2D::getLeftBottomUV
+		, "rightTopUV", &BaseTexture2D::SubTexture2D::getRightTopUV
 	);
 }
 
@@ -226,11 +226,11 @@ void ClassRegistrator::Reg_Texture2D(sol::table* same)
 
 		Reg_SubTexture2D(same);*/
 
-		same->new_usertype<Texture2D>("Texture2D"
+		same->new_usertype<BaseTexture2D>("Texture2D"
 			, "new", sol::factories(&ResourceManager::loadTexture)
-			, "getWidth", &Texture2D::getWidth
-			, "getHeight", &Texture2D::getHeight
-			, "name", &Texture2D::name
+			, "getWidth", &BaseTexture2D::getWidth
+			, "getHeight", &BaseTexture2D::getHeight
+			, "name", &BaseTexture2D::name
 		);
 	}
 }
@@ -359,7 +359,7 @@ void ClassRegistrator::Reg_ResourceManager(sol::table* Lnamespace)
 		, "loadScene", &::ResourceManager::loadSave
 		, "removeGameObject", &ResourceManager::removeResource<GameObject>
 		, "getGameObject", &::ResourceManager::getResource<GameObject>
-		, "getTexture", &ResourceManager::getResource<Texture2D>
+		, "getTexture", &ResourceManager::getResource<BaseTexture2D>
 		, "getSprite", &ResourceManager::getResource<Sprite>
 		, "getCollider2D", &ResourceManager::getResource<Collider2D>
 		, "getShaderProgram", &ResourceManager::getResource<ShaderProgram>

@@ -7,7 +7,7 @@
 
 class GameObject;
 
-#include "ExportPropety.h"
+#include "API/ExportPropety.h"
 
 
 class ClassRegistrator

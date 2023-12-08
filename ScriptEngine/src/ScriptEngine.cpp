@@ -11,7 +11,7 @@
 #include "Physics/Raycast.h"
 #include "Renderer/src/ImGui/ImGui.h"
 //#include "GLPref/GLPref.h"
-#include "Timer.h"
+#include "Tools/Timer.h"
 
 #include <thread>
 #include <queue>
@@ -134,11 +134,9 @@ void main(int argc, char** argv) {
 
 	ScriptProcessor::Start();
 
-	while (renderer->windowShouldClose()) {
+	while (!renderer->windowShouldClose()) {
 		renderer->render();
 	}
-
-	//renderer/*.lock()*/->render();
 
 	ResourceManager::UnloadAllResources();
 	Input::freeResources();

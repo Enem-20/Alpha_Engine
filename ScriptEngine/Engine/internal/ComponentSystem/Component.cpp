@@ -1,6 +1,6 @@
 #include "Component.h"
 
-Component::Component(const std::string& name, const std::shared_ptr<GameObject>& gameObject)
+Component::Component(std::string_view name, const std::shared_ptr<GameObject>& gameObject)
 	: ResourceBase(name)
 	, gameObject(gameObject)
 {

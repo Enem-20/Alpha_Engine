@@ -22,4 +22,4 @@ target_sources(${{PROJECT_NAME}} INTERFACE
     f.flush()
     f.close()
 
-generate("API")
+generate("DependencyResolvers")

@@ -1,6 +1,0 @@
-#pragma once
-
-#include "ResourceManager.h"
-#include "Serializer.h"
-#include "ImageLoader.h"
-#include "stb_image.h"

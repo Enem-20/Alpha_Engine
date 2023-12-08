@@ -2,7 +2,7 @@
 
 size_t UIelement::ID = 0;
 
-UIelement::UIelement(const std::string& name, std::shared_ptr<GameObject> gameObject)
+UIelement::UIelement(std::string_view name, std::shared_ptr<GameObject> gameObject)
 	: Component(name, gameObject)
 	, parent(parent)
 {}

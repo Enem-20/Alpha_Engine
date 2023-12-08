@@ -6,14 +6,16 @@
 
 #include "Renderer/src/Window.h"
 
-#include "Renderer/src/Renderer.h"
+#include "Renderer/src/BaseRenderer.h"
 
-#include "Renderer/src/Sprite.h"
+#include "Renderer/src/BaseSprite.h"
 #include "ComponentSystem/Collider2D.h"
 #include "ComponentSystem/Component.h"
 
-#include "Renderer/src/ShaderProgram.h"
-#include "Renderer/src/Texture2D.h"
+#include "Renderer/src/Vulkan/VulkanRenderer.h"
+#include "Renderer/src/BaseShaderProgram.h"
+#include "Renderer/src/OGL/OGLTexture2D.h"
+#include "Renderer/src/Vulkan/VulkanTexture2D.h"
 #include "Renderer/src/Vulkan/CommandBuffer.h"
 #include "Renderer/src/Vulkan/CommandPool.h"
 #include "Renderer/src/Vulkan/Instance.h"
@@ -32,6 +34,7 @@
 #include "Renderer/src/Vulkan/SyncObjects.h"
 #include "Renderer/src/Vulkan/DescriptorSetLayout.h"
 #include "Renderer/src/Vulkan/DescriptionSets.h"
+#include "Renderer/src/RendererManager.h"
 
 #include <sol/sol.hpp>
 
@@ -81,24 +84,24 @@ public:
 	ResourceManager(ResourceManager&&) = delete;
 
 	static void SetLuaState(std::shared_ptr<sol::state> newL);
-	static void loadShaders(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
-	static void loadShaderProgram(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
-	static void loadShadersReal();
+	static void loadShaders(std::string_view shaderName, const std::string& vertexPath, const std::string& fragmentPath);
+	template<class ShaderProgramType>
+	static void loadShaderProgram(std::string_view shaderName, const std::string& vertexPath, const std::string& fragmentPath);
 
-	static std::shared_ptr<Texture2D> loadTexture(const std::string& textureName, const std::string& texturePath);
+	static std::shared_ptr<BaseTexture2D> loadTexture(std::string_view textureName, const std::string& texturePath);
 
 
-	static std::shared_ptr<Sprite> loadSprite(const std::string& spriteName,
-		const std::string& textureName,
-		const std::string& shaderName,
-		const std::string& meshName,
+	static std::shared_ptr<BaseSprite> loadSprite(std::string_view spriteName,
+		std::string_view textureName,
+		std::string_view shaderName,
+		std::string_view meshName,
 		const unsigned int spriteWidth,
 		const unsigned int spriteHeight,
-		const std::string& subTextureName = "default");
+		std::string_view subTextureName = "default");
 
 
-	static std::shared_ptr<Texture2D> loadTextureAtlas(std::string textureName,
-		std::string texturePath,
+	static std::shared_ptr<BaseTexture2D> loadTextureAtlas(std::string_view textureName,
+		const std::string& texturePath,
 		std::vector<std::string> subTextures,
 		const unsigned int subTextureWidth,
 		const unsigned int subTextureHeight);
@@ -107,16 +110,16 @@ public:
 	static void onBeforeRenderFrame();
 	static void onAfterRenderInitialization();
 
-	static void addOnBeforeRenderFrame(const std::string& name, const std::function<void()>& listener);
-	static void addOnAfterRenderInitialization(const std::string& name, const std::function<void()>& listener);
-	static void removeOnBeforeRenderInitialization(const std::string& name);
-	static void removeOnAfterRenderInitialization(const std::string& name);
+	static void addOnBeforeRenderFrame(std::string_view name, const std::function<void()>& listener);
+	static void addOnAfterRenderInitialization(std::string_view name, const std::function<void()>& listener);
+	static void removeOnBeforeRenderInitialization(std::string_view name);
+	static void removeOnAfterRenderInitialization(std::string_view name);
 
 	static rapidjson::Document documentParse(const std::string& relativePath);
 
-	static std::shared_ptr<Mesh> loadMesh(const std::string& name, const std::string& relativePath);
+	static std::shared_ptr<Mesh> loadMesh(std::string_view name, const std::string& relativePath);
 	static bool loadJSONScene(const std::string& relativePath);
-	static bool loadSave(const std::string relativePath);
+	static bool loadSave(const std::string& relativePath);
 	static void loadSaveReal();
 	static void loadExecute();
 	static std::vector<std::string> getDirectories(const std::string& relativePath);
@@ -134,19 +137,22 @@ public:
 	static void addResource(ResourceType* resource);
 
 	template<class ResourceType>
-	static void removeResource(const std::string& name);
+	static void removeResource(std::string_view name);
 
 	template<class ResourceType>
-	static void freeResource(const std::string& name);
+	static void freeResource(std::string_view name);
 
 	template<class ResourceType>
-	static std::shared_ptr<ResourceType> getResource(const std::string& name);
+	static std::shared_ptr<ResourceType> getResource(std::string_view name);
 
 	template<class ResourceType>
 	static std::unordered_map<std::string, Resource>* getResourcesWithType();
 
 	template<class ResourceType, class... Args>
 	static std::shared_ptr<ResourceType> makeResource(Args&&... args);
+
+	template<class BaseResourceType, class DerivedResourceType, class... Args>
+	static std::shared_ptr<BaseResourceType> makePolymorphicResource(Args&&... args);
 private:
 	static std::unordered_map<std::string, std::function<void()>> onBeforeRenderFrameListeners;
 	static std::unordered_map<std::string, std::function<void() >> onAfterRenderInitializationListeners;
@@ -154,8 +160,8 @@ private:
 	static std::shared_ptr<sol::state> L;
 	static std::string getFileString(const std::string& relativeFilePath);
 
-	static std::unordered_map<std::string, std::unordered_map<std::string, Resource>>* m_resources;
-	static std::unordered_map<std::string, std::unordered_map<std::string, Resource>>* getAllResources();
+	static std::unordered_map<size_t, std::unordered_map<std::string, Resource>>* m_resources;
+	static std::unordered_map<size_t, std::unordered_map<std::string, Resource>>* getAllResources();
 
 	static std::string m_path;
 	static std::string relative_sprites;
@@ -163,7 +169,7 @@ private:
 	static std::string relative_textureAtlasses;
 	static std::string relative_shaders;
 	static std::string relative_main;
-	static std::queue<std::function<void(const std::string&, const std::string&, const std::string&)>> shaderLoaders;
+	static std::queue<std::function<void(std::string, std::string, std::string)>> shaderLoaders;
 	static std::queue<std::tuple<std::string, std::string, std::string>> shaderLoaderParameters;
 	static std::queue<std::function<void()>> saveLoaders;
 };
@@ -177,7 +183,8 @@ std::shared_ptr<T> Resource::getResource() {
 template<class ResourceType>
 void ResourceManager::addResource(ResourceType* resource) {
 	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
-	auto resourcesByType = getAllResources()->find(ResourceType::type);
+
+	auto resourcesByType = getAllResources()->find(ResourceType::type_hash);
 	if (resourcesByType != getAllResources()->end()) {
 		if (!resourcesByType->second.contains(resource->name)) {
 			std::shared_ptr<ResourceType> toShared(resource);
@@ -190,23 +197,40 @@ void ResourceManager::addResource(ResourceType* resource) {
 	}
 	else {
 		std::shared_ptr<ResourceType> toShared(resource);
-		(*getAllResources())[ResourceType::type].emplace(resource->name, Resource{ std::reinterpret_pointer_cast<void>(toShared) });
+		(*getAllResources())[ResourceType::type_hash].emplace(resource->name, Resource{std::reinterpret_pointer_cast<void>(toShared)});
 	}
 }
 
 template<class ResourceType>
-void ResourceManager::removeResource(const std::string& name) {
+void ResourceManager::removeResource(std::string_view name) {
 	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
 
-	auto resourcesByType = getAllResources()->find(ResourceType::type);
+	auto resourcesByType = getAllResources()->find(ResourceType::type_hash);
 
 	if (resourcesByType != getAllResources()->end()) {
-		auto resource = resourcesByType->second.find(name);
+		auto resource = resourcesByType->second.find(name.data());
 
 		if (resource != resourcesByType->second.cend()) {
-			resourcesByType->second.erase(name);
-			if (ResourceType::type == Texture2D::type)
-				getResource<Renderer>("main")->removeTexture(name);
+			resourcesByType->second.erase(name.data());
+			if (ResourceType::type_hash == BaseTexture2D::type_hash)
+				RendererManager::getRenderer().removeTexture(name);
+		}
+	}
+
+	//std::cerr << "Error: this resource type doesn't exist" << '\n';
+}
+
+template<class ResourceType>
+void ResourceManager::freeResource(std::string_view name) {
+	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
+
+	auto resourcesByType = getAllResources()->find(ResourceType::type_hash);
+
+	if (resourcesByType != getAllResources()->end()) {
+		auto resource = resourcesByType->second.find(name.data());
+
+		if (resource != resourcesByType->second.cend()) {
+			resourcesByType.erase(name.data());
 
 			return;
 		}
@@ -216,29 +240,12 @@ void ResourceManager::removeResource(const std::string& name) {
 }
 
 template<class ResourceType>
-void ResourceManager::freeResource(const std::string& name) {
+std::shared_ptr<ResourceType> ResourceManager::getResource(std::string_view name) {
 	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
-	auto resourcesByType = getAllResources()->find(ResourceType::type);
 
-	if (resourcesByType != getAllResources()->end()) {
-		auto resource = resourcesByType->second.find(name);
-
-		if (resource != resourcesByType->second.cend()) {
-			resourcesByType.erase(name);
-
-			return;
-		}
-	}
-
-	//std::cerr << "Error: this resource type doesn't exist" << '\n';
-}
-
-template<class ResourceType>
-std::shared_ptr<ResourceType> ResourceManager::getResource(const std::string& name) {
-	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
-	auto resourcesByType = getAllResources()->find(ResourceType::type);
+	auto resourcesByType = getAllResources()->find(ResourceType::type_hash);
 	if (resourcesByType != getAllResources()->cend()) {
-		auto resource = resourcesByType->second.find(name);
+		auto resource = resourcesByType->second.find(name.data());
 
 		if (resource != resourcesByType->second.cend()) {
 			return resource->second.getResource<ResourceType>();
@@ -251,7 +258,8 @@ std::shared_ptr<ResourceType> ResourceManager::getResource(const std::string& na
 template<class ResourceType>
 std::unordered_map<std::string, Resource>* ResourceManager::getResourcesWithType() {
 	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
-	auto resourcesByType = getAllResources()->find(ResourceType::type);
+
+	auto resourcesByType = getAllResources()->find(ResourceType::type_hash);
 	if (resourcesByType != getAllResources()->cend()) {
 		return &(resourcesByType->second);
 	}
@@ -263,6 +271,7 @@ std::unordered_map<std::string, Resource>* ResourceManager::getResourcesWithType
 template<class ResourceType, class... Args>
 std::shared_ptr<ResourceType> ResourceManager::makeResource(Args&&... args) {
 	static_assert(std::is_base_of<ResourceBase, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
+
 	std::tuple<Args...> store(args...);
 	auto name = std::get<0>(store);
 	if (!getResource<ResourceType>(name)) {
@@ -272,4 +281,20 @@ std::shared_ptr<ResourceType> ResourceManager::makeResource(Args&&... args) {
 
 	return getResource<ResourceType>(name);
 }
+
+template<class BaseResourceType, class DerivedResourceType, class... Args>
+static std::shared_ptr<BaseResourceType> ResourceManager::makePolymorphicResource(Args&&... args) {
+	static_assert(std::is_base_of<BaseResourceType, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
+	static_assert(std::is_base_of<DerivedResourceType, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
+
+	std::tuple<Args...> store(args...);
+	auto name = std::get<0>(store);
+	if (!getResource<BaseResourceType>(name)) {
+		BaseResourceType* instance = new DerivedResourceType(args...);
+		instance = nullptr;
+	}
+
+	return getResource<BaseResourceType>(name);
+}
+
 #endif // !RESOURCEMANAGER

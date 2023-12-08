@@ -20,7 +20,7 @@ class GameObject;
 class DLLEXPORT Transform : public Component
 {
 public:
-	Transform(std::string name = "", std::shared_ptr<GameObject> gameObject = nullptr);
+	Transform(std::string_view name = "", std::shared_ptr<GameObject> gameObject = nullptr);
 	Transform(const Transform& _transform);
 	Transform(Transform&& transform) noexcept;
 	Transform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, std::string name = "", std::shared_ptr<GameObject> gameObject = nullptr);
@@ -34,7 +34,7 @@ public:
 
 	void Awake() override{}
 	void Start() override {}
-	void Update(uint32_t currentImage) override {}
+	void Update(uint32_t currentFrame) override {}
 	void FixedUpdate() override {}
 	void LastUpdate() override {}
 
