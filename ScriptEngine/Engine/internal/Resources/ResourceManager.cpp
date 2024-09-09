@@ -387,10 +387,12 @@ std::vector<std::string> ResourceManager::getDirectories(const std::string& rela
 	std::vector<std::string> directories;
 
 	std::string path = m_path + '/' + relativePath;
-	for (auto& entry : std::filesystem::directory_iterator(path)) {
-		std::string absolute = Casts::wharTochar(entry.path().c_str());
-		std::string relative = Casts::wharTochar(std::filesystem::relative(absolute, path).c_str());
-		directories.push_back(relativePath + '/' + relative);
+	if(std::filesystem::exists(path)) {
+		for (auto& entry : std::filesystem::directory_iterator(path)) {
+			std::string absolute = Casts::wharTochar(entry.path().c_str());
+			std::string relative = Casts::wharTochar(std::filesystem::relative(absolute, path).c_str());
+			directories.push_back(relativePath + '/' + relative);
+		}
 	}
 
 	return directories;
