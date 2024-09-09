@@ -118,7 +118,7 @@ void ScriptProcessor::ScriptUpdates()
 }
 
 
-void main(int argc, char** argv) {
+int main(int argc, char** argv) {
 	ResourceManager::SetExecutablePath(argv[0]);
 	auto L = ScriptProcessor::getL();
 	ResourceManager::SetLuaState(L);
@@ -146,5 +146,5 @@ void main(int argc, char** argv) {
 
 	ImGuiManager::destroy();
 	renderer.reset();
-
+	return 0;
 }

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef BUTTON
-#define BUTTON
+#ifndef BUTTON_H
+#define BUTTON_H
 
 #include "API/ExportPropety.h"
 

@@ -1,10 +1,12 @@
-cmake_minimum_required(VERSION 3.8.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.21.0 FATAL_ERROR)
 
 set(PROJECT_NAME Engine)
 
 set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
 
 #set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+#find_package(Lua REQUIRED)
 
 project(${PROJECT_NAME})
 
@@ -16,19 +18,17 @@ add_compile_definitions(ENGINE_EXPORTS)
 FILE(GLOB_RECURSE internal_headers "internal/*.h")
 FILE(GLOB_RECURSE internal_sources "internal/*.cpp")
 
+
 add_library(Engine SHARED
+${internal_headers}
+${internal_sources}
 	)
-	
-target_sources(Engine PRIVATE
-)
 
 #target_compile_definitions(Engine PUBLIC  _DISABLE_VECTOR_ANNOTATION _DISABLE_STRING_ANNOTATION)
 target_compile_definitions(Engine PRIVATE SHOWONBUILD GLFW_INCLUDE_VULKAN  GLM_FORCE_DEPTH_ZERO_TO_ONE GLM_FORCE_RADIANS)
 #target_compile_definitions(Engine PRIVATE OGL)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
-	
-set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/INCREMENTAL:NO")
 set_target_properties(Engine PROPERTIES PUBLIC_HEADER "")
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -58,8 +58,21 @@ if (MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
-target_link_libraries(Engine PUBLIC
+target_include_directories(${PROJECT_NAME} PUBLIC external)
+target_include_directories(${PROJECT_NAME} PRIVATE external/obj-io/include)
+target_include_directories(${PROJECT_NAME} PRIVATE external/sol2/include)
+target_include_directories(${PROJECT_NAME} PUBLIC external/rapidjson/include)
+target_include_directories(${PROJECT_NAME} PRIVATE external/imguiLibrary)
+target_include_directories(${PROJECT_NAME} PRIVATE external/imguiLibrary/imgui)
+target_include_directories(${PROJECT_NAME} PRIVATE external/reactphysics3d/include)
+
+
+target_link_libraries(Engine 
+	PUBLIC
 	ReactPhysics3D::reactphysics3d
+	IMGUI
+	p7
+	lua_static
 )
 
 target_link_libraries(Engine PRIVATE
@@ -76,21 +89,6 @@ target_link_libraries(Engine PRIVATE
 	Tools
 	UI
 )
-
-target_link_libraries(Engine PRIVATE 
-	IMGUI
-	p7
-	lua_static
-	)
-
-target_include_directories(${PROJECT_NAME} PUBLIC external)
-target_include_directories(${PROJECT_NAME} PRIVATE external/obj-io/include)
-target_include_directories(${PROJECT_NAME} PUBLIC external/glm)
-target_include_directories(${PROJECT_NAME} PRIVATE external/sol2/include)
-target_include_directories(${PROJECT_NAME} PUBLIC external/rapidjson/include)
-target_include_directories(${PROJECT_NAME} PRIVATE external/imguiLibrary)
-target_include_directories(${PROJECT_NAME} PRIVATE external/imguiLibrary/imgui)
-target_include_directories(${PROJECT_NAME} PRIVATE external/reactphysics3d/include)
 
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)

@@ -7,8 +7,8 @@
 #include "Tools/StringFuncs.h"
 #include "Logging/Clerk.h"
 
-#include <../glm/glm/vec2.hpp>
-#include <../glm/glm/vec3.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -63,10 +63,10 @@ GameObject::~GameObject()
 	Clerk::Knowledge(148, __FILE__, "GameObject::~GameObject at " + name, L"Clear all data...");
 #endif
 	children.clear();
-	auto sprites = getComponentsWithType<BaseSprite>();
+	auto sprites = getComponentsWithType<Sprite>();
 	if(sprites)
 	for (auto sprite : *sprites) {
-		ResourceManager::removeResource<BaseSprite>(sprite.second.getComponentFromView<BaseSprite>()->name);
+		ResourceManager::removeResource<Sprite>(sprite.second.getComponentFromView<Sprite>()->name);
 	}
 	auto panels = getComponentsWithType<Panel>();
 	if (panels)
@@ -88,10 +88,10 @@ void GameObject::render(CommandBuffer& commandBuffer, RenderPipeline& renderPipe
 	Clerk::Knowledge(159, __FILE__, "GameObject::render() at " + name, L"Rendering sprites...");
 #endif
 
-	auto sprites = getComponentsWithType<BaseSprite>();
+	auto sprites = getComponentsWithType<Sprite>();
 	if (sprites)
 		for (auto sprite : *sprites) {
-			sprite.second.getComponentFromView<BaseSprite>()->render();
+			sprite.second.getComponentFromView<Sprite>()->render(commandBuffer, renderPipeline, currentFrame);
 		}
 
 #ifdef LOG_INFO
@@ -170,7 +170,7 @@ void GameObject::Update(uint32_t currentFrame)
 	auto sprites = getComponentsWithType<Sprite>();
 	if (sprites)
 		for (auto sprite : *sprites) {
-			sprite.second.getComponentFromView<BaseSprite>()->Update(currentFrame);
+			sprite.second.getComponentFromView<Sprite>()->Update(currentFrame);
 		}
 }
 

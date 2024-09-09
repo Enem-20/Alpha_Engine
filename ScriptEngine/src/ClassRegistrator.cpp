@@ -1,6 +1,7 @@
 #include "ClassRegistrator.h"
 
 #include <glm/glm.hpp>
+#include <sol/sol.hpp>
 
 #include "Physics/Raycast.h"
 
@@ -11,7 +12,7 @@
 #include "Renderer/src/Renderer.h"
 #include "Renderer/src/ShaderProgram.h"
 #include "Renderer/src/Sprite.h"
-#include "Renderer/src/BaseTexture2D.h"
+#include "Renderer/src/Texture2D.h"
 #include "Resources/ResourceManager.h"
 #include "GameTypes/GameObject.h"
 #include "Resources/Mesh.h"
@@ -24,8 +25,10 @@
 #include "Renderer/src/WindowManager.h"
 #include "Tools/Timer.h"
 #include "Input/Input.h"
+#include "sol2/include/sol/forward.hpp"
 
 #include <memory>
+#include <string_view>
 
 //template<class ResourceType>
 //void DLLEXPORT ResourceManager::addResource<GameObject>(ResourceType* resource);
@@ -100,53 +103,53 @@ static GameObject GetData(std::shared_ptr<GameObject> gameObject)
 void ClassRegistrator::Reg_GLMvec2(sol::table* Lnamespace)
 {
 	Lnamespace->new_usertype<glm::vec2>("vec2"
-		, sol::constructors<glm::vec2(), glm::vec2(float, float), glm::vec2(const glm::vec2&)>()
+		, "new", sol::constructors<glm::vec2(), glm::vec2(float, float), glm::vec2(const glm::vec2&)>()
 
 		, sol::meta_function::addition, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(glm::operator+)
 		, sol::meta_function::subtraction, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(glm::operator-)
 		, sol::meta_function::multiplication, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(glm::operator*)
 		, sol::meta_function::division, sol::resolve<glm::vec2(const glm::vec2&, const glm::vec2&)>(glm::operator/)
 
-		, "x", &glm::vec2::x
-		, "y", &glm::vec2::y
+		//, "x", sol::var(&glm::vec2::x)
+		//, "y", sol::var(&glm::vec2::y)
 	);
 }
 
 void ClassRegistrator::Reg_GLMivec2(sol::table* Lnamespace)
 {
 	Lnamespace->new_usertype<glm::ivec2>("ivec2"
-		, sol::constructors<glm::ivec2(), glm::ivec2(int, int), glm::ivec2(const glm::ivec2&)>()
+		, "new", sol::constructors<glm::ivec2(), glm::ivec2(int, int), glm::ivec2(const glm::ivec2&)>()
 
 		, sol::meta_function::addition, sol::resolve<glm::ivec2(const glm::ivec2&, const glm::ivec2&)>(glm::operator+)
 		, sol::meta_function::subtraction, sol::resolve<glm::ivec2(const glm::ivec2&, const glm::ivec2&)>(glm::operator-)
 		, sol::meta_function::multiplication, sol::resolve<glm::ivec2(const glm::ivec2&, const glm::ivec2&)>(glm::operator*)
 		, sol::meta_function::division, sol::resolve<glm::ivec2(const glm::ivec2&, const glm::ivec2&)>(glm::operator/)
 
-		, "x", &glm::ivec2::x
-		, "y", &glm::ivec2::y
+		//, "x", sol::var(&glm::ivec2::x)
+		//, "y", sol::var(&glm::ivec2::y)
 	);
 }
 
 void ClassRegistrator::Reg_GLMvec3(sol::table* Lnamespace)
 {
-	Lnamespace->new_usertype<glm::vec3>("vec3"
-		, sol::constructors<glm::vec3(), glm::vec3(float, float, float), glm::vec3(const glm::vec2&, float), glm::vec3(float, const glm::vec2&), glm::vec3(const glm::vec3&)>()
+	Lnamespace->new_usertype<glm::vec3>("vec3",
+		"new", sol::constructors<glm::vec3(), glm::vec3(float, float, float), glm::vec3(const glm::vec2&, float), glm::vec3(float, const glm::vec2&), glm::vec3(const glm::vec3&)>()
 
 		, sol::meta_function::addition, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator+)
 		, sol::meta_function::subtraction, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator-)
 		, sol::meta_function::multiplication, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator*)
 		, sol::meta_function::division, sol::resolve<glm::vec3(const glm::vec3&, const glm::vec3&)>(glm::operator/)
 
-		, "x", &glm::vec3::x
-		, "y", &glm::vec3::y
-		, "z", &glm::vec3::z
+		//, "x", sol::var(&glm::vec3::x)
+		//, "y", sol::var(&glm::vec3::y)
+		//, "z", sol::var(&glm::vec3::z)
 	);
 }
 
 void ClassRegistrator::Reg_GLMvec4(sol::table* Lnamespace)
 {
-	Lnamespace->new_usertype<glm::vec4>("vec4"
-		, sol::constructors<glm::vec4(), glm::vec4(float, float, float, float)
+	Lnamespace->new_usertype<glm::vec4>("vec4",
+		"new", sol::constructors<glm::vec4(), glm::vec4(float, float, float, float)
 		, glm::vec4(glm::vec2, float, float), glm::vec4(float, float, glm::vec2), glm::vec4(float, glm::vec2, float)
 		, glm::vec4(glm::vec2, glm::vec2)
 		, glm::vec4(glm::vec3, float), glm::vec4(float, glm::vec3)
@@ -158,17 +161,17 @@ void ClassRegistrator::Reg_GLMvec4(sol::table* Lnamespace)
 		//, sol::meta_function::bitwise_xor, sol::resolve<glm::vec4(const glm::vec4&, const glm::vec4&)>(glm::operator^)
 		, sol::meta_function::division, sol::resolve<glm::vec4(const glm::vec4&, const glm::vec4&)>(glm::operator/)
 
-		, "x", &glm::vec4::x
-		, "y", &glm::vec4::y
-		, "z", &glm::vec4::z
-		, "w", &glm::vec4::w
+		//, "x", sol::var(&glm::vec4::x)
+		//, "y", sol::var(&glm::vec4::y)
+		//, "z", sol::var(&glm::vec4::z)
+		//, "w", sol::var(&glm::vec4::w)
 	);
 }
 
 void ClassRegistrator::Reg_GLMMat3(sol::table* Lnamespace)
 {
-	Lnamespace->new_usertype<glm::mat3>("mat3"
-		, sol::constructors<glm::mat3(), glm::mat3(float), glm::mat3(const glm::mat3&), glm::mat3(glm::vec3&, glm::vec3&, glm::vec3&)>()
+	Lnamespace->new_usertype<glm::mat3>("mat3",
+		"new", sol::constructors<glm::mat3(), glm::mat3(float), glm::mat3(const glm::mat3&), glm::mat3(glm::vec3&, glm::vec3&, glm::vec3&)>()
 
 		, sol::meta_function::addition, sol::resolve<glm::mat3(const glm::mat3&, const glm::mat3&)>(glm::operator+)
 		, sol::meta_function::subtraction, sol::resolve<glm::mat3(const glm::mat3&, const glm::mat3&)>(glm::operator-)
@@ -179,8 +182,8 @@ void ClassRegistrator::Reg_GLMMat3(sol::table* Lnamespace)
 
 void ClassRegistrator::Reg_GLMMat4(sol::table* Lnamespace)
 {
-	Lnamespace->new_usertype<glm::mat4>("mat4"
-		, sol::constructors<glm::mat4(), glm::mat4(float), glm::mat4(const glm::mat4&), glm::mat4(glm::vec4&, glm::vec4&, glm::vec4&, glm::vec4&)>()
+	Lnamespace->new_usertype<glm::mat4>("mat4",
+		"new", sol::constructors<glm::mat4(), glm::mat4(float), glm::mat4(const glm::mat4&), glm::mat4(glm::vec4&, glm::vec4&, glm::vec4&, glm::vec4&)>()
 
 		, sol::meta_function::addition, sol::resolve<glm::mat4(const glm::mat4&, const glm::mat4&)>(glm::operator+)
 		, sol::meta_function::subtraction, sol::resolve<glm::mat4(const glm::mat4&, const glm::mat4&)>(glm::operator-)
@@ -200,10 +203,10 @@ void ClassRegistrator::Reg_ShaderProgram(sol::table* same)
 
 void ClassRegistrator::Reg_SubTexture2D(sol::table* LTexture2D)
 {
-	LTexture2D->new_usertype<BaseTexture2D::SubTexture2D>("SubTexture2D"
-		, sol::constructors<BaseTexture2D::SubTexture2D(), BaseTexture2D::SubTexture2D(const glm::vec2, const glm::vec2)>()
-		, "leftBottomUV", &BaseTexture2D::SubTexture2D::getLeftBottomUV
-		, "rightTopUV", &BaseTexture2D::SubTexture2D::getRightTopUV
+	LTexture2D->new_usertype<Texture2D::SubTexture2D>("SubTexture2D",
+		"new", sol::constructors<Texture2D::SubTexture2D(), Texture2D::SubTexture2D(const glm::vec2, const glm::vec2)>()
+		, "leftBottomUV", &Texture2D::SubTexture2D::getLeftBottomUV
+		, "rightTopUV", &Texture2D::SubTexture2D::getRightTopUV
 	);
 }
 
@@ -226,11 +229,13 @@ void ClassRegistrator::Reg_Texture2D(sol::table* same)
 
 		Reg_SubTexture2D(same);*/
 
-		same->new_usertype<BaseTexture2D>("Texture2D"
-			, "new", sol::factories(&ResourceManager::loadTexture)
-			, "getWidth", &BaseTexture2D::getWidth
-			, "getHeight", &BaseTexture2D::getHeight
-			, "name", &BaseTexture2D::name
+		same->new_usertype<Texture2D>(Texture2D::type
+			, "new", sol::factories([](std::string_view textureName, const std::string &texturePath){
+				return ResourceManager::loadTexture(textureName, texturePath);
+			})
+			, "getWidth", &Texture2D::getWidth
+			, "getHeight", &Texture2D::getHeight
+			//, "name", &Texture2D::name
 		);
 	}
 }
@@ -239,27 +244,28 @@ void ClassRegistrator::Reg_Sprite(sol::table* object)
 {
 	object->new_usertype<Sprite>("Sprite"
 		, "new", sol::factories(&ResourceManager::loadSprite)
-		, "name", &Sprite::name
+		//, "name", &Sprite::name
 	);
 }
 
 void ClassRegistrator::Reg_UIelement(sol::table* UIElement)
 {
 	UIElement->new_usertype<UIelement>("UIelement"
+		, sol::no_constructor
 		, "AddListener", &UIelement::AddListener);
 }
 
 void ClassRegistrator::Reg_Transform(sol::table* Lnamespace)
 {
 	Lnamespace->new_usertype<Transform>("Transform"
-		, "new", sol::factories([](const std::string& name, const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale) {
+		, "new", sol::factories([](std::string_view name, const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale) {
 			auto shared = std::make_shared<Transform>(position, rotation, scale); shared->name = name;
 			return shared;
 			})
 		, "getPosition", &Transform::GetPosition
 		, "getRotation", &Transform::GetRotation
 		, "getScale", &Transform::GetScale
-		, "name", &Transform::name
+		//, "name", &Transform::name
 		);
 }
 
@@ -273,7 +279,7 @@ void ClassRegistrator::Reg_GameObject(sol::table* object)
 		, "Rotate", &GameObject::Rotate
 		, "AddChild", &GameObject::AddChild
 		, "GetChild", &GameObject::GetChild
-		, "name", &GameObject::name
+		//, "name", &GameObject::name
 		, "getLuaScript", &GameObject::getComponent<LuaScript>
 		, "getTransform", &GameObject::getComponent<Transform>
 		, "getCollider2D", &GameObject::getComponent<Collider2D>
@@ -295,14 +301,14 @@ void ClassRegistrator::Reg_Collider2D(sol::table* object) {
 			})
 		, "getTransform", &Collider2D::getTransform
 		, "getGameObject", &Collider2D::GetGameObject
-		, "name", &Collider2D::name
+		//, "name", &Collider2D::name
 	);
 }
 
 void ClassRegistrator::Reg_Mesh(sol::table* object) {
 	object->new_usertype<Mesh>("Mesh"
 		, "new", sol::factories(&ResourceManager::loadMesh)
-		, "name", &Mesh::name
+		//, "name", &Mesh::name
 	);
 }	
 
@@ -311,13 +317,14 @@ void ClassRegistrator::Reg_LuaScript(sol::table* object) {
 		, "new", sol::factories([](const std::string& name, const std::string& path, std::shared_ptr<sol::state> L){
 			std::make_shared<LuaScript>(name, path, L);
 		})
-		, "name", &LuaScript::name
+		//, "name", &LuaScript::name
 	);
 }
 
 void ClassRegistrator::Reg_Timer(sol::table* Lnamespace)
 {
 	Lnamespace->new_usertype<Timer>("Timer"
+		, sol::no_constructor
 		, "StartTimer", &Timer::StartTimer
 		, "EndTimer", &Timer::EndTimer
 		, "GetDelta", &Timer::GetDelta
@@ -355,11 +362,11 @@ void ClassRegistrator::Reg_Hierarchy(sol::table* hierarchy)
 void ClassRegistrator::Reg_ResourceManager(sol::table* Lnamespace)
 {
 	Lnamespace->new_usertype<ResourceManager>("ResourceManager"
-		, "", sol::no_constructor
+		, sol::no_constructor
 		, "loadScene", &::ResourceManager::loadSave
 		, "removeGameObject", &ResourceManager::removeResource<GameObject>
 		, "getGameObject", &::ResourceManager::getResource<GameObject>
-		, "getTexture", &ResourceManager::getResource<BaseTexture2D>
+		, "getTexture", &ResourceManager::getResource<Texture2D>
 		, "getSprite", &ResourceManager::getResource<Sprite>
 		, "getCollider2D", &ResourceManager::getResource<Collider2D>
 		, "getShaderProgram", &ResourceManager::getResource<ShaderProgram>
@@ -369,6 +376,7 @@ void ClassRegistrator::Reg_ResourceManager(sol::table* Lnamespace)
 void ClassRegistrator::Reg_Input(sol::table* Lnamespace)
 {
 	Lnamespace->new_usertype<Input>("Input"
+		, sol::no_constructor
 		, "addOnClickListener", &Input::addMouseCallback
 		, "removeOnClickListener", &Input::removeMouseCallback
 		, "getNDCMousePosition", &Input::getNDCMousePosition);
@@ -377,6 +385,7 @@ void ClassRegistrator::Reg_Input(sol::table* Lnamespace)
 void ClassRegistrator::Reg_StringFuncs(sol::table* Lnamespace)
 {
 	Lnamespace->new_usertype<StringFuncs>("StringFuncs"
+		, sol::no_constructor
 		, "Match", &StringFuncs::Match
 		, "Find", &StringFuncs::Find);
 }
@@ -384,6 +393,7 @@ void ClassRegistrator::Reg_StringFuncs(sol::table* Lnamespace)
 void ClassRegistrator::Reg_Casts(sol::table* Lnamespace)
 {
 	Lnamespace->new_usertype<Casts>("Casts"
+		, sol::no_constructor
 		, "castValueToNewRange", &Casts::castValueToNewRange);
 }
 

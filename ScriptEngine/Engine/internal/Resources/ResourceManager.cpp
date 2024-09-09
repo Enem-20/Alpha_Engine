@@ -1,5 +1,7 @@
 #include "ResourceManager.h"
 
+#include "Renderer/src/Renderer.h"
+#include "Renderer/src/Texture2D.h"
 #include "Serializer.h"
 
 
@@ -126,7 +128,7 @@ void ResourceManager::loadShaders(std::string_view shaderName, const std::string
 {
 	/*shaderLoaders.push(loadShaderProgram);
 	shaderLoaderParameters.push({ std::string(shaderName), vertexPath, fragmentPath });*/
-	RendererManager::loadShaderProgram(shaderName, vertexPath, fragmentPath);
+	loadShaderProgram<ShaderProgram>(shaderName, vertexPath, fragmentPath);
 }
 
 template<class ShaderProgramType>
@@ -146,7 +148,7 @@ void ResourceManager::loadShaderProgram(std::string_view shaderName, const std::
 		return;
 	}
 
-	makePolymorphicResource<BaseShaderProgram, ShaderProgramType>(shaderName, vertexPath, fragmentPath, vertexString, fragmentString);
+	makeResource<ShaderProgram>(shaderName, vertexPath, fragmentPath, vertexString, fragmentString);
 }
 
 #ifdef OGL
@@ -177,7 +179,7 @@ std::shared_ptr<Texture2D> ResourceManager::loadTexture(std::string_view texture
 }
 
 #elif GLFW_INCLUDE_VULKAN
-std::shared_ptr<BaseTexture2D> ResourceManager::loadTexture(std::string_view textureName, const std::string& texturePath) {
+std::shared_ptr<Texture2D> ResourceManager::loadTexture(std::string_view textureName, const std::string& texturePath) {
 	int channels = 0;
 	int width = 0;
 	int height = 0;
@@ -191,14 +193,14 @@ std::shared_ptr<BaseTexture2D> ResourceManager::loadTexture(std::string_view tex
 		return nullptr;
 	}
 
-	auto texture = RendererManager::getRenderer().createTexture(textureName, texturePath, width, height, pixels, channels);
+	auto texture = ResourceManager::getResource<VulkanRenderer>("main")->createWindow(textureName, texturePath, width, height, channels, pixels);
 	
 	stbi_image_free(pixels);
 	return texture;
 }
 #endif
 
-std::shared_ptr<BaseSprite> ResourceManager::loadSprite(std::string_view spriteName,
+std::shared_ptr<Sprite> ResourceManager::loadSprite(std::string_view spriteName,
 	std::string_view textureName,
 	std::string_view shaderName,
 	std::string_view meshName,
@@ -206,7 +208,7 @@ std::shared_ptr<BaseSprite> ResourceManager::loadSprite(std::string_view spriteN
 	const unsigned int spriteHeight,
 	std::string_view subTextureName)
 {
-	auto Texture = getResource<BaseTexture2D>(textureName);
+	auto Texture = getResource<Texture2D>(textureName);
 
 	if (!Texture)
 	{
@@ -215,7 +217,7 @@ std::shared_ptr<BaseSprite> ResourceManager::loadSprite(std::string_view spriteN
 		return nullptr;
 	}
 
-	auto Shader = getResource<BaseShaderProgram>(shaderName);
+	auto Shader = getResource<ShaderProgram>(shaderName);
 
 	if (!Shader)
 	{
@@ -225,11 +227,11 @@ std::shared_ptr<BaseSprite> ResourceManager::loadSprite(std::string_view spriteN
 	}
 
 
-	return makeResource<BaseSprite>(spriteName, std::shared_ptr<GameObject>(nullptr), Texture, subTextureName, Shader,
+	return makeResource<Sprite>(spriteName, std::shared_ptr<GameObject>(nullptr), Texture, subTextureName, Shader,
 		getResource<Mesh>(meshName), glm::vec3(0.f, 0.f, 1.0f), glm::vec3(1.f), glm::vec2(spriteWidth, spriteHeight));
 }
 
-std::shared_ptr<BaseTexture2D> ResourceManager::loadTextureAtlas(std::string_view textureName,
+std::shared_ptr<Texture2D> ResourceManager::loadTextureAtlas(std::string_view textureName,
 	const std::string& texturePath,
 	std::vector<std::string> subTextures,
 	const unsigned int subTextureWidth,
@@ -401,7 +403,7 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 	if (gameObjects)gameObjects->clear();
 	auto sprites = ResourceManager::getResourcesWithType<Sprite>();
 	if (sprites)sprites->clear();
-	auto textures = ResourceManager::getResourcesWithType<BaseTexture2D>();
+	auto textures = ResourceManager::getResourcesWithType<Texture2D>();
 	if (textures)textures->clear();
 	auto meshs = ResourceManager::getResourcesWithType<Mesh>();
 	if (meshs)meshs->clear();
@@ -432,7 +434,7 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 
 		std::string panelsDirectoryPath = directories[i] + "/Components/" + Panel::type + 's';
 		std::string scriptsDirectoryPath = directories[i] + "/Components/" + LuaScript::type + 's';
-		std::string spritesDirectoryPath = directories[i] + "/Components/" + BaseSprite::type + 's';
+		std::string spritesDirectoryPath = directories[i] + "/Components/" + Sprite::type + 's';
 		std::string transformsDirectoryPath = directories[i] + "/Components/" + Transform::type + 's';
 		std::string colliderDirectoryPath = directories[i] + "/Components/" + Collider2D::type + 's';
 
@@ -475,7 +477,7 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 			auto shaderDocument = documentParse(spriteDirectories[i] + '/' + shaderProgramName + ".json");
 			auto meshDocument = documentParse(spriteDirectories[i] + '/' + meshName + ".json");
 
-			if(!getResource<BaseShaderProgram>(shaderProgramName))
+			if(!getResource<ShaderProgram>(shaderProgramName))
 				ResourceManager::loadShaders(shaderDocument.FindMember("name")->value.GetString(), shaderDocument.FindMember("vertexPath")->value.GetString(), shaderDocument.FindMember("fragmentPath")->value.GetString());
 
 			const std::string texturePath = textureDocument.FindMember("path")->value.GetString();
@@ -484,7 +486,7 @@ bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 				auto texture = loadTexture(textureName, texturePath);
 				auto mesh = ResourceManager::loadMesh(meshName, meshPath);
 				auto originalGameObject = ResourceManager::getResource<GameObject>(gameObject->name);
-				originalGameObject->addComponent<BaseSprite>(ResourceManager::loadSprite(spriteName, textureName, shaderProgramName, meshName, width, height, subTextureName));
+				originalGameObject->addComponent<Sprite>(ResourceManager::loadSprite(spriteName, textureName, shaderProgramName, meshName, width, height, subTextureName));
 			});
 
 		}

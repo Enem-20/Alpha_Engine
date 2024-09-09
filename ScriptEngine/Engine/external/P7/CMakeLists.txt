@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
-
 project(p7lib)
 
 #>>Build options **********************************************************************
@@ -56,7 +55,7 @@ else()
     enable_cxx_compiler_flag_if_supported("-Wno-long-long")
     enable_cxx_compiler_flag_if_supported("-Wno-missing-field-initializers")
     enable_cxx_compiler_flag_if_supported("-Wno-unknown-pragmas")
-    enable_cxx_compiler_flag_if_supported("-fPIC")
+    #enable_cxx_compiler_flag_if_supported("-fPIC")
     
     macro(set_ide_folder _project_name)
     endmacro()

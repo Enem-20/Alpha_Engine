@@ -1,9 +1,9 @@
 #pragma once
 
-#include "reactphysics3d/reactphysics3d.h"
+#ifndef PHYSICS_H
+#define PHYSICS_H
 
-#ifndef PHYSICS
-#define PHYSICS
+#include "reactphysics3d/reactphysics3d.h"
 
 class Physics {
 public:

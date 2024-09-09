@@ -2,3 +2,4 @@ build
 .vcxproj
 .vs
 *.bak
+.cache

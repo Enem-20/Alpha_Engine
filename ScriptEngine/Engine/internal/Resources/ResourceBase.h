@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RESOURCEBASE
-#define RESOURCEBASE
+#ifndef RESOURCEBASE_H
+#define RESOURCEBASE_H
 
 #include "API/ExportPropety.h"
 #include "Tools/CompileTimeHash.h"
@@ -28,7 +28,7 @@ public:
 	ResourceBase(ResourceBase&& resourceBase) noexcept = delete;
 
 	ResourceBase(std::string_view name/*, Derived* whatShouldBeStored*/);
-	virtual ~ResourceBase();
+	~ResourceBase();
 
 	//std::shared_ptr<Derived> derived;
 	std::string name;

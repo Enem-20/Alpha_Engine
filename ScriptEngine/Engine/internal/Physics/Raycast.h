@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef RAYCAST_H
+#define RAYCAST_H
+
 #include "API/ExportPropety.h"
 
 #include <reactphysics3d/reactphysics3d.h>
@@ -27,3 +30,5 @@ private:
 	std::string currentColliderName = "";
 	reactphysics3d::Vector3 currentPosition;
 };
+
+#endif

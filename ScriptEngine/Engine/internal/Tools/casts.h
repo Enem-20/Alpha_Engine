@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef CASTS_H
+#define CASTS_H
+
 #include "API/ExportPropety.h"
 
 #include <string>
@@ -21,3 +24,5 @@ public:
 
 	static char* wharTochar(const wchar_t* str);
 };
+
+#endif

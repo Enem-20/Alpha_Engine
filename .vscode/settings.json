@@ -1,0 +1,4 @@
+{
+    "cmake.configureOnOpen": true,
+    "C_Cpp.default.compilerPath": "c:\\Program Files\\LLVM\\bin\\clang++.exe"
+}

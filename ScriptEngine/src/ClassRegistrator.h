@@ -1,9 +1,9 @@
 #pragma once
 
-#ifndef CLASSREGISTRATOR
-#define CLASSREGISTRATOR
+#ifndef CLASSREGISTRATOR_H
+#define CLASSREGISTRATOR_H
 
-#include <sol/sol.hpp>
+#include <sol/forward.hpp>
 
 class GameObject;
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef UIELEMENT
-#define UIELEMENT
+#ifndef UIELEMENT_H
+#define UIELEMENT_H
 
 #include "API/ExportPropety.h"
 

@@ -1,12 +1,14 @@
 #pragma once
 
-#ifndef SERIALIZER
-#define SERIALIZER
+
+#ifndef SERIALIZER_H
+#define SERIALIZER_H
 
 
 #include "API/ExportPropety.h"
 
 #include <rapidjson/prettywriter.h>
+#include "rapidjson/reader.h"
 
 #include <memory>
 #include <vector>

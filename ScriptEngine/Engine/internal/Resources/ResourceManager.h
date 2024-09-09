@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Renderer/src/Renderer.h"
 #ifndef RESOURCEMANAGER
 #define RESOURCEMANAGER
 #include "API/ExportPropety.h"
@@ -8,14 +9,14 @@
 
 #include "Renderer/src/BaseRenderer.h"
 
-#include "Renderer/src/BaseSprite.h"
+#include "Renderer/src/Sprite.h"
 #include "ComponentSystem/Collider2D.h"
 #include "ComponentSystem/Component.h"
 
 #include "Renderer/src/Vulkan/VulkanRenderer.h"
-#include "Renderer/src/BaseShaderProgram.h"
-#include "Renderer/src/OGL/OGLTexture2D.h"
-#include "Renderer/src/Vulkan/VulkanTexture2D.h"
+#include "Renderer/src/ShaderProgram.h"
+#include "Renderer/src/Texture2D.h"
+#include "Renderer/src/Texture2D.h"
 #include "Renderer/src/Vulkan/CommandBuffer.h"
 #include "Renderer/src/Vulkan/CommandPool.h"
 #include "Renderer/src/Vulkan/Instance.h"
@@ -34,7 +35,7 @@
 #include "Renderer/src/Vulkan/SyncObjects.h"
 #include "Renderer/src/Vulkan/DescriptorSetLayout.h"
 #include "Renderer/src/Vulkan/DescriptionSets.h"
-#include "Renderer/src/RendererManager.h"
+//#include "Renderer/src/RendererManager.h"
 
 #include <sol/sol.hpp>
 
@@ -88,10 +89,10 @@ public:
 	template<class ShaderProgramType>
 	static void loadShaderProgram(std::string_view shaderName, const std::string& vertexPath, const std::string& fragmentPath);
 
-	static std::shared_ptr<BaseTexture2D> loadTexture(std::string_view textureName, const std::string& texturePath);
+	static std::shared_ptr<Texture2D> loadTexture(std::string_view textureName, const std::string& texturePath);
 
 
-	static std::shared_ptr<BaseSprite> loadSprite(std::string_view spriteName,
+	static std::shared_ptr<Sprite> loadSprite(std::string_view spriteName,
 		std::string_view textureName,
 		std::string_view shaderName,
 		std::string_view meshName,
@@ -100,7 +101,7 @@ public:
 		std::string_view subTextureName = "default");
 
 
-	static std::shared_ptr<BaseTexture2D> loadTextureAtlas(std::string_view textureName,
+	static std::shared_ptr<Texture2D> loadTextureAtlas(std::string_view textureName,
 		const std::string& texturePath,
 		std::vector<std::string> subTextures,
 		const unsigned int subTextureWidth,
@@ -212,8 +213,8 @@ void ResourceManager::removeResource(std::string_view name) {
 
 		if (resource != resourcesByType->second.cend()) {
 			resourcesByType->second.erase(name.data());
-			if (ResourceType::type_hash == BaseTexture2D::type_hash)
-				RendererManager::getRenderer().removeTexture(name);
+			if (ResourceType::type_hash == Texture2D::type_hash)
+				getResource<Renderer>("main")->removeTexture(name);
 		}
 	}
 
@@ -284,8 +285,8 @@ std::shared_ptr<ResourceType> ResourceManager::makeResource(Args&&... args) {
 
 template<class BaseResourceType, class DerivedResourceType, class... Args>
 static std::shared_ptr<BaseResourceType> ResourceManager::makePolymorphicResource(Args&&... args) {
-	static_assert(std::is_base_of<BaseResourceType, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
-	static_assert(std::is_base_of<DerivedResourceType, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
+	//static_assert(std::is_base_of<BaseResourceType, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
+	//static_assert(std::is_base_of<DerivedResourceType, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
 
 	std::tuple<Args...> store(args...);
 	auto name = std::get<0>(store);

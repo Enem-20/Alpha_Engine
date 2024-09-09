@@ -1,4 +1,8 @@
 set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
+
+find_package(Vulkan REQUIRED)
+find_library(Vulkan_LIBRARY NAMES vulkan-1 PATHS ${VULKAN_SDK}/Lib NO_DEFAULT_PATH)
+
 add_library(IMGUI STATIC)
 
 target_sources( IMGUI
@@ -18,10 +22,19 @@ target_sources( IMGUI
                 )
 
 target_include_directories( IMGUI
+                            PRIVATE ${Vulkan_INCLUDE_DIRS}
                             PRIVATE ${IMGUI_DIR}
                             PRIVATE ${IMGUI_DIR}/backends
-							PRIVATE ${IMGUI_DIR}/examples/libs/glfw/include
-							PRIVATE ../../internal/Renderer/external/VulkanHpp/Vulkan-Headers/include
+                            PRIVATE ../glfw/include
+                            #PRIVATE ${IMGUI_DIR}/examples/libs/glfw/include
+
                             )
+
+target_link_libraries(  IMGUI 
+                        PRIVATE $ENV{Vulkan_SDK}/Lib/vulkan-1.lib
+                        PRIVATE glfw
+                    )
+
+
 
 
