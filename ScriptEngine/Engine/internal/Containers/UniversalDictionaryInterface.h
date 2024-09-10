@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef UNIVERSALDICTIONARYINTERFACE
-#define UNIVERSALDICTIONARYINTERFACE
+#ifndef UNIVERSAL_DICTIONARY_INTERFACE_H
+#define UNIVERSAL_DICTIONARY_INTERFACE_H
 
 #include <unordered_map>
 #include <string>

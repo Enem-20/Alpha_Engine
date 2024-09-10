@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef STRING_FUINCS_H
+#define STRING_FUINCS_H
+
 #include "API/ExportPropety.h"
 
 #include <string>
@@ -31,3 +34,5 @@ public:
 		return "";
 	}
 };
+
+#endif

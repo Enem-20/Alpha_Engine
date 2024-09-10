@@ -1,5 +1,8 @@
 #pragma once 
 
+#ifndef CANVAS_H
+#define CANVAS_H
+
 #include <list>
 #include<memory>
 
@@ -18,3 +21,5 @@ public:
 private:
 	reactphysics3d::CollisionBody* body;
 };
+
+#endif

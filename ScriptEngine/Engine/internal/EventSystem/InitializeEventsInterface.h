@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef INITIALIZEEVENTSINTERFACE
-#define INITIALIZEEVENTSINTERFACE
+#ifndef INITIALIZE_EVENTS_INTERFACE_Р
+#define INITIALIZE_EVENTS_INTERFACE_Р
 
 #include "API/ExportPropety.h"
 

@@ -104,7 +104,7 @@ reactphysics3d::Transform Transform::ToPhysicsTransform() {
 
 std::shared_ptr<Transform> Transform::ToTransformFromPhysicsTransform(reactphysics3d::Transform physicsTransform, glm::vec3 scale) {
 	auto EngineTransform = std::make_shared<Transform>(FromPhysicsVector3ToGLM(physicsTransform.getPosition()), FromPhysicsQuaternionToGLM(physicsTransform.getOrientation()), scale);
-	EngineTransform->position->y;
+	//EngineTransform->position->y;
 	return EngineTransform;
 }
 

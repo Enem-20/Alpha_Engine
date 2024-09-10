@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef INPUT
-#define INPUT
+#ifndef INPUT_H
+#define INPUT_H
 
 #include "API/ExportPropety.h"
 

@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef TIMER_H
+#define TIMER_H
+
 #include "API/ExportPropety.h"
 
 #include <ctime>
@@ -26,3 +29,5 @@ private:
 	int UpdateEnd;
 	bool isStart;
 };
+
+#endif

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef VARIADIC_COMPARER
-#define VARIADIC_COMPARER
+#ifndef VARIADIC_COMPARER_H
+#define VARIADIC_COMPARER_H
 
 #include<tuple>
 #include<type_traits>

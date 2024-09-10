@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RESOURCEBASE_H
-#define RESOURCEBASE_H
+#ifndef RESOURCE_BASE_H
+#define RESOURCE_BASE_H
 
 #include "API/ExportPropety.h"
 #include "Tools/CompileTimeHash.h"

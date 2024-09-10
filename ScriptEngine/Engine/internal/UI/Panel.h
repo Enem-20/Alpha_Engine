@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef PANEL
-#define PANEL
+#ifndef PANEL_H
+#define PANEL_H
 
 #include "API/ExportPropety.h"
 
@@ -81,7 +81,7 @@ std::shared_ptr<UIelementType> Panel::getChild(std::string_view name) {
 		auto ui = uisByType->second.find(name);
 
 		if (ui != uisByType->second.end()) {
-			return ui->second.getUIFromView<UIelementType>();
+			return ui->second.template getUIFromView<UIelementType>();
 		}
 	}
 

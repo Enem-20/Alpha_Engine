@@ -1,7 +1,7 @@
 #include "Input.h"
 
-#include "Physics/Raycast.h"
-#include "ComponentSystem/Collider2D.h"
+//#include "Physics/Raycast.h"
+//#include "ComponentSystem/Collider2D.h"
 #include "Renderer/src/WindowManager.h"
 #include "Renderer/src/Window.h"
 
@@ -9,7 +9,7 @@
 
 #include <glfw/glfw3.h>
 
-#include <iostream>
+//#include <iostream>
 
 
 std::unordered_map<std::string, sol::function> Input::mouseCallbacks;

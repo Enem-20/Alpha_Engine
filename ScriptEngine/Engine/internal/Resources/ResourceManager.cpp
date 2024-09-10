@@ -70,7 +70,7 @@ void ResourceManager::SetExecutablePath(const std::string& executablePath)
 	size_t found = executablePath.find_last_of("/\\");
 	m_path = executablePath.substr(0, found);
 	std::string buf = "LUA_PATH=" + m_path + "/res/saves/GameObjects/?.lua";
-	putenv(buf.c_str());
+	_putenv(buf.c_str());
 }
 
 void ResourceManager::UnloadAllResources()
@@ -128,7 +128,7 @@ void ResourceManager::loadShaders(std::string_view shaderName, const std::string
 {
 	/*shaderLoaders.push(loadShaderProgram);
 	shaderLoaderParameters.push({ std::string(shaderName), vertexPath, fragmentPath });*/
-	loadShaderProgram<ShaderProgram>(shaderName, vertexPath, fragmentPath);
+	//loadShaderProgram<ShaderProgram>(shaderName, vertexPath, fragmentPath);
 }
 
 template<class ShaderProgramType>
@@ -359,9 +359,7 @@ std::shared_ptr<Mesh> ResourceManager::loadMesh(std::string_view name, const std
 
 bool ResourceManager::loadJSONScene(const std::string& relativePath)
 {
-	loadJSONGameOjects(relativePath);
-
-	return true;
+	return loadJSONGameOjects(relativePath);
 }
 
 bool ResourceManager::loadSave(const std::string& relativePath)
@@ -398,7 +396,7 @@ std::vector<std::string> ResourceManager::getDirectories(const std::string& rela
 	return directories;
 }
 
-[[nodiscard]]
+
 bool ResourceManager::loadJSONGameOjects(const std::string& relativePath)
 {
 	auto gameObjects = ResourceManager::getResourcesWithType<GameObject>();

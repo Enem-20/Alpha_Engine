@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef UIELEMENT_H
-#define UIELEMENT_H
+#ifndef UI_ELEMENT_H
+#define UI_ELEMENT_H
 
 #include "API/ExportPropety.h"
 
@@ -19,9 +19,10 @@ class GameObject;
 class DLLEXPORT UIelement : public Component
 {
 public:
-	UIelement(std::string_view name, std::shared_ptr<GameObject> gameObject);
+	UIelement(std::string_view name, std::shared_ptr<GameObject> gameObject, std::shared_ptr<UIelement> parent = nullptr);
 	UIelement(const UIelement& uiElement);
 	UIelement(UIelement&& uiElement) noexcept;
+	virtual ~UIelement() = default;
 
 	virtual void AddListener(const sol::protected_function& func);
 

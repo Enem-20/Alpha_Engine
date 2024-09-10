@@ -1,8 +1,10 @@
 #pragma once
 
+
+#ifndef RESOURCE_MANAGER_H
+#define RESOURCE_MANAGER_H
 #include "Renderer/src/Renderer.h"
-#ifndef RESOURCEMANAGER
-#define RESOURCEMANAGER
+
 #include "API/ExportPropety.h"
 
 #include "Renderer/src/Window.h"
@@ -249,7 +251,7 @@ std::shared_ptr<ResourceType> ResourceManager::getResource(std::string_view name
 		auto resource = resourcesByType->second.find(name.data());
 
 		if (resource != resourcesByType->second.cend()) {
-			return resource->second.getResource<ResourceType>();
+			return resource->second.template getResource<ResourceType>();
 		}
 	}
 	//std::cerr << "Error: this resource type doesn't exist" << '\n';
@@ -284,7 +286,7 @@ std::shared_ptr<ResourceType> ResourceManager::makeResource(Args&&... args) {
 }
 
 template<class BaseResourceType, class DerivedResourceType, class... Args>
-static std::shared_ptr<BaseResourceType> ResourceManager::makePolymorphicResource(Args&&... args) {
+std::shared_ptr<BaseResourceType> ResourceManager::makePolymorphicResource(Args&&... args) {
 	//static_assert(std::is_base_of<BaseResourceType, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
 	//static_assert(std::is_base_of<DerivedResourceType, ResourceType>::value, "this resource can't be attached due to the class isn't inherit from ResourceBase");
 

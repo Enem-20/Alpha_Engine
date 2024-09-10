@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef COMPONENT
-#define COMPONENT
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
 #include "API/ExportPropety.h"
 

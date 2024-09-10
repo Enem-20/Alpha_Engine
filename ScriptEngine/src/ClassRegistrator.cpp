@@ -315,7 +315,7 @@ void ClassRegistrator::Reg_Mesh(sol::table* object) {
 void ClassRegistrator::Reg_LuaScript(sol::table* object) {
 	object->new_usertype<LuaScript>("LuaScript"
 		, "new", sol::factories([](const std::string& name, const std::string& path, std::shared_ptr<sol::state> L){
-			std::make_shared<LuaScript>(name, path, L);
+			return std::make_shared<LuaScript>(name, path, L);
 		})
 		//, "name", &LuaScript::name
 	);

@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE OFF)
+
 #set(CMAKE_GENERATOR_PLATFORM x64)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -17,12 +18,13 @@ endif()
 
 if (MSVC)
 	if(NOT NDEBUG)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} x64 /bigobj")
 	endif()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} x64 /MP")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -BIGOBJ")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64 -BIGOBJ -Wno-microsoft-enum-forward-reference")
 endif()
+
 
 if(NOT NDEBUG)
 #add_compile_options(-fsanitize=address)

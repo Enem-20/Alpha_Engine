@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef MODEL
-#define MODEL
+#ifndef MESH_H
+#define MESH_H
 
 #include "API/ExportPropety.h"
 

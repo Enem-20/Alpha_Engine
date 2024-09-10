@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef SCRIPT_ENGINE_H
+#define SCRIPT_ENGINE_H
+
 #include<sol/sol.hpp>
 
 namespace ScriptEngine
@@ -15,7 +18,7 @@ namespace ScriptEngine
 	public:
 		static void SetEvents();
 		static void SetFunctions();
-		static void SetExexcutablePath(const std::string new_path);
+		static void SetExexcutablePath(const std::string& new_path);
 	private:
 		static sol::protected_function m_Update;
 		static sol::protected_function m_Awake;
@@ -26,3 +29,5 @@ namespace ScriptEngine
 		static std::string m_path;
 	};
 }
+
+#endif

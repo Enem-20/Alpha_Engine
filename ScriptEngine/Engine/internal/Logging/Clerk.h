@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef CLERK_H
+#define CLERK_H
+
 #include "API/ExportPropety.h"
 
 #include <memory>
@@ -20,3 +23,5 @@ private:
 	static IP7_Client* client;	
 	static IP7_Trace* trace;
 };
+
+#endif

@@ -25,7 +25,7 @@ ${internal_sources}
 	)
 
 #target_compile_definitions(Engine PUBLIC  _DISABLE_VECTOR_ANNOTATION _DISABLE_STRING_ANNOTATION)
-target_compile_definitions(Engine PRIVATE SHOWONBUILD GLFW_INCLUDE_VULKAN  GLM_FORCE_DEPTH_ZERO_TO_ONE GLM_FORCE_RADIANS)
+target_compile_definitions(Engine PRIVATE ENGINE_DLLEXPORT SHOWONBUILD GLFW_INCLUDE_VULKAN  GLM_FORCE_DEPTH_ZERO_TO_ONE GLM_FORCE_RADIANS)
 #target_compile_definitions(Engine PRIVATE OGL)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 

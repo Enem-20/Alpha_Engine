@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef GAMEOBJECT
-#define GAMEOBJECT
+#ifndef GAMEOBJECT_H
+#define GAMEOBJECT_H
 
 #include "API/ExportPropety.h"
 
@@ -121,7 +121,7 @@ std::shared_ptr<ComponentType> GameObject::getComponent(std::string_view name) {
 		auto component = componentsByType->second.find(std::string(name));
 
 		if (component != componentsByType->second.end()) {
-			return component->second.getComponentFromView<ComponentType>();
+			return component->second.template getComponentFromView<ComponentType>();
 		}
 	}
 		

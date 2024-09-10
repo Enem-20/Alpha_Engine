@@ -1,0 +1,5 @@
+{
+	"name" : "default",
+	"filePath_v" : "res/shaders/vert.spv",
+	"filePath_f" : "res/shaders/frag.spv"
+}

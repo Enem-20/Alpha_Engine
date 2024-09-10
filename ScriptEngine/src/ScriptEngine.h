@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef SCRIPTENGINE
-#define SCRIPTENGINE
+#ifndef SCRIPT_ENGINE_H
+#define SCRIPT_ENGINE_H
 
 #include "API/ExportProperty.h"
 

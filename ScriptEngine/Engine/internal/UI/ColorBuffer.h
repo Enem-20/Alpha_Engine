@@ -1,3 +1,8 @@
+#pragma once
+
+#ifndef COLOR_BUFFER_T_H
+#define COLOR_BUFFER_T_H
+
 #define COLOR_BUFFER_SIZE 32
 
 #include <glm/vec3.hpp>
@@ -18,3 +23,5 @@ public:
 	void InitNames(void);
 	void LoadName(int name, byte* color);
 };
+
+#endif

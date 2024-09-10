@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef TRANSFORM
-#define TRANSFORM
+#ifndef TRANSFORM_H
+#define TRANSFORM_H
 
 #include "API/ExportPropety.h"
 

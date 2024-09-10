@@ -61,7 +61,7 @@ void LuaScript::SetFixedUpdate(const sol::protected_function& FixedUpdate)
 
 void LuaScript::SetLastUpdate(const sol::protected_function& LastUpdate)
 {
-	m_LastUpdate = m_LastUpdate;
+	m_LastUpdate = LastUpdate;
 }
 
 void LuaScript::LoadScript(std::shared_ptr<sol::state> L)

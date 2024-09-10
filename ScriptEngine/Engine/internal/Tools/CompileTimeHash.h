@@ -1,5 +1,7 @@
-#ifndef COMPILE_TIME_HASH
-#define COMPILE_TIME_HASH
+#pragma once
+
+#ifndef COMPILE_TIME_HASH_H
+#define COMPILE_TIME_HASH_H
 
 #include <iostream>
 #include <string>

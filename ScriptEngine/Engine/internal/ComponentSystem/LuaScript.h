@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef LUASCRIPT
-#define LUASCRIPT
+#ifndef LUA_SCRIPT_H
+#define LUA_SCRIPT_H
 
 #include "API/ExportPropety.h"
 

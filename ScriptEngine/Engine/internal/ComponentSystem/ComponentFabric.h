@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef COMPONENTFABRIC
-#define COMPONENTFABRIC
+#ifndef COMPONENT_FABRIC_H
+#define COMPONENT_FABRIC_H
 
 #include "Component.h"
 #include "../../UI/src/UIelement.h"

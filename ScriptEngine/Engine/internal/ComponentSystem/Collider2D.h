@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef COLLIDER2D
-#define COLLIDER2D
+#ifndef COLLIDER_2D_H
+#define COLLIDER_2D_H
 
 #include "API/ExportPropety.h"
 
